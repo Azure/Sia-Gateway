@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <PackageId>Microsoft.Sia.Connectors.Tickets</PackageId>
+    <Version>1.0.2-alpha</Version>
+    <Authors>pdimit, magpint, jache, chtownes</Authors>
+    <Company>Microsoft</Company>
+    <Product>SRE Incident Assistant</Product>
+    <Description>Ticketing system connector primitives for SIA</Description>
+    <Copyright>Copyright 2017</Copyright>
+    <PackageReleaseNotes>Initial open source release, intended for prototyping.</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="6.1.1" />
+    <PackageReference Include="Microsoft.Sia.Shared" Version="1.0.2-alpha" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incident.csproj" />
+    <ProjectReference Include="..\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj" />
+    <ProjectReference Include="..\Sia.Domain\Sia.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
