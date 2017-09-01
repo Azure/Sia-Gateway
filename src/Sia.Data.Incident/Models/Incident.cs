@@ -13,8 +13,11 @@ namespace Sia.Data.Incidents.Models
 
         public Ticket PrimaryTicket { get; set; }
         [InverseProperty(nameof(Ticket.Incident))]
-        public List<Ticket> Tickets { get; set; }
-        public List<Engagement> Engagements { get; set; }
-        public List<Event> Events { get; set; }
+        public ICollection<Ticket> Tickets { get; set; }
+            = new HashSet<Ticket>();
+        public ICollection<Engagement> Engagements { get; set; }
+            = new HashSet<Engagement>();
+        public ICollection<Event> Events { get; set; }
+            = new HashSet<Event>();
     }
 }

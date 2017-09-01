@@ -9,7 +9,13 @@ namespace Sia.Connectors.Tickets
 
         public virtual Domain.Incident AssembleIncident(Data.Incidents.Models.Incident databaseRecord, TTicket ticket)
         {
-            if(ticket != null) databaseRecord.Events.AddRange(ExtractEvents(ticket));
+            if(ticket != null)
+            {
+                foreach (var ev in ExtractEvents(ticket))
+                {
+                    databaseRecord.Events.Add(ev);
+                }
+            }
             return Mapper.Map<Domain.Incident>(databaseRecord);
         }
     }

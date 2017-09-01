@@ -7,11 +7,11 @@ namespace Sia.Domain
         public long Id { get; set; }
         public string Title { get; set; }
         public Ticket PrimaryTicket { get; set; }
-        public IList<Ticket> Tickets { get; set; }
+        public ICollection<Ticket> Tickets { get; set; }
             = new List<Ticket>();
-        public IList<Event> Events { get; set; }
+        public ICollection<Event> Events { get; set; }
             = new List<Event>();
-        public IList<Engagement> Engagements { get; set; }
+        public ICollection<Engagement> Engagements { get; set; }
             = new List<Engagement>();
     }
 }
