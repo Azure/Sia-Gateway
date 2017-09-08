@@ -13,10 +13,15 @@ In order to test functionality of the gateway on your local machine:
 	4. Validate that the localhost port the service is running on matches its configuration in appsettings.Development.json.
 		You can find IIS Express information by right clicking the IIS Express icon in your system tray.
 2. Get appropriate Secrets for authentication
-	1. ClientSecret is the secret that is used to authenticate to azure key vault for the gateway
-	2. This secret can be found in the azure portal in the AAD App Registration for your Gateway instance
-	3. Right click on the Sia.Gateway project and select "Manage user secrets"
-	4. Paste the secrets in following the format in usersecrets.template.json
+	1. Right click on the Sia.Gateway project and select "Manage user secrets"
+	2. Open usersecrets.template.json to use as a template for your usersecrets json file
+	3. You will need these configuration values:
+		1. Your AAD instance (the default is correct for the vast majority of scenarios)
+		2. Your AAD tenant
+		3. Your Key Vault vault name
+		4. Your ApplicationInsights instrumentation key name
+		5. The secret that is used to authenticate to azure key vault for the gateway (ClientSecret)
+			* This secret can be found in the azure portal in the AAD App Registration for your Gateway instance
 3. Start the gateway
 
 
