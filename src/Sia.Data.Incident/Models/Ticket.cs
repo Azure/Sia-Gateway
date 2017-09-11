@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Sia.Shared.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sia.Data.Incidents.Models
 {
-    public class Ticket
+    public class Ticket : IEntity
     {
         public long Id { get; set; }
         public string OriginId { get; set; }

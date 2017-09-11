@@ -1,6 +1,8 @@
-﻿namespace Sia.Data.Incidents.Models
+﻿using Sia.Shared.Data;
+
+namespace Sia.Data.Incidents.Models
 {
-    public class TicketingSystem
+    public class TicketingSystem : IEntity
     {
         public long Id { get; set; }
         public string Name { get; set; }

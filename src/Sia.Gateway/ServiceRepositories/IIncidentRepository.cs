@@ -50,17 +50,12 @@ namespace Sia.Gateway.ServiceRepositories
 
         public async Task<IEnumerable<Incident>> GetIncidentsByTicketAsync(string ticketId, AuthenticatedUserContext userContext)
         {
-            //No idea why this doesn't work as a single linq statement
-            var incidentRecords = _context.Incidents
-                .WithEagerLoading();
-            var filteredIncidentRecords1 = incidentRecords
-                .Where(incident => incident.Tickets.Any(inc => inc.OriginId == ticketId));
-            var filteredIncidentRecords2 = incidentRecords
-                .Where(incident => incident.PrimaryTicket.OriginId == ticketId);
-            var filteredIncidentRecords = filteredIncidentRecords1.Union(filteredIncidentRecords2);
-            var localIncidentRecords = await filteredIncidentRecords.ToListAsync();
-            var projectedIncidentRecords = localIncidentRecords.AsQueryable().ProjectTo<Incident>();
-            return projectedIncidentRecords;
+            var incidentRecords = _context.Incidents.WithEagerLoading();
+            var filteredIncidentRecords = await incidentRecords
+                .Where(incident => incident.Tickets.Any(inc => inc.OriginId == ticketId))
+                .Union(incidentRecords.Where(incident => incident.PrimaryTicket.OriginId == ticketId))
+                .ProjectTo<Incident>().ToListAsync();
+            return filteredIncidentRecords;
         }
 
         public async Task<Incident> PostIncidentAsync(NewIncident incident, AuthenticatedUserContext userContext)

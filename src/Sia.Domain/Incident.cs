@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Sia.Shared.Data;
+using System.Collections.Generic;
 
 namespace Sia.Domain
 {
-    public class Incident
+    public class Incident : IEntity
     {
         public long Id { get; set; }
         public string Title { get; set; }

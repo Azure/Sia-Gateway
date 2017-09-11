@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
+using Sia.Gateway.Protocol;
 using Sia.Gateway.Requests;
 using System.Threading.Tasks;
 
@@ -15,6 +16,12 @@ namespace Sia.Gateway.Controllers
         public EventsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig)
             : base(mediator, authConfig)
         {
+        }
+
+        [HttpGet()]
+        public async Task<IActionResult> Get([FromRoute]long incidentId, [FromQuery]PaginationMetadata pagination)
+        {
+            var result = await _mediator.Send(new GetEventsRequest)
         }
 
         [HttpGet("{id}")]

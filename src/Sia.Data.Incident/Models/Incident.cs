@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Sia.Shared.Data;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sia.Data.Incidents.Models
 {
-    public class Incident
+    public class Incident : IEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
