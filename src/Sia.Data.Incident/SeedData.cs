@@ -1,4 +1,5 @@
-﻿using Sia.Data.Incidents.Models;
+﻿using Sia.Data.Incidents;
+using Sia.Data.Incidents.Models;
 using System;
 using System.Collections.Generic;
 
@@ -6,8 +7,10 @@ namespace Sia.Data.Incidents
 {
     public static class SeedData
     {
+        const int numberOfSecondsInFiveHours = 18000;
+        const int differentEventTypes = 8;
         //Some dev/test/demo data that was based on actual incidents has been [REDACTED]
-        public static void Add(IncidentContext incidentContext)
+        public static void Add(IncidentContext incidentContext, SeedType seedtype)
         {
             var firstTestIncidentSystem = new TicketingSystem
             {
@@ -59,7 +62,7 @@ namespace Sia.Data.Incidents
                         }
                     }
                 },
-                Events = new List<Event>
+                Events = seedtype == SeedType.ManyEvents ? GenerateManyEvents() : new List<Event>
                 {
                     new Event
                     {
@@ -156,5 +159,29 @@ namespace Sia.Data.Incidents
 
             incidentContext.SaveChanges();
         }
+
+        private static ICollection<Event> GenerateManyEvents()
+        {
+            var events = new List<Event>();
+
+            var randSequence = new Random();
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var occurrenceTime = RandomTimeInTheLast5Hours(randSequence);
+                events.Add(new Event
+                {
+                    EventTypeId = randSequence.Next(0, differentEventTypes - 1),
+                    Occurred = occurrenceTime,
+                    EventFired = occurrenceTime
+                });
+            }
+
+            return events;
+        }
+
+        private static DateTime RandomTimeInTheLast5Hours(Random randSequence) =>
+             DateTime.UtcNow.AddSeconds(-randSequence.Next(0, numberOfSecondsInFiveHours));
+
     }
 }
