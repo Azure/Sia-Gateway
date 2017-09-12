@@ -4,10 +4,6 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <UserSecretsId>75a727f4-7c4d-4e48-9f77-2d00b67b27e4</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper.Collection" Version="3.1.2" />
     <PackageReference Include="MediatR" Version="3.0.1" />
@@ -34,6 +30,9 @@
     <ProjectReference Include="..\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj" />
     <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incident.csproj" />
     <ProjectReference Include="..\Sia.Domain\Sia.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
