@@ -31,8 +31,5 @@
     <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incident.csproj" />
     <ProjectReference Include="..\Sia.Domain\Sia.Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
 
 </Project>
