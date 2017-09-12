@@ -20,7 +20,7 @@ namespace Sia.Gateway.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute]long incidentId, [FromRoute]long id)
         {
-            var result = await _mediator.Send(new GetEngagementRequest(incidentId, id, new AuthenticatedUserContext(User, HttpContext.Session, _authConfig)));
+            var result = await _mediator.Send(new GetEngagementRequest(incidentId, id, _authContext));
             if (result == null)
             {
                 return NotFound(notFoundMessage);
@@ -31,7 +31,7 @@ namespace Sia.Gateway.Controllers
         [HttpPost()]
         public async Task<IActionResult> Post([FromRoute]long incidentId, [FromBody]NewEngagement newEngagement)
         {
-            var result = await _mediator.Send(new PostEngagementRequest(incidentId, newEngagement, new AuthenticatedUserContext(User, HttpContext.Session, _authConfig)));
+            var result = await _mediator.Send(new PostEngagementRequest(incidentId, newEngagement, _authContext));
             if (result == null)
             {
                 return NotFound(notFoundMessage);
@@ -42,7 +42,7 @@ namespace Sia.Gateway.Controllers
         [HttpPut("{engagementId}")]
         public async Task<IActionResult> Put([FromRoute]long incidentId, [FromRoute]long engagementId, [FromBody]UpdateEngagement updatedEngagement)
         {
-            await _mediator.Send(new PutEngagementRequest(incidentId, engagementId, updatedEngagement, new AuthenticatedUserContext(User, HttpContext.Session, _authConfig)));
+            await _mediator.Send(new PutEngagementRequest(incidentId, engagementId, updatedEngagement, _authContext));
             return Ok();
         }
     }

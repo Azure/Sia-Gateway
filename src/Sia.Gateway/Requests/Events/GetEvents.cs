@@ -12,7 +12,7 @@ namespace Sia.Gateway.Requests.Events
 {
     public class GetEventsRequest : AuthenticatedRequest, IRequest<IEnumerable<Event>>
     {
-        protected GetEventsRequest(long incidentId, PaginationMetadata pagination, AuthenticatedUserContext userContext) 
+        public GetEventsRequest(long incidentId, PaginationMetadata pagination, AuthenticatedUserContext userContext) 
             : base(userContext)
         {
             IncidentId = incidentId;
@@ -25,13 +25,14 @@ namespace Sia.Gateway.Requests.Events
 
     public class GetEventsHandler : EventHandler<GetEventsRequest, IEnumerable<Event>>
     {
-        protected GetEventsHandler(IEventRepository eventRepository) : base(eventRepository)
+        public GetEventsHandler(IEventRepository eventRepository)
+            : base(eventRepository)
         {
         }
 
-        public override Task<IEnumerable<Event>> Handle(GetEventsRequest request)
+        public override async Task<IEnumerable<Event>> Handle(GetEventsRequest request)
         {
-            return await _eventRepository
+            return await _eventRepository.GetEventsAsync(request.IncidentId, request.Pagination, request.UserContext);
         }
     }
 }

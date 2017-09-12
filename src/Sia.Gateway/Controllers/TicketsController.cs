@@ -19,7 +19,7 @@ namespace Sia.Gateway.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var result = await _mediator.Send(new GetIncidentsByTicketRequest(id, new AuthenticatedUserContext(User, HttpContext.Session, _authConfig)));
+            var result = await _mediator.Send(new GetIncidentsByTicketRequest(id, _authContext));
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)} not found");
