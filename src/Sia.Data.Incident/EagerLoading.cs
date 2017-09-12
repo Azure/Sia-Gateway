@@ -12,8 +12,7 @@ namespace Sia.Data.Incidents
                 .Include(cr => cr.PrimaryTicket)
                 .Include(cr => cr.Tickets)
                 .Include(cr => cr.Engagements)
-                    .ThenInclude(en => en.Participant)
-                .Include(cr => cr.Events);
+                    .ThenInclude(en => en.Participant);
         }
     }
 }
