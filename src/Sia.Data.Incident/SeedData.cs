@@ -9,6 +9,7 @@ namespace Sia.Data.Incidents
     {
         const int numberOfSecondsInFiveHours = 18000;
         const int differentEventTypes = 8;
+        const int eventCountForManyEvents = 1000;
         //Some dev/test/demo data that was based on actual incidents has been [REDACTED]
         public static void Add(IncidentContext incidentContext, SeedType seedtype)
         {
@@ -166,7 +167,7 @@ namespace Sia.Data.Incidents
 
             var randSequence = new Random();
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < eventCountForManyEvents; i++)
             {
                 var occurrenceTime = RandomTimeInTheLast5Hours(randSequence);
                 events.Add(new Event
