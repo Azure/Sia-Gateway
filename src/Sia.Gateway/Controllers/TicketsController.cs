@@ -11,8 +11,8 @@ namespace Sia.Gateway.Controllers
     [Route("[controller]")]
     public class TicketsController : BaseController
     {
-        public TicketsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig)
-            : base(mediator, authConfig)
+        public TicketsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, IUrlHelper urlHelper) 
+            : base(mediator, authConfig, urlHelper)
         {
         }
 

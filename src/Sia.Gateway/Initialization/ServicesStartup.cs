@@ -1,5 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -83,6 +86,11 @@ namespace Sia.Gateway.Initialization
         {
             //Adds every request type in the Sia.Gateway assembly
             services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper, UrlHelper>(iFactory
+                    => new UrlHelper(iFactory.GetService<IActionContextAccessor>().ActionContext)
+                );
 
             services.AddMvc();
             services.AddAuthentication();

@@ -12,8 +12,8 @@ namespace Sia.Gateway.Controllers
     {
         private const string notFoundMessage = "Incident or engagement not found";
 
-        public EngagementsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig) 
-            : base(mediator, authConfig)
+        public EngagementsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, IUrlHelper urlHelper) 
+            : base(mediator, authConfig, urlHelper)
         {
         }
 

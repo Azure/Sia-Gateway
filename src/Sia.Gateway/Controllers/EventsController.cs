@@ -14,20 +14,20 @@ namespace Sia.Gateway.Controllers
     {
         private const string notFoundMessage = "Incident or event not found";
 
-        public EventsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig)
-            : base(mediator, authConfig)
+        public EventsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, IUrlHelper urlHelper) 
+            : base(mediator, authConfig, urlHelper)
         {
-            
         }
 
-        [HttpGet()]
-        public async Task<IActionResult> Get([FromRoute]long incidentId, [FromQuery]PaginationMetadata pagination)
+        [HttpGet(Name = nameof(GetEvents))]
+        public async Task<IActionResult> GetEvents([FromRoute]long incidentId, [FromQuery]PaginationMetadata pagination)
         {
             var result = await _mediator.Send(new GetEventsRequest(incidentId, pagination, _authContext));
+            Response.Headers.AddPagination(new PaginationHeader(pagination, _urlHelper, nameof(GetEvents)));
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetEvent")]
         public async Task<IActionResult> Get([FromRoute]long incidentId, [FromRoute]long id)
         {
             var result = await _mediator.Send(new GetEventRequest(incidentId, id, _authContext));
@@ -35,6 +35,7 @@ namespace Sia.Gateway.Controllers
             {
                 return NotFound(notFoundMessage);
             }
+                
             return Ok(result);
         }
 

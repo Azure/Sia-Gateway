@@ -11,11 +11,11 @@ namespace Sia.Gateway.Controllers
     [Route("[controller]")]
     public class IncidentsController : BaseController
     {
-        public IncidentsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig)
-            : base(mediator, authConfig)
+
+        public IncidentsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, IUrlHelper urlHelper) 
+            : base(mediator, authConfig, urlHelper)
         {
         }
-
 
         // GET api/values/5
         [HttpGet("{id}")]
