@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sia.Domain", "src\Sia.Domai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sia.Domain.ApiModels", "src\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj", "{A08AACCD-A349-4EA9-BC36-CDE18E8A9E56}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sia.Data.Incident", "src\Sia.Data.Incident\Sia.Data.Incident.csproj", "{269ABD9E-3E8E-4F7D-8D45-6FE13F405C5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sia.Data.Incidents", "src\Sia.Data.Incident\Sia.Data.Incidents.csproj", "{269ABD9E-3E8E-4F7D-8D45-6FE13F405C5A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sia.Connectors.Tickets", "src\Sia.Connectors.Tickets\Sia.Connectors.Tickets.csproj", "{B92790C5-C4F1-4052-ABA7-68448F28DDB2}"
 EndProject

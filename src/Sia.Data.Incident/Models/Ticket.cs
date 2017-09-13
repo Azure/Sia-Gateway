@@ -10,6 +10,7 @@ namespace Sia.Data.Incidents.Models
         public long TicketingSystemId { get; set; }
         [ForeignKey(nameof(Incident))]
         public long IncidentId { get; set; }
+        public bool IsPrimary { get; set; }
 
         public TicketingSystem TicketingSystem { get; set; }
         public Incident Incident { get; set; }

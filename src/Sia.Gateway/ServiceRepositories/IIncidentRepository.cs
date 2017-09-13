@@ -37,7 +37,7 @@ namespace Sia.Gateway.ServiceRepositories
             var incidentRecord = await _context.Incidents.WithEagerLoading().FirstOrDefaultAsync(cr => cr.Id == id);
             if (incidentRecord == null) throw new KeyNotFoundException();
 
-            var ticket = await _connector.Client.GetAsync(incidentRecord.PrimaryTicket.OriginId);
+            var ticket = await _connector.Client.GetAsync(incidentRecord.Tickets.FirstOrDefault(t => t.IsPrimary).OriginId);
 
             return _connector.Converter.AssembleIncident(incidentRecord, ticket);
         }
@@ -50,17 +50,12 @@ namespace Sia.Gateway.ServiceRepositories
 
         public async Task<IEnumerable<Incident>> GetIncidentsByTicketAsync(string ticketId, AuthenticatedUserContext userContext)
         {
-            //No idea why this doesn't work as a single linq statement
-            var incidentRecords = _context.Incidents
-                .WithEagerLoading();
-            var filteredIncidentRecords1 = incidentRecords
-                .Where(incident => incident.Tickets.Any(inc => inc.OriginId == ticketId));
-            var filteredIncidentRecords2 = incidentRecords
-                .Where(incident => incident.PrimaryTicket.OriginId == ticketId);
-            var filteredIncidentRecords = filteredIncidentRecords1.Union(filteredIncidentRecords2);
-            var localIncidentRecords = await filteredIncidentRecords.ToListAsync();
-            var projectedIncidentRecords = localIncidentRecords.AsQueryable().ProjectTo<Incident>();
-            return projectedIncidentRecords;
+            return (await _context.Incidents
+                .WithEagerLoading()
+                .Where(incident => incident.Tickets.Any(inc => inc.OriginId == ticketId))
+                .ToListAsync())
+                .AsQueryable()
+                .ProjectTo<Incident>();
         }
 
         public async Task<Incident> PostIncidentAsync(NewIncident incident, AuthenticatedUserContext userContext)

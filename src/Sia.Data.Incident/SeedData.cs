@@ -11,29 +11,37 @@ namespace Sia.Data.Incidents
         {
             var firstTestIncidentSystem = new TicketingSystem
             {
-                Id = 1,
                 Name = "Not Our Ticketing System Name"
             };
             var secondTestIncidentSystem = new TicketingSystem
             {
-                Id = 2,
                 Name = "Some other ticketing system"
+            };
+
+            var firstTestTicket = new Ticket()
+            {
+                OriginId = "38502026",
+                TicketingSystem = firstTestIncidentSystem,
+                IsPrimary = true
+            };
+            var secondTestTicket = new Ticket()
+            {
+                OriginId = "44444444",
+                TicketingSystem = firstTestIncidentSystem
+            };
+            var thirdTestTicket = new Ticket()
+            {
+                OriginId = "38805418",
+                TicketingSystem = firstTestIncidentSystem,
+                IsPrimary = true
             };
 
             var firstTestCrisis = new Incident()
             {
-                PrimaryTicket = new Ticket()
-                {
-                    OriginId = "38502026",
-                    TicketingSystemId = 1
-                },
                 Tickets = new List<Ticket>()
                 {
-                    new Ticket()
-                    {
-                        OriginId = "44444444",
-                        TicketingSystemId = 1
-                    }
+                    firstTestTicket,
+                    secondTestTicket
                 },
                 Engagements = new List<Engagement>
                 {
@@ -72,7 +80,10 @@ namespace Sia.Data.Incidents
             };
             var secondTestCrisis = new Incident()
             {
-                Tickets = new List<Ticket>(),
+                Tickets = new List<Ticket>()
+                {
+                    thirdTestTicket
+                },
                 Title = "Loss of [REDACTED] Connectivity in [REDACTED]",
                 Events = new List<Event>(),
                 Engagements = new List<Engagement>
@@ -88,16 +99,19 @@ namespace Sia.Data.Incidents
                             Role = "Crisis Manager"
                         }
                     }
-                },
-                PrimaryTicket = new Ticket()
-                {
-                    OriginId = "38805418",
-                    TicketingSystemId = 1
                 }
             };
             var thirdTestCrisis = new Incident()
             {
-                Tickets = new List<Ticket>(),
+                Tickets = new List<Ticket>()
+                {
+                    new Ticket()
+                    {
+                        OriginId = "38808134",
+                        TicketingSystem = firstTestIncidentSystem,
+                        IsPrimary = true
+                    }
+                },
                 Title = "[REDACTED] and [REDACTED] service management operations for a subset of users in [REDACTED] are failing",
                 Events = new List<Event>(),
                 Engagements = new List<Engagement>
@@ -113,16 +127,19 @@ namespace Sia.Data.Incidents
                             Role = "Crisis Manager"
                         }
                     }
-                },
-                PrimaryTicket = new Ticket()
-                {
-                    OriginId = "38808134",
-                    TicketingSystemId = 1
                 }
             };
             var fourthTestCrisis = new Incident()
             {
-                Tickets = new List<Ticket>(),
+                Tickets = new List<Ticket>()
+                {
+                    new Ticket()
+                    {
+                        OriginId = "38805880",
+                        TicketingSystem = firstTestIncidentSystem,
+                        IsPrimary = true
+                    }
+                },
                 Title = "Unable to start [REDACTED] in [REDACTED]",
                 Events = new List<Event>(),
                 Engagements = new List<Engagement>
@@ -138,16 +155,12 @@ namespace Sia.Data.Incidents
                             Role = "Senior Incident Manager"
                         }
                     }
-                },
-                PrimaryTicket = new Ticket()
-                {
-                    OriginId = "38805880",
-                    TicketingSystemId = 1
                 }
             };
 
             incidentContext.Add(firstTestIncidentSystem);
             incidentContext.Add(secondTestIncidentSystem);
+
 
             incidentContext.Add(firstTestCrisis);
             incidentContext.Add(secondTestCrisis);
