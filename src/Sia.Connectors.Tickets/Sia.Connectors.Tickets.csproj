@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>Microsoft.Sia.Connectors.Tickets</PackageId>
-    <Version>1.0.2-alpha</Version>
+    <Version>1.0.3-alpha</Version>
     <Authors>pdimit, magpint, jache, chtownes</Authors>
     <Company>Microsoft</Company>
     <Product>SRE Incident Assistant</Product>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incident.csproj" />
+    <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
     <ProjectReference Include="..\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj" />
     <ProjectReference Include="..\Sia.Domain\Sia.Domain.csproj" />
   </ItemGroup>
