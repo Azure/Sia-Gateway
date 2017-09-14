@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Sia.Gateway.Middleware;
 using System;
+using System.Collections.Generic;
 
 namespace Sia.Gateway.Initialization
 {
@@ -21,13 +22,27 @@ namespace Sia.Gateway.Initialization
 
             app.UseCors(builder =>
                 builder
-                    .WithOrigins(new string[]{ configuration["CORS:AcceptableOrigin"] })
+                    .WithOrigins(LoadAcceptableOriginsFromConfig(configuration))
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials()
                 );
 
             app.UseMvc();
+        }
+
+        private static string[] LoadAcceptableOriginsFromConfig(IConfigurationRoot configuration)
+        {
+            List<string> corsOrigins = new List<string>();
+
+            int i = 0;
+            while (!string.IsNullOrWhiteSpace(configuration[$"CORS:AcceptableOrigins:{i}"]))
+            {
+                corsOrigins.Add(configuration[$"CORS:AcceptableOrigins:{i}"]);
+                i++;
+            }
+
+            return corsOrigins.ToArray();
         }
 
         private static JwtBearerOptions _jwtOptions(IConfigurationRoot configuration) => new JwtBearerOptions
