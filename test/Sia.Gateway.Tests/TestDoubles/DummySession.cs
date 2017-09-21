@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Sia.Gateway.Tests.TestDoubles
 {
@@ -23,7 +24,17 @@ namespace Sia.Gateway.Tests.TestDoubles
             throw new NotImplementedException();
         }
 
+        public Task CommitAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
         public Task LoadAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task LoadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }

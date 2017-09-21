@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.2-alpha</Version>
+    <PackageId>Microsoft.Sia.Data.Incident</PackageId>
+    <Authors>pdimit, magpint, jache, chtownes</Authors>
+    <Company>Microsoft</Company>
+    <Product>SRE Incident Assistant</Product>
+    <Description>Persistence layer for SIA</Description>
+    <PackageReleaseNotes>Initial open source release, intended for prototyping.</PackageReleaseNotes>
+    <Copyright>Copyright 2017</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
+    <PackageReference Include="System.Globalization.Extensions" Version="4.3.0" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>

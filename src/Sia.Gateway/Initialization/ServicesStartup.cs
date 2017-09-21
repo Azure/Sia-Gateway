@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -20,6 +21,7 @@ namespace Sia.Gateway.Initialization
 {
     public static class ServicesStartup
     {
+
         public static void AddFirstPartyServices(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
         {
 
@@ -82,7 +84,7 @@ namespace Sia.Gateway.Initialization
             services.AddScoped(typeof(IIncidentRepository), clientType);
         }
 
-        public static void AddThirdPartyServices(this IServiceCollection services)
+        public static void AddThirdPartyServices(this IServiceCollection services, IConfigurationRoot config)
         {
             //Adds every request type in the Sia.Gateway assembly
             services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
@@ -93,7 +95,18 @@ namespace Sia.Gateway.Initialization
                 );
 
             services.AddMvc();
-            services.AddAuthentication();
+            services
+                .AddAuthentication(authOptions =>
+                {
+                    authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(jwtOptions =>
+                {
+                    jwtOptions.Authority = String.Format(config["AzureAd:AadInstance"], config["AzureAd:Tenant"]);
+                    jwtOptions.Audience = config["Frontend:ClientId"];
+                    jwtOptions.SaveToken = true;
+                });
             services.AddDistributedMemoryCache();
             services.AddSession();
             services.AddCors();

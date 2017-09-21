@@ -20,13 +20,13 @@ namespace Sia.Gateway.Middleware
             {
                 await _next(context);
             }
-            catch (GatewayException ex)
+            catch (BaseException ex)
             {
                 await HandleExceptionAsync(context, ex);
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext context, GatewayException ex)
+        private async Task HandleExceptionAsync(HttpContext context, BaseException ex)
         {
             var result = JsonConvert.SerializeObject(new { error = ex.Message });
             context.Response.ContentType = "application/json";

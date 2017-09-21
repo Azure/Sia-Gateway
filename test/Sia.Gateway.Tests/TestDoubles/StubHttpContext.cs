@@ -29,14 +29,15 @@ namespace Sia.Gateway.Tests.Middleware
 
         public override WebSocketManager WebSockets => throw new NotImplementedException();
 
-        public override AuthenticationManager Authentication => throw new NotImplementedException();
-
         public override ClaimsPrincipal User { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override IDictionary<object, object> Items { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override IServiceProvider RequestServices { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override CancellationToken RequestAborted { get; set; }
         public override string TraceIdentifier { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override ISession Session { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        [Obsolete]
+        public override AuthenticationManager Authentication => throw new NotImplementedException();
 
         public override void Abort()
         {

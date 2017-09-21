@@ -2,7 +2,7 @@
 
 namespace Sia.Gateway.Tests.Middleware
 {
-    public class FakeGatewayException : GatewayException
+    public class FakeGatewayException : BaseException
     {
         private int _expectedStatusCode;
 
