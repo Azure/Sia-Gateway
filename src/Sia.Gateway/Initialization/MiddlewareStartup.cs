@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Sia.Gateway.Middleware;
 using System;
 using System.Collections.Generic;
@@ -9,24 +10,21 @@ namespace Sia.Gateway.Initialization
 {
     public static class MiddlewareStartup
     {
-        public const string defaultAuthScheme = "Bearer";            
+             
 
         public static void AddMiddleware(this IApplicationBuilder app, IHostingEnvironment env, IConfigurationRoot configuration)
         {
+            app.UseAuthentication();
             app.UseSession();
-
-            app.UseJwtBearerAuthentication(_jwtOptions(configuration));
-
-            if (env.IsDevelopment() || env.IsStaging()) app.UseDeveloperExceptionPage();
-            app.UseMiddleware<ExceptionHandler>();
-
             app.UseCors(builder =>
                 builder
-                    .WithOrigins(LoadAcceptableOriginsFromConfig(configuration))
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials()
-                );
+                .WithOrigins(LoadAcceptableOriginsFromConfig(configuration))
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+            );
+            if (env.IsDevelopment() || env.IsStaging()) app.UseDeveloperExceptionPage();
+            app.UseMiddleware<ExceptionHandler>();
 
             app.UseMvc();
         }
@@ -44,14 +42,5 @@ namespace Sia.Gateway.Initialization
 
             return corsOrigins.ToArray();
         }
-
-        private static JwtBearerOptions _jwtOptions(IConfigurationRoot configuration) => new JwtBearerOptions
-        {
-            Authority = String.Format(configuration["AzureAd:AadInstance"], configuration["AzureAd:Tenant"]),
-            AuthenticationScheme = defaultAuthScheme,
-            Audience = configuration["Frontend:ClientId"],
-            AutomaticAuthenticate = true
-        };
-
     }
 }
