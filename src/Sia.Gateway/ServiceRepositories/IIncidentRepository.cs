@@ -37,7 +37,7 @@ namespace Sia.Gateway.ServiceRepositories
             var incidentRecord = await _context.Incidents.WithEagerLoading().FirstOrDefaultAsync(cr => cr.Id == id);
             if (incidentRecord == null) throw new KeyNotFoundException();
 
-            var ticket = await _connector.Client.GetAsync(incidentRecord.PrimaryTicket.OriginId);
+            var ticket = await _connector.Client.GetAsync(incidentRecord.Tickets.FirstOrDefault(t => t.IsPrimary).OriginId);
 
             return _connector.Converter.AssembleIncident(incidentRecord, ticket);
         }
@@ -53,7 +53,7 @@ namespace Sia.Gateway.ServiceRepositories
             var incidentRecords = _context.Incidents.WithEagerLoading();
             var filteredIncidentRecords = await incidentRecords
                 .Where(incident => incident.Tickets.Any(inc => inc.OriginId == ticketId))
-                .Union(incidentRecords.Where(incident => incident.PrimaryTicket.OriginId == ticketId))
+                .Union(incidentRecords.Where(incident => incident.Tickets.FirstOrDefault(t => t.IsPrimary).OriginId == ticketId))
                 .ProjectTo<Incident>().ToListAsync();
             return filteredIncidentRecords;
         }
