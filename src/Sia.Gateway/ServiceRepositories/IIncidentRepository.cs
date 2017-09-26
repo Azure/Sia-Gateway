@@ -50,12 +50,12 @@ namespace Sia.Gateway.ServiceRepositories
 
         public async Task<IEnumerable<Incident>> GetIncidentsByTicketAsync(string ticketId, AuthenticatedUserContext userContext)
         {
-            var incidentRecords = _context.Incidents.WithEagerLoading();
-            var filteredIncidentRecords = await incidentRecords
+            var incidentRecords = await _context.Incidents
+                .WithEagerLoading()
                 .Where(incident => incident.Tickets.Any(inc => inc.OriginId == ticketId))
-                .Union(incidentRecords.Where(incident => incident.Tickets.FirstOrDefault(t => t.IsPrimary).OriginId == ticketId))
                 .ProjectTo<Incident>().ToListAsync();
-            return filteredIncidentRecords;
+
+            return incidentRecords;
         }
 
         public async Task<Incident> PostIncidentAsync(NewIncident incident, AuthenticatedUserContext userContext)
