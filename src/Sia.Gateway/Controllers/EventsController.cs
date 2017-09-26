@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR.Client;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
+using Sia.Gateway.Hubs;
 using Sia.Gateway.Requests;
 using System.Threading.Tasks;
 
@@ -12,9 +14,11 @@ namespace Sia.Gateway.Controllers
     {
         private const string notFoundMessage = "Incident or event not found";
 
-        public EventsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig)
+        public EventsController(IMediator mediator,
+            AzureActiveDirectoryAuthenticationInfo authConfig)
             : base(mediator, authConfig)
         {
+
         }
 
         [HttpGet("{id}")]
@@ -36,7 +40,18 @@ namespace Sia.Gateway.Controllers
             {
                 return NotFound(notFoundMessage);
             }
+            await SendEventToSubscribers(result);
             return Created($"api/incidents/{result.IncidentId}/events/{result.Id}", result);
+        }
+
+        private async Task SendEventToSubscribers(Domain.Event result)
+        {
+            var eventHubConnection = new HubConnectionBuilder()
+                    .WithUrl($"{Request.Scheme}://{Request.Host}/{EventsHub.HubPath}")
+                    .Build();
+            await eventHubConnection.StartAsync();
+            await eventHubConnection.SendAsync("Send", result);
+            eventHubConnection.DisposeAsync();
         }
     }
 }

@@ -102,6 +102,8 @@ namespace Sia.Gateway.Initialization
             services.AddDistributedMemoryCache();
             services.AddSession();
             services.AddCors();
+            services.AddSockets();
+            services.AddSignalR();
         }
     }
 }
