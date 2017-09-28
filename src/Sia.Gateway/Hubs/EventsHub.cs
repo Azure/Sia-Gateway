@@ -19,15 +19,12 @@ namespace Sia.Gateway.Hubs
 
         public Task Send(Event ev)
         {
-            return Clients.All.InvokeAsync("Send", JsonConvert.SerializeObject(ev, new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            }));
+            return Clients.All.InvokeAsync("Send", Json(ev));
         }
 
-        public override Task OnConnectedAsync()
+        private string Json<T>(T toSerialize) => JsonConvert.SerializeObject(toSerialize, new JsonSerializerSettings
         {
-            return base.OnConnectedAsync();
-        }
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        });
     }
 }
