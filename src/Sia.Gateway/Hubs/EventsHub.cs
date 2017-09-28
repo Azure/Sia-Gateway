@@ -14,6 +14,7 @@ namespace Sia.Gateway.Hubs
         public const string HubPath = "events/live";
         public EventsHub() : base()
         {
+
         }
 
         public Task Send(Event ev)

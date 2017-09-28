@@ -10,7 +10,10 @@ using Sia.Data.Incidents;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
 using Sia.Gateway.ServiceRepositories;
+using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -103,7 +106,12 @@ namespace Sia.Gateway.Initialization
             services.AddSession();
             services.AddCors();
             services.AddSockets();
-            services.AddSignalR();
+            services.AddSignalR().AddRedis(redisOptions =>
+            {
+                redisOptions.Options.EndPoints.Add(config["Redis:CacheEndpoint"]);
+                redisOptions.Options.Ssl = true;
+                redisOptions.Options.Password = config["Redis:Password"];
+            });
         }
     }
 }
