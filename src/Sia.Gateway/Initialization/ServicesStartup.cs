@@ -22,11 +22,22 @@ namespace Sia.Gateway.Initialization
         public static void AddFirstPartyServices(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
         {
 
-            var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config["Incident:ClientId"], config["Incident:ClientSecret"], config["AzureAd:Tenant"]);
 
             if (env.IsDevelopment()) services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
             if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(config.GetConnectionString("incidentStaging")));
 
+            AddTicketConnector(services, env, config);
+
+            services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<IEngagementRepository, EngagementRepository>();
+
+            services.AddSingleton<IConfigurationRoot>(i => config);
+
+            ConfigureAuth(services, config);
+        }
+
+        private static void AddTicketConnector(IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
+        {
             var ticketConnectorAssemblyPath = config["Connector:Ticket:Path"];
 
             if (!string.IsNullOrEmpty(ticketConnectorAssemblyPath))
@@ -55,11 +66,11 @@ namespace Sia.Gateway.Initialization
                     services.AddNoTicketingSystem();
                 }
             }
+        }
 
-            services.AddScoped<IEventRepository, EventRepository>();
-            services.AddScoped<IEngagementRepository, EngagementRepository>();
-
-            services.AddSingleton<IConfigurationRoot>(i => config);
+        private static void ConfigureAuth(IServiceCollection services, IConfigurationRoot config)
+        {
+            var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config["Incident:ClientId"], config["Incident:ClientSecret"], config["AzureAd:Tenant"]);
             services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
         }
 
