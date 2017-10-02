@@ -13,12 +13,14 @@ namespace Sia.Gateway.Controllers
     public class EventsController : BaseController
     {
         private const string notFoundMessage = "Incident or event not found";
+        private readonly HubConnectionBuilder _hubConnectionBuilder;
 
         public EventsController(IMediator mediator,
-            AzureActiveDirectoryAuthenticationInfo authConfig)
+            AzureActiveDirectoryAuthenticationInfo authConfig,
+            HubConnectionBuilder hubConnectionBuilder)
             : base(mediator, authConfig)
         {
-
+            _hubConnectionBuilder = hubConnectionBuilder;
         }
 
         [HttpGet("{id}")]
@@ -46,7 +48,7 @@ namespace Sia.Gateway.Controllers
 
         private async Task SendEventToSubscribers(Domain.Event result)
         {
-            var eventHubConnection = new HubConnectionBuilder()
+            var eventHubConnection = _hubConnectionBuilder
                     .WithUrl($"{Request.Scheme}://{Request.Host}/{EventsHub.HubPath}")
                     .Build();
             await eventHubConnection.StartAsync();

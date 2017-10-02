@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -112,6 +113,7 @@ namespace Sia.Gateway.Initialization
                 redisOptions.Options.Ssl = true;
                 redisOptions.Options.Password = config["Redis:Password"];
             });
+            services.AddScoped<HubConnectionBuilder>();
         }
     }
 }
