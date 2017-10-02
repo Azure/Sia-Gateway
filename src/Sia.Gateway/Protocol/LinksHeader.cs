@@ -4,20 +4,20 @@ using Newtonsoft.Json;
 
 namespace Sia.Gateway.Protocol
 {
-    public class PaginationHeader
+    public class LinksHeader
     {
         private PaginationMetadata _metadata;
         private IUrlHelper _urlHelper;
         private string _routeName;
 
-        public PaginationHeader(PaginationMetadata metadata, IUrlHelper urlHelper, string routeName)
+        public LinksHeader(PaginationMetadata metadata, IUrlHelper urlHelper, string routeName)
         {
             _metadata = metadata;
             _urlHelper = urlHelper;
             _routeName = routeName;
         }
 
-        public string HeaderName => "X-Pagination";
+        public const string HeaderName = "links";
         public StringValues HeaderValues => JsonConvert.SerializeObject(new
         {
             PageNumber = _metadata.PageNumber,
@@ -37,10 +37,10 @@ namespace Microsoft.AspNetCore.Mvc
 
     public static class PaginationExtensions
     {
-        public static void AddPagination(this IHeaderDictionary headers, PaginationHeader header)
+        public static void AddPagination(this IHeaderDictionary headers, LinksHeader header)
         {
-            headers.Add("Access-Control-Expose-Headers", "X-Pagination");
-            headers.Add(header.HeaderName, header.HeaderValues);
+            headers.Add("Access-Control-Expose-Headers", LinksHeader.HeaderName);
+            headers.Add(LinksHeader.HeaderName, header.HeaderValues);
         }
     }
 }

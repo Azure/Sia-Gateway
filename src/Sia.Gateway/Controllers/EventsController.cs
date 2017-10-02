@@ -23,7 +23,7 @@ namespace Sia.Gateway.Controllers
         public async Task<IActionResult> GetEvents([FromRoute]long incidentId, [FromQuery]PaginationMetadata pagination)
         {
             var result = await _mediator.Send(new GetEventsRequest(incidentId, pagination, _authContext));
-            Response.Headers.AddPagination(new PaginationHeader(pagination, _urlHelper, nameof(GetEvents)));
+            Response.Headers.AddPagination(new LinksHeader(pagination, _urlHelper, nameof(GetEvents)));
             return Ok(result);
         }
 
