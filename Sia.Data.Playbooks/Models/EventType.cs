@@ -6,5 +6,6 @@ namespace Sia.Data.Playbooks.Models
 {
     public class EventType
     {
+        public long Id { get; set; }
     }
 }
