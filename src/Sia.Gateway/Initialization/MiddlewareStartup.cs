@@ -14,8 +14,6 @@ namespace Sia.Gateway.Initialization
 
         public static void AddMiddleware(this IApplicationBuilder app, IHostingEnvironment env, IConfigurationRoot configuration)
         {
-            app.UseAuthentication();
-            app.UseSession();
             app.UseCors(builder =>
                 builder
                 .WithOrigins(LoadAcceptableOriginsFromConfig(configuration))
@@ -23,6 +21,9 @@ namespace Sia.Gateway.Initialization
                 .AllowAnyMethod()
                 .AllowCredentials()
             );
+            app.UseAuthentication();
+            app.UseSession();
+
             if (env.IsDevelopment() || env.IsStaging()) app.UseDeveloperExceptionPage();
             app.UseMiddleware<ExceptionHandler>();
 

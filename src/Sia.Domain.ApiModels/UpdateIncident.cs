@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Sia.Shared.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sia.Domain.ApiModels
 {

@@ -1,8 +1,10 @@
-﻿namespace Sia.Domain
+﻿using Sia.Shared.Data;
+
+namespace Sia.Domain
 {
-    public class TicketingSystem
+    public class TicketingSystem : IEntity
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }
