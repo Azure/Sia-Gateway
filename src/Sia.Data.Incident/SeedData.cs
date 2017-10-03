@@ -20,7 +20,7 @@ namespace Sia.Data.Incidents
 
             var firstTestTicket = new Ticket()
             {
-                OriginId = "38502026",
+                OriginId = "    `",
                 TicketingSystem = firstTestIncidentSystem,
                 IsPrimary = true
             };
