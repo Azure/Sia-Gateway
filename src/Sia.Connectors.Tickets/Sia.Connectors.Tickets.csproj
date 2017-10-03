@@ -15,13 +15,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.1.1" />
-    <PackageReference Include="Microsoft.Sia.Shared" Version="1.0.6-alpha" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
     <ProjectReference Include="..\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj" />
     <ProjectReference Include="..\Sia.Domain\Sia.Domain.csproj" />
+    <ProjectReference Include="..\Sia.Shared\Sia.Shared.csproj" />
   </ItemGroup>
 
 </Project>

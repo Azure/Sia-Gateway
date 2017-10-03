@@ -3,6 +3,7 @@ using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Sia.Shared.Authentication
@@ -17,11 +18,14 @@ namespace Sia.Shared.Authentication
         private readonly string _clientId;
         private readonly string _secret;
 
-        public AzureSecretVault(IConfigurationRoot configuration)
+        public AzureSecretVault(IConfigurationRoot configuration,
+            string vaultNameKey = "KeyVault:VaultName",
+            string clientIdKey = "ClientId",
+            string clientSecretKey = "ClientSecret")
         {
-            _clientId = configuration["ClientId"];
-            _secret = configuration["ClientSecret"];
-            _vault = String.Format(secretUriBase, configuration.GetSection("KeyVault")["VaultName"]);
+            _clientId = configuration[clientIdKey];
+            _secret = configuration[clientSecretKey];
+            _vault = String.Format(secretUriBase, configuration[vaultNameKey]);
         }
 
         public async Task<string> Get(string secretName)
@@ -34,6 +38,19 @@ namespace Sia.Shared.Authentication
             catch (KeyVaultErrorException)
             {
                 return string.Empty;
+            }
+        }
+
+        public async Task<X509Certificate2> GetCertificate(string certificateName)
+        {
+            try
+            {
+                var cert = await GetKeyVaultClient().GetCertificateAsync(_vault, certificateName).ConfigureAwait(false);
+                return new X509Certificate2(cert.Cer);
+            }
+            catch (KeyVaultErrorException)
+            {
+                return null;
             }
         }
 
