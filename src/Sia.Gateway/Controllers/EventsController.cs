@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
+using Sia.Gateway.Protocol;
 using Sia.Gateway.Hubs;
 using Sia.Gateway.Requests;
+using Sia.Gateway.Requests.Events;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Controllers
@@ -17,27 +19,37 @@ namespace Sia.Gateway.Controllers
 
         public EventsController(IMediator mediator,
             AzureActiveDirectoryAuthenticationInfo authConfig,
-            HubConnectionBuilder hubConnectionBuilder)
-            : base(mediator, authConfig)
+            HubConnectionBuilder hubConnectionBuilder,
+            IUrlHelper urlHelper)
+            : base(mediator, authConfig, urlHelper)
         {
             _hubConnectionBuilder = hubConnectionBuilder;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet(Name = nameof(GetEvents))]
+        public async Task<IActionResult> GetEvents([FromRoute]long incidentId, [FromQuery]PaginationMetadata pagination)
+        {
+            var result = await _mediator.Send(new GetEventsRequest(incidentId, pagination, _authContext));
+            Response.Headers.AddPagination(new LinksHeader(pagination, _urlHelper, nameof(GetEvents)));
+            return Ok(result);
+        }
+
+        [HttpGet("{id}", Name = "GetEvent")]
         public async Task<IActionResult> Get([FromRoute]long incidentId, [FromRoute]long id)
         {
-            var result = await _mediator.Send(new GetEventRequest(incidentId, id, new AuthenticatedUserContext(User, HttpContext.Session, _authConfig)));
+            var result = await _mediator.Send(new GetEventRequest(incidentId, id, _authContext));
             if (result == null)
             {
                 return NotFound(notFoundMessage);
             }
+                
             return Ok(result);
         }
 
         [HttpPost()]
         public async Task<IActionResult> Post([FromRoute]long incidentId, [FromBody]NewEvent newEvent)
         {
-            var result = await _mediator.Send(new PostEventRequest(incidentId, newEvent, new AuthenticatedUserContext(User, HttpContext.Session, _authConfig)));
+            var result = await _mediator.Send(new PostEventRequest(incidentId, newEvent, _authContext));
             if (result == null)
             {
                 return NotFound(notFoundMessage);

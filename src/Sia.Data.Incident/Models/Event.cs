@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Sia.Shared.Data;
+using System;
 
 namespace Sia.Data.Incidents.Models
 {
-    public class Event
+    public class Event : IEntity
     {
         public long Id { get; set; }
         public long? IncidentId { get; set; }

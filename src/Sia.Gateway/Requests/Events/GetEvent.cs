@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Sia.Domain;
 using Sia.Gateway.Authentication;
+using Sia.Gateway.Requests.Events;
 using Sia.Gateway.ServiceRepositories;
 using System.Threading.Tasks;
 
@@ -18,17 +19,16 @@ namespace Sia.Gateway.Requests
         public long Id { get; }
         public long IncidentId { get; }
     }
-    public class GetEventHandler : IAsyncRequestHandler<GetEventRequest, Event>
+    public class GetEventHandler : EventHandler<GetEventRequest, Event>
     {
-        private IEventRepository _incidentRepository;
-
-        public GetEventHandler(IEventRepository incidentRepository)
+        protected GetEventHandler(IEventRepository eventRepository) 
+            : base(eventRepository)
         {
-            _incidentRepository = incidentRepository;
         }
-        public async Task<Event> Handle(GetEventRequest request)
+
+        public override async Task<Event> Handle(GetEventRequest request)
         {
-            return await _incidentRepository.GetEvent(request.IncidentId, request.Id, request.UserContext);
+            return await _eventRepository.GetEvent(request.IncidentId, request.Id, request.UserContext);
         }
     }
 
