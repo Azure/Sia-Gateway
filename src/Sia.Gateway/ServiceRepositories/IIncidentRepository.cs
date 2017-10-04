@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Sia.Connectors.Tickets;
@@ -50,12 +50,12 @@ namespace Sia.Gateway.ServiceRepositories
 
         public async Task<IEnumerable<Incident>> GetIncidentsByTicketAsync(string ticketId, AuthenticatedUserContext userContext)
         {
-            return (await _context.Incidents
+            var incidentRecords = await _context.Incidents
                 .WithEagerLoading()
                 .Where(incident => incident.Tickets.Any(inc => inc.OriginId == ticketId))
-                .ToListAsync())
-                .AsQueryable()
-                .ProjectTo<Incident>();
+                .ProjectTo<Incident>().ToListAsync();
+
+            return incidentRecords;
         }
 
         public async Task<Incident> PostIncidentAsync(NewIncident incident, AuthenticatedUserContext userContext)
@@ -70,6 +70,6 @@ namespace Sia.Gateway.ServiceRepositories
 
             return Mapper.Map<Incident>(dataIncident);
         }
-        
+
     }
 }

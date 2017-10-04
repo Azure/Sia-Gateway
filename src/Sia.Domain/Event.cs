@@ -1,11 +1,12 @@
 ﻿using Sia.Domain;
+using Sia.Shared.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Sia.Domain
 {
-    public class Event
+    public class Event : IEntity
     {
         public long Id { get; set; }
         public long? IncidentId { get; set; }
