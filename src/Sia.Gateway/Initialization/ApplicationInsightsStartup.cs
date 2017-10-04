@@ -6,11 +6,17 @@ namespace Sia.Gateway.Initialization
 {
     public static class ApplicationInsightsStartup
     {
-        public static AzureSecretVault Initialize(IHostingEnvironment env, IConfigurationRoot configuration)
+        public static AzureSecretVault InitializeApplicationInsights(this IHostingEnvironment env, IConfigurationRoot configuration)
         {
             //Needs to be done in the initial Startup.Startup() method because Application Insights registers itself prior
             //to ConfigureServices being run
-            var secrets = new AzureSecretVault(new KeyVaultConfiguration(configuration["ClientId"], configuration["ClientSecret"], configuration["KeyVault:VaultName"]));
+            var secrets = new AzureSecretVault(
+                new KeyVaultConfiguration(
+                    configuration["ClientId"],
+                    configuration["ClientSecret"],
+                    configuration["KeyVault:VaultName"]
+                )
+            );
 
             var vaultTask = secrets.Get(configuration.GetSection("KeyVault")["InstrumentationKeyName"]);
             vaultTask.Wait();

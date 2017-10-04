@@ -38,7 +38,7 @@ namespace Sia.Connectors.Tickets.TicketProxy
             : this(endpoint, AuthenticationType.CertificateFromKeyVault)
         {
             _keyVault = new AzureSecretVault(config);
-            CertIdentifier = vaultName;
+            CertIdentifier = ThrowIf.NullOrWhiteSpace(vaultName, nameof(vaultName));
         }
 
         protected ProxyConnectionInfo(string endpoint, AuthenticationType authType)

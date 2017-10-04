@@ -25,13 +25,12 @@ namespace Sia.Gateway
             }
             _configuration = builder.Build();
 
-            _secrets = ApplicationInsightsStartup.Initialize(env, _configuration);
+            env.InitializeApplicationInsights(_configuration);
             _env = env;
         }
 
         private IHostingEnvironment _env { get; }
         private IConfigurationRoot _configuration { get; }
-        private ISecretVault _secrets { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)

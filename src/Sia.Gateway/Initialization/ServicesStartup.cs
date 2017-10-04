@@ -11,6 +11,7 @@ using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
 using Sia.Gateway.ServiceRepositories;
 using Sia.Shared.Authentication;
+using Sia.Shared.Validation;
 using System;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -57,6 +58,7 @@ namespace Sia.Gateway.Initialization
 
         private static bool TryGetConfigValue(IConfigurationRoot config, string configName, out string configValue)
         {
+            ThrowIf.NullOrWhiteSpace(configName, nameof(configName));
             configValue = config[configName];
             return !string.IsNullOrEmpty(configValue);
         }
