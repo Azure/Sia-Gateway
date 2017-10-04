@@ -21,13 +21,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.16.1" />
-    <PackageReference Include="Microsoft.Sia.Connectors.Tickets" Version="1.0.5-alpha" />
     <PackageReference Include="System.Globalization.Extensions" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Sia.Connectors.Tickets\Sia.Connectors.Tickets.csproj" />
     <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
     <ProjectReference Include="..\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj" />
     <ProjectReference Include="..\Sia.Domain\Sia.Domain.csproj" />

@@ -8,7 +8,7 @@ using Sia.Gateway.Validation.Filters;
 namespace Sia.Gateway.Controllers
 {
     [Return400BadRequestWhenModelStateInvalid]
-    [Authorize()]
+    //[Authorize()]
     public abstract class BaseController : Controller
     {
         protected readonly IMediator _mediator;

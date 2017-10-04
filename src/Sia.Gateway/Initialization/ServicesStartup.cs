@@ -10,6 +10,7 @@ using Sia.Data.Incidents;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
 using Sia.Gateway.ServiceRepositories;
+using Sia.Shared.Authentication;
 using System;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -68,6 +69,17 @@ namespace Sia.Gateway.Initialization
             {
                 case "Certificate":
                     services.AddProxyWithCert(proxyEndpoint, config["Connector:Ticket:ProxyCertThumbprint"]);
+                    return;
+                case "VaultCertificate":
+                    services.AddProxyWithCertFromKeyVault(
+                        proxyEndpoint,
+                        new KeyVaultConfiguration(
+                            config["ClientId"],
+                            config["ClientSecret"],
+                            config["Connector:Ticket:VaultName"]
+                        ),
+                        config["Connector:Ticket:CertName"]
+                    );
                     return;
                 default:
                     services.AddProxyWithoutAuth(proxyEndpoint);

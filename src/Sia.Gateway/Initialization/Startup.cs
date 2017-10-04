@@ -25,7 +25,7 @@ namespace Sia.Gateway
             }
             _configuration = builder.Build();
 
-            _secrets = SecretVaultStartup.Initialize(env, _configuration);
+            _secrets = ApplicationInsightsStartup.Initialize(env, _configuration);
             _env = env;
         }
 
