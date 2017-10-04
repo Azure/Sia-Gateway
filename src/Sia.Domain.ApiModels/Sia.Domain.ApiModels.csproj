@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Sia.Domain\Sia.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Playbooks\" />
+  </ItemGroup>
+
 </Project>

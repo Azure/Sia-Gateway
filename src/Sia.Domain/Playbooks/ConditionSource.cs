@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sia.Data.Playbooks.Models
+namespace Sia.Domain.Playbooks
 {
-    public class Variable
+    public class ConditionSource : Source
     {
     }
 }
