@@ -16,7 +16,7 @@ namespace Sia.Domain.Playbooks
     public enum ConditionType
     {
         Equals,
-        NotEquals,
+        DoesNotEqual,
         Contains,
         DoesNotContain
     }

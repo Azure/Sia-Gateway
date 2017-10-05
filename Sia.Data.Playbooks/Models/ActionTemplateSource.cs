@@ -8,6 +8,5 @@ namespace Sia.Data.Playbooks.Models
     {
         public ActionTemplate ActionTemplate { get; set; }
         public long ActionTemplateId { get; set; }
-        public string Name { get; set; }
     }
 }

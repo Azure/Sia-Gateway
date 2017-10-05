@@ -8,6 +8,7 @@ namespace Sia.Data.Playbooks.Models
     public abstract class Source : IEntity
     {
         public long Id { get; set; }
+        public string Name { get; set; }
         public SourceObject SourceObject { get; set; }
         public string Key { get; set; }
     }

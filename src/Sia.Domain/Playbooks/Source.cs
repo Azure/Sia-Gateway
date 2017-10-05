@@ -7,6 +7,7 @@ namespace Sia.Domain.Playbooks
     public abstract class Source
     {
         public long Id { get; set; }
+        public string Name { get; set; }
         public SourceObject SourceObject { get; set; }
         public string Key { get; set; }
     }

@@ -20,7 +20,7 @@ namespace Sia.Data.Playbooks.Models
     public enum ConditionType
     {
         Equals,
-        NotEquals,
+        DoesNotEqual,
         Contains,
         DoesNotContain
     }

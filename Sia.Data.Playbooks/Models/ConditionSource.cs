@@ -6,7 +6,6 @@ namespace Sia.Data.Playbooks.Models
 {
     public class ConditionSource : Source
     {
-        public Condition Condition { get; set; }
-        public long ConditionId { get; set; }
+        public ICollection<Condition> Conditions { get; set; }
     }
 }
