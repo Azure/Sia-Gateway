@@ -30,7 +30,7 @@ namespace Sia.Gateway.Requests
 
         public async Task Handle(PutEngagementRequest request)
         {
-            await _engagementClient.PutEngagementAsync(request.IncidentId, request.EngagementId, request.UpdateEngagement, request.UserContext);
+            await _engagementClient.PutAsync(request);
         }
     }
 }

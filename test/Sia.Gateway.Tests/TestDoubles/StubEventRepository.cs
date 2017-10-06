@@ -2,11 +2,13 @@
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
+using Sia.Gateway.Requests;
 using Sia.Gateway.ServiceRepositories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Sia.Gateway.Requests.Events;
 
 namespace Sia.Gateway.Tests.TestDoubles
 {
@@ -28,14 +30,19 @@ namespace Sia.Gateway.Tests.TestDoubles
         public bool IsSuccessStatusCodeToRespondWith { get; set; }
         public string ContentToRespondWith { get; set; }
 
-        public Task<Event> GetEvent(long incidentId, long id, AuthenticatedUserContext userContext)
+        public Task<Event> GetAsync(GetEventRequest request)
         {
-            return Task.FromResult(_events.First(ev => ev.Id == id && ev.IncidentId == incidentId));
+            return Task.FromResult(_events.First(ev => ev.Id == request.Id && ev.IncidentId == request.IncidentId));
         }
-        
-        public Task<Event> PostEvent(long incidentId, NewEvent newEvent, AuthenticatedUserContext userContext)
+
+        public Task<IEnumerable<Event>> GetManyAsync(GetEventsRequest request)
         {
-            return Task.FromResult(Mapper.Map(newEvent, new Event()));
+            return Task.FromResult(_events.AsEnumerable());
+        }
+
+        public Task<Event> PostAsync(PostEventRequest request)
+        {
+            return Task.FromResult(Mapper.Map(request.NewEvent, new Event()));
         }
     }
 }

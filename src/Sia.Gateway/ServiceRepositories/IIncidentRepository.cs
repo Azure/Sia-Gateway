@@ -6,6 +6,8 @@ using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
+using Sia.Gateway.Requests;
+using Sia.Gateway.ServiceRepositories.Operations;
 using Sia.Shared.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -15,12 +17,13 @@ using System.Threading.Tasks;
 namespace Sia.Gateway.ServiceRepositories
 {
     public interface IIncidentRepository
+        : IGet<GetIncidentRequest, Incident>,
+        IGetMany<GetIncidentsRequest, Incident>,
+        IGetMany<GetIncidentsByTicketRequest, Incident>,
+        IPost<PostIncidentRequest, Incident>
     {
-        Task<Incident> GetIncidentAsync(long id, AuthenticatedUserContext userContext);
-        Task<IEnumerable<Incident>> GetIncidentsAsync(AuthenticatedUserContext userContext);
-        Task<Incident> PostIncidentAsync(NewIncident incident, AuthenticatedUserContext userContext);
-        Task<IEnumerable<Incident>> GetIncidentsByTicketAsync(string ticketId, AuthenticatedUserContext userContext);
     }
+
     public class IncidentRepository<TTicket> : IIncidentRepository
     {
         private readonly IncidentContext _context;
@@ -32,9 +35,9 @@ namespace Sia.Gateway.ServiceRepositories
             _connector = connector;
         }
 
-        public async Task<Incident> GetIncidentAsync(long id, AuthenticatedUserContext userContext)
+        public async Task<Incident> GetAsync(GetIncidentRequest getIncident)
         {
-            var incidentRecord = await _context.Incidents.WithEagerLoading().FirstOrDefaultAsync(cr => cr.Id == id);
+            var incidentRecord = await _context.Incidents.WithEagerLoading().FirstOrDefaultAsync(cr => cr.Id == getIncident.Id);
             if (incidentRecord == null) throw new KeyNotFoundException();
 
             var ticket = await _connector.Client.GetAsync(incidentRecord.Tickets.FirstOrDefault(t => t.IsPrimary).OriginId);
@@ -42,28 +45,31 @@ namespace Sia.Gateway.ServiceRepositories
             return _connector.Converter.AssembleIncident(incidentRecord, ticket);
         }
 
-        public async Task<IEnumerable<Incident>> GetIncidentsAsync(AuthenticatedUserContext userContext)
-        {
-            var incidentRecords = await _context.Incidents.WithEagerLoading().ProjectTo<Incident>().ToListAsync();
-            return incidentRecords;
-        }
-
-        public async Task<IEnumerable<Incident>> GetIncidentsByTicketAsync(string ticketId, AuthenticatedUserContext userContext)
+        public async Task<IEnumerable<Incident>> GetManyAsync(GetIncidentsRequest request)
         {
             var incidentRecords = await _context.Incidents
                 .WithEagerLoading()
-                .Where(incident => incident.Tickets.Any(inc => inc.OriginId == ticketId))
+                .ProjectTo<Incident>()
+                .ToListAsync();
+            return incidentRecords;
+        }
+
+        public async Task<IEnumerable<Incident>> GetManyAsync(GetIncidentsByTicketRequest request)
+        {
+            var incidentRecords = await _context.Incidents
+                .WithEagerLoading()
+                .Where(incident => incident.Tickets.Any(inc => inc.OriginId == request.TicketId))
                 .ProjectTo<Incident>().ToListAsync();
 
             return incidentRecords;
         }
 
-        public async Task<Incident> PostIncidentAsync(NewIncident incident, AuthenticatedUserContext userContext)
+        public async Task<Incident> PostAsync(PostIncidentRequest request)
         {
-            if (incident == null) throw new ArgumentNullException(nameof(incident));
-            if (incident?.PrimaryTicket?.OriginId == null) throw new ConflictException("Please provide a primary incident with a valid originId");
+            if (request.Incident == null) throw new ArgumentNullException(nameof(request.Incident));
+            if (request.Incident?.PrimaryTicket?.OriginId == null) throw new ConflictException("Please provide a primary incident with a valid originId");
 
-            var dataIncident = Mapper.Map<Data.Incidents.Models.Incident>(incident);
+            var dataIncident = Mapper.Map<Data.Incidents.Models.Incident>(request.Incident);
 
             var result = _context.Incidents.Add(dataIncident);
             await _context.SaveChangesAsync();

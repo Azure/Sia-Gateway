@@ -22,9 +22,9 @@ namespace Sia.Gateway.Requests
         {
             _incidentRepository = incidentClient;
         }
-        public async Task<IEnumerable<Incident>> Handle(GetIncidentsRequest message)
+        public async Task<IEnumerable<Incident>> Handle(GetIncidentsRequest request)
         {
-            var incidentResponse = await _incidentRepository.GetIncidentsAsync(message.UserContext);
+            var incidentResponse = await _incidentRepository.GetManyAsync(request);
             return incidentResponse;
         }
     }

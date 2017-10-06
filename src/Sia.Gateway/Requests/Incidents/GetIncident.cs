@@ -26,7 +26,7 @@ namespace Sia.Gateway.Requests
 
         public async Task<Incident> Handle(GetIncidentRequest request)
         {
-            return await _incidentRepository.GetIncidentAsync(request.Id, request.UserContext);
+            return await _incidentRepository.GetAsync(request);
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Sia.Gateway.Requests;
 
 namespace Sia.Gateway.Tests.TestDoubles
 {
@@ -36,25 +37,24 @@ namespace Sia.Gateway.Tests.TestDoubles
 
         List<Incident> _incidents { get; set; }
 
-
-        public Task<Incident> GetIncidentAsync(long id, AuthenticatedUserContext userContext)
+        public Task<Incident> GetAsync(GetIncidentRequest request)
         {
-            return Task.FromResult(_incidents.First(cr => cr.Id == id));
+            return Task.FromResult(_incidents.First(cr => cr.Id == request.Id));
         }
 
-        public Task<IEnumerable<Incident>> GetIncidentsAsync(AuthenticatedUserContext userContext)
+        public Task<IEnumerable<Incident>> GetManyAsync(GetIncidentsRequest request)
         {
             return Task.FromResult(_incidents.AsEnumerable());
         }
 
-        public Task<IEnumerable<Incident>> GetIncidentsByTicketAsync(string ticketId, AuthenticatedUserContext userContext)
+        public Task<IEnumerable<Incident>> GetManyAsync(GetIncidentsByTicketRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Incident> PostIncidentAsync(NewIncident incident, AuthenticatedUserContext userContext)
+        public Task<Incident> PostAsync(PostIncidentRequest request)
         {
-            return Task.FromResult(_mapper.Map<NewIncident, Incident>(incident));
+            return Task.FromResult(_mapper.Map<NewIncident, Incident>(request.Incident));
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Sia.Gateway.Requests
 
         public async Task<Engagement> Handle(PostEngagementRequest request)
         {
-            return await _engagementRepository.PostEngagementAsync(request.IncidentId, request.NewEngagement, request.UserContext);
+            return await _engagementRepository.PostAsync(request);
         }
     }
 };

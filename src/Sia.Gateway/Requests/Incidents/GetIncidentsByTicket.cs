@@ -27,7 +27,7 @@ namespace Sia.Gateway.Requests
         }
         public async Task<IEnumerable<Incident>> Handle(GetIncidentsByTicketRequest message)
         {
-            var incidentResponse = await _incidentRepository.GetIncidentsByTicketAsync(message.TicketId, message.UserContext);
+            var incidentResponse = await _incidentRepository.GetManyAsync(message);
             return incidentResponse;
         }
     }

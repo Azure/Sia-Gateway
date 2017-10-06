@@ -30,7 +30,7 @@ namespace Sia.Gateway.Requests
 
         public async Task<Event> Handle(PostEventRequest request)
         {
-            return await _incidentRepository.PostEvent(request.IncidentId, request.NewEvent, request.UserContext);
+            return await _incidentRepository.PostAsync(request);
         }
     }
 }

@@ -6,6 +6,9 @@ using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Protocol;
+using Sia.Gateway.Requests;
+using Sia.Gateway.Requests.Events;
+using Sia.Gateway.ServiceRepositories.Operations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +17,10 @@ using System.Threading.Tasks;
 namespace Sia.Gateway.ServiceRepositories
 {
     public interface IEventRepository
+        : IGet<GetEventRequest, Event>,
+        IPost<PostEventRequest, Event>,
+        IGetMany<GetEventsRequest, Event>
     {
-        Task<Event> GetEvent(long incidentId, long id, AuthenticatedUserContext userContext);
-        Task<Event> PostEvent(long incidentId, NewEvent newEvent, AuthenticatedUserContext userContext);
-        Task<IEnumerable<Event>> GetEventsAsync(long incidentId, PaginationMetadata pagination, AuthenticatedUserContext userContext);
     }
 
     public class EventRepository : IEventRepository
@@ -30,32 +33,33 @@ namespace Sia.Gateway.ServiceRepositories
             _context = context;
         }
 
-        public async Task<Event> GetEvent(long incidentId, long id, AuthenticatedUserContext userContext)
+        public async Task<Event> GetAsync(GetEventRequest request)
         {
-            var eventRecord = await _context.Events.FirstOrDefaultAsync(ev => ev.IncidentId == incidentId && ev.Id == id);
+            var eventRecord = await _context.Events.FirstOrDefaultAsync(ev => ev.IncidentId == request.IncidentId && ev.Id == request.Id);
             if (eventRecord == null) throw new KeyNotFoundException();
 
             return Mapper.Map<Event>(eventRecord);
         }
 
-        public async Task<IEnumerable<Event>> GetEventsAsync(long incidentId, PaginationMetadata pagination, AuthenticatedUserContext userContext)
+        public async Task<IEnumerable<Event>> GetManyAsync(GetEventsRequest request)
         {
             return await _context.Events
-                .WithPagination(pagination)
+                .Where(ev => ev.IncidentId == request.IncidentId)
+                .WithPagination(request.Pagination)
                 .ProjectTo<Event>()
                 .ToListAsync();
         }
 
-        public async Task<Event> PostEvent(long incidentId, NewEvent newEvent, AuthenticatedUserContext userContext)
+        public async Task<Event> PostAsync(PostEventRequest request)
         {
-            if (newEvent == null) throw new ArgumentNullException(nameof(newEvent));
+            if (request.NewEvent == null) throw new ArgumentNullException(nameof(request.NewEvent));
 
             var dataCrisis = await _context.Incidents
                .Include(cr => cr.Events)
-               .FirstOrDefaultAsync(x => x.Id == incidentId);
+               .FirstOrDefaultAsync(x => x.Id == request.IncidentId);
             if (dataCrisis == null) throw new KeyNotFoundException();
 
-            var dataEvent = Mapper.Map<Data.Incidents.Models.Event>(newEvent);
+            var dataEvent = Mapper.Map<Data.Incidents.Models.Event>(request.NewEvent);
 
             dataCrisis.Events.Add(dataEvent);
             await _context.SaveChangesAsync();

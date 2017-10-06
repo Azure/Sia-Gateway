@@ -32,7 +32,7 @@ namespace Sia.Gateway.Requests.Events
 
         public override async Task<IEnumerable<Event>> Handle(GetEventsRequest request)
         {
-            return await _eventRepository.GetEventsAsync(request.IncidentId, request.Pagination, request.UserContext);
+            return await _eventRepository.GetManyAsync(request);
         }
     }
 }
