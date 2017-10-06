@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Sia.Gateway.Requests
 {
     public abstract class GetManyHandler<TRepository, TRequest, TReturn>
-        : Handler<TRequest, IEnumerable<TReturn>>
+        : IAsyncRequestHandler<TRequest, IEnumerable<TReturn>>
         where TRequest : IRequest<IEnumerable<TReturn>>
         where TRepository : IGetMany<TRequest, TReturn>
     {
@@ -19,7 +19,7 @@ namespace Sia.Gateway.Requests
 
         protected TRepository _repository { get; }
 
-        public override Task<IEnumerable<TReturn>> Handle(TRequest request)
+        public virtual Task<IEnumerable<TReturn>> Handle(TRequest request)
             => _repository.GetManyAsync(request);
     }
 }

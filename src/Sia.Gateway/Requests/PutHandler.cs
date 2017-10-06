@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Sia.Gateway.Requests
 {
     public class PutHandler<TRepository, TRequest>
-        : Handler<TRequest>
+        : IAsyncRequestHandler<TRequest>
         where TRequest : IRequest
         where TRepository : IPut<TRequest>
     {
@@ -19,7 +19,7 @@ namespace Sia.Gateway.Requests
 
         protected TRepository _repository { get; }
 
-        public override Task Handle(TRequest request)
+        public virtual Task Handle(TRequest request)
             => _repository.PutAsync(request);
     }
 }
