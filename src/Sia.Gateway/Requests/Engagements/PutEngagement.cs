@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Sia.Data.Incidents.Models;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.ServiceRepositories;
@@ -19,18 +20,12 @@ namespace Sia.Gateway.Requests
         public long EngagementId { get; }
         public long IncidentId { get; }
     }
-    public class PutEngagementHandler : IAsyncRequestHandler<PutEngagementRequest>
+    public class PutEngagementHandler
+        : PutHandler<IEngagementRepository, PutEngagementRequest>
     {
-        private IEngagementRepository _engagementClient;
-
-        public PutEngagementHandler(IEngagementRepository incidentClient)
+        public PutEngagementHandler(IEngagementRepository repository)
+            : base(repository)
         {
-            _engagementClient = incidentClient;
-        }
-
-        public async Task Handle(PutEngagementRequest request)
-        {
-            await _engagementClient.PutAsync(request);
         }
     }
 }

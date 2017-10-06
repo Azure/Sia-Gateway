@@ -19,17 +19,12 @@ namespace Sia.Gateway.Requests
 
     }
 
-    public class PostIncidentHandler : IAsyncRequestHandler<PostIncidentRequest, Incident>
+    public class PostIncidentHandler
+        : PostHandler<IIncidentRepository, PostIncidentRequest, Incident>
     {
-        private IIncidentRepository _incidentRepository;
-
-        public PostIncidentHandler(IIncidentRepository incidentClient)
+        public PostIncidentHandler(IIncidentRepository repository)
+            : base(repository)
         {
-            _incidentRepository = incidentClient;
-        }
-        public async Task<Incident> Handle(PostIncidentRequest message)
-        {
-            return await _incidentRepository.PostAsync(message);
         }
     }
 }

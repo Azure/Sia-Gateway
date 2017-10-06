@@ -18,18 +18,12 @@ namespace Sia.Gateway.Requests
         public NewEngagement NewEngagement { get; }
         public long IncidentId { get; }
     }
-    public class PostEngagementHandler : IAsyncRequestHandler<PostEngagementRequest, Engagement>
+    public class PostEngagementHandler
+        : PostHandler<IEngagementRepository, PostEngagementRequest, Engagement>
     {
-        private IEngagementRepository _engagementRepository;
-
-        public PostEngagementHandler(IEngagementRepository engagementRepository)
+        public PostEngagementHandler(IEngagementRepository repository)
+            : base(repository)
         {
-            _engagementRepository = engagementRepository;
-        }
-
-        public async Task<Engagement> Handle(PostEngagementRequest request)
-        {
-            return await _engagementRepository.PostAsync(request);
         }
     }
 };

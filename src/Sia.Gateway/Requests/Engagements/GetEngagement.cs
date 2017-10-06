@@ -17,17 +17,12 @@ namespace Sia.Gateway.Requests
         public long Id { get; }
         public long IncidentId { get; }
     }
-    public class GetEngagementHandler : IAsyncRequestHandler<GetEngagementRequest, Engagement>
+    public class GetEngagementHandler
+        : GetHandler<IEngagementRepository, GetEngagementRequest, Engagement>
     {
-        private IEngagementRepository _incidentRepository;
-
-        public GetEngagementHandler(IEngagementRepository incidentRepository)
+        public GetEngagementHandler(IEngagementRepository repository)
+            : base(repository)
         {
-            _incidentRepository = incidentRepository;
-        }
-        public async Task<Engagement> Handle(GetEngagementRequest request)
-        {
-            return await _incidentRepository.GetAsync(request);
         }
     }
 }

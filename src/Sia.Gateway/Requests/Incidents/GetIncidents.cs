@@ -14,18 +14,12 @@ namespace Sia.Gateway.Requests
         }
     }
 
-    public class GetIncidentsHandler : IAsyncRequestHandler<GetIncidentsRequest, IEnumerable<Incident>>
+    public class GetIncidentsHandler :
+        GetManyHandler<IIncidentRepository, GetIncidentsRequest, Incident>
     {
-        private IIncidentRepository _incidentRepository;
-
-        public GetIncidentsHandler(IIncidentRepository incidentClient)
+        public GetIncidentsHandler(IIncidentRepository repository)
+            : base(repository)
         {
-            _incidentRepository = incidentClient;
-        }
-        public async Task<IEnumerable<Incident>> Handle(GetIncidentsRequest request)
-        {
-            var incidentResponse = await _incidentRepository.GetManyAsync(request);
-            return incidentResponse;
         }
     }
 }

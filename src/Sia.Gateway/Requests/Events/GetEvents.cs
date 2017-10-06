@@ -23,16 +23,12 @@ namespace Sia.Gateway.Requests.Events
         public PaginationMetadata Pagination { get; }
     }
 
-    public class GetEventsHandler : EventHandler<GetEventsRequest, IEnumerable<Event>>
+    public class GetEventsHandler 
+        : GetManyHandler<IEventRepository, GetEventsRequest, Event>
     {
         public GetEventsHandler(IEventRepository eventRepository)
             : base(eventRepository)
         {
-        }
-
-        public override async Task<IEnumerable<Event>> Handle(GetEventsRequest request)
-        {
-            return await _eventRepository.GetManyAsync(request);
         }
     }
 }

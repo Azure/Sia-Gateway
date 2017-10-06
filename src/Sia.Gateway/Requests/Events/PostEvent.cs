@@ -19,18 +19,12 @@ namespace Sia.Gateway.Requests
         public NewEvent NewEvent { get; }
         public long IncidentId { get; }
     }
-    public class PostEventHandler : IAsyncRequestHandler<PostEventRequest, Event>
+    public class PostEventHandler
+        : PostHandler<IEventRepository, PostEventRequest, Event>
     {
-        private IEventRepository _incidentRepository;
-
-        public PostEventHandler(IEventRepository incidentRepository)
+        public PostEventHandler(IEventRepository repository)
+            : base(repository)
         {
-            _incidentRepository = incidentRepository;
-        }
-
-        public async Task<Event> Handle(PostEventRequest request)
-        {
-            return await _incidentRepository.PostAsync(request);
         }
     }
 }

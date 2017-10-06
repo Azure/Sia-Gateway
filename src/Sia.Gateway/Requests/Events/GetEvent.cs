@@ -19,16 +19,12 @@ namespace Sia.Gateway.Requests
         public long Id { get; }
         public long IncidentId { get; }
     }
-    public class GetEventHandler : EventHandler<GetEventRequest, Event>
+    public class GetEventHandler 
+        : GetHandler<IEventRepository, GetEventRequest, Event>
     {
         public GetEventHandler(IEventRepository eventRepository) 
             : base(eventRepository)
         {
-        }
-
-        public override async Task<Event> Handle(GetEventRequest request)
-        {
-            return await _eventRepository.GetAsync(request);
         }
     }
 

@@ -17,18 +17,12 @@ namespace Sia.Gateway.Requests
         }
     }
 
-    public class GetIncidentsByTicketHandler : IAsyncRequestHandler<GetIncidentsByTicketRequest, IEnumerable<Incident>>
+    public class GetIncidentsByTicketHandler
+        : GetManyHandler<IIncidentRepository, GetIncidentsByTicketRequest, Incident>
     {
-        private IIncidentRepository _incidentRepository;
-
-        public GetIncidentsByTicketHandler(IIncidentRepository incidentClient)
+        public GetIncidentsByTicketHandler(IIncidentRepository repository)
+            : base(repository)
         {
-            _incidentRepository = incidentClient;
-        }
-        public async Task<IEnumerable<Incident>> Handle(GetIncidentsByTicketRequest message)
-        {
-            var incidentResponse = await _incidentRepository.GetManyAsync(message);
-            return incidentResponse;
         }
     }
 }
