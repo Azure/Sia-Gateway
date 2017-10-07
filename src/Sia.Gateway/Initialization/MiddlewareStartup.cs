@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Sia.Gateway.Hubs;
 using Sia.Gateway.Middleware;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,9 @@ namespace Sia.Gateway.Initialization
 
         public static void AddMiddleware(this IApplicationBuilder app, IHostingEnvironment env, IConfigurationRoot configuration)
         {
+            app.UseAuthentication();
+            app.UseSession();
+
             app.UseCors(builder =>
                 builder
                 .WithOrigins(LoadAcceptableOriginsFromConfig(configuration))
@@ -21,8 +25,11 @@ namespace Sia.Gateway.Initialization
                 .AllowAnyMethod()
                 .AllowCredentials()
             );
-            app.UseAuthentication();
-            app.UseSession();
+
+            app.UseSignalR(routes => 
+            {
+                routes.MapHub<EventsHub>(EventsHub.HubPath);
+            });
 
             if (env.IsDevelopment() || env.IsStaging()) app.UseDeveloperExceptionPage();
             app.UseMiddleware<ExceptionHandler>();
