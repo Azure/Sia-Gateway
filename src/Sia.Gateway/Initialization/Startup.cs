@@ -54,7 +54,12 @@ namespace Sia.Gateway
 
             AutoMapperStartup.InitializeAutomapper();
 
-            if (_env.IsDevelopment()) SeedData.Add(incidentContext);
+            if (_env.IsDevelopment())
+            {
+                SeedType seedType = _configuration["seedDataType"] == "manyEvents" ? SeedType.ManyEvents : SeedType.Basic;
+
+                SeedData.Add(incidentContext, seedType);
+            }
         }
     }
 }

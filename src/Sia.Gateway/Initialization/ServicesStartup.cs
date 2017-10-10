@@ -1,6 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +14,10 @@ using Sia.Data.Incidents;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
 using Sia.Gateway.ServiceRepositories;
+using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -98,6 +105,11 @@ namespace Sia.Gateway.Initialization
             //Adds every request type in the Sia.Gateway assembly
             services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
 
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper, UrlHelper>(iFactory
+                    => new UrlHelper(iFactory.GetService<IActionContextAccessor>().ActionContext)
+                );
+
             services.AddMvc();
             services
                 .AddAuthentication(authOptions =>
@@ -114,6 +126,14 @@ namespace Sia.Gateway.Initialization
             services.AddDistributedMemoryCache();
             services.AddSession();
             services.AddCors();
+            services.AddSockets();
+            services.AddSignalR().AddRedis(redisOptions =>
+            {
+                redisOptions.Options.EndPoints.Add(config["Redis:CacheEndpoint"]);
+                redisOptions.Options.Ssl = true;
+                redisOptions.Options.Password = config["Redis:Password"];
+            });
+            services.AddScoped<HubConnectionBuilder>();
         }
     }
 }

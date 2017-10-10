@@ -11,17 +11,17 @@ namespace Sia.Gateway.Controllers
     [Route("[controller]")]
     public class IncidentsController : BaseController
     {
-        public IncidentsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig)
-            : base(mediator, authConfig)
+
+        public IncidentsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, IUrlHelper urlHelper) 
+            : base(mediator, authConfig, urlHelper)
         {
         }
-
 
         // GET api/values/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var result = await _mediator.Send(new GetIncidentRequest(id, new AuthenticatedUserContext(User, HttpContext.Session, _authConfig)));
+            var result = await _mediator.Send(new GetIncidentRequest(id, _authContext));
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)} not found");
@@ -32,7 +32,7 @@ namespace Sia.Gateway.Controllers
         [HttpGet()]
         public async Task<IActionResult> Get()
         {
-            var result = await _mediator.Send(new GetIncidentsRequest(new AuthenticatedUserContext(User, HttpContext.Session, _authConfig)));
+            var result = await _mediator.Send(new GetIncidentsRequest(_authContext));
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)}s not found");
@@ -43,7 +43,7 @@ namespace Sia.Gateway.Controllers
         [HttpPost()]
         public async Task<IActionResult> Post([FromBody]NewIncident incident)
         {
-            var result = await _mediator.Send(new PostIncidentRequest(incident, new AuthenticatedUserContext(User, HttpContext.Session, _authConfig)));
+            var result = await _mediator.Send(new PostIncidentRequest(incident, _authContext));
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)} not found");
