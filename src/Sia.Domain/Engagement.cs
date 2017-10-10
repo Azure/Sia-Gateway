@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Sia.Shared.Data;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Sia.Domain
 {
-    public class Engagement
+    public class Engagement : IEntity
     {
         public long Id { get; set; }
         public long IncidentId { get; set; }

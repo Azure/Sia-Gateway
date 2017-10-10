@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
+using Sia.Gateway.Protocol;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.ServiceRepositories
@@ -14,6 +17,7 @@ namespace Sia.Gateway.ServiceRepositories
     {
         Task<Event> GetEvent(long incidentId, long id, AuthenticatedUserContext userContext);
         Task<Event> PostEvent(long incidentId, NewEvent newEvent, AuthenticatedUserContext userContext);
+        Task<IEnumerable<Event>> GetEventsAsync(long incidentId, PaginationMetadata pagination, AuthenticatedUserContext userContext);
     }
 
     public class EventRepository : IEventRepository
@@ -32,6 +36,14 @@ namespace Sia.Gateway.ServiceRepositories
             if (eventRecord == null) throw new KeyNotFoundException();
 
             return Mapper.Map<Event>(eventRecord);
+        }
+
+        public async Task<IEnumerable<Event>> GetEventsAsync(long incidentId, PaginationMetadata pagination, AuthenticatedUserContext userContext)
+        {
+            return await _context.Events
+                .WithPagination(pagination)
+                .ProjectTo<Event>()
+                .ToListAsync();
         }
 
         public async Task<Event> PostEvent(long incidentId, NewEvent newEvent, AuthenticatedUserContext userContext)

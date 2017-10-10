@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+using Sia.Shared.Data;
+using System.Collections.Generic;
 using System.Linq;
-
 
 namespace Sia.Domain
 {
-    public class Incident
+    public class Incident : IEntity
     {
         public long Id { get; set; }
         public string Title { get; set; }
-        public Ticket PrimaryTicket { 
+
+        public Ticket PrimaryTicket
+        {
             get
             {
                 return Tickets.FirstOrDefault(ticket => ticket.IsPrimary);
@@ -22,6 +24,7 @@ namespace Sia.Domain
                 }
 
                 if (value == null) return;
+
                 if (!Tickets.Contains(value)) Tickets.Add(value);
                 value.IsPrimary = true;
             }

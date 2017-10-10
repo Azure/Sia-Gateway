@@ -11,8 +11,7 @@ namespace Sia.Data.Incidents
             return table
                 .Include(cr => cr.Tickets)
                 .Include(cr => cr.Engagements)
-                    .ThenInclude(en => en.Participant)
-                .Include(cr => cr.Events);
+                    .ThenInclude(en => en.Participant);
         }
     }
 }
