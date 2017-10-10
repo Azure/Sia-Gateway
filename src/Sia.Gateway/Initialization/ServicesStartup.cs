@@ -14,6 +14,8 @@ using Sia.Data.Incidents;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
 using Sia.Gateway.ServiceRepositories;
+using Sia.Shared.Authentication;
+using Sia.Shared.Validation;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -63,6 +65,7 @@ namespace Sia.Gateway.Initialization
 
         private static bool TryGetConfigValue(IConfigurationRoot config, string configName, out string configValue)
         {
+            ThrowIf.NullOrWhiteSpace(configName, nameof(configName));
             configValue = config[configName];
             return !string.IsNullOrEmpty(configValue);
         }
@@ -75,6 +78,17 @@ namespace Sia.Gateway.Initialization
             {
                 case "Certificate":
                     services.AddProxyWithCert(proxyEndpoint, config["Connector:Ticket:ProxyCertThumbprint"]);
+                    return;
+                case "VaultCertificate":
+                    services.AddProxyWithCertFromKeyVault(
+                        proxyEndpoint,
+                        new KeyVaultConfiguration(
+                            config["ClientId"],
+                            config["ClientSecret"],
+                            config["Connector:Ticket:VaultName"]
+                        ),
+                        config["Connector:Ticket:CertName"]
+                    );
                     return;
                 default:
                     services.AddProxyWithoutAuth(proxyEndpoint);

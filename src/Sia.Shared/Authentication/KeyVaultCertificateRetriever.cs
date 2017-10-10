@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sia.Shared.Validation;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -13,6 +14,8 @@ namespace Sia.Shared.Authentication
 
         public KeyVaultCertificateRetriever(AzureSecretVault certificateVault, string certificateName)
         {
+            ThrowIf.NullOrWhiteSpace(certificateName, nameof(certificateName));
+
             var certTask = certificateVault.GetCertificate(certificateName);
             Task.WaitAll(new Task[] { certTask });
             if (certTask.IsCompleted)

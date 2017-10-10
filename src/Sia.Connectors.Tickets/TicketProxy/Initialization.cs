@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sia.Connectors.Tickets;
 using Sia.Connectors.Tickets.TicketProxy;
+using Sia.Shared.Authentication;
 
 namespace Sia.Gateway.Initialization
 {
@@ -15,8 +16,8 @@ namespace Sia.Gateway.Initialization
             => services.AddProxy(new ProxyConnectionInfo(endpoint, certThumbprint));
 
 
-        public static IServiceCollection AddProxyWithCertFromKeyVault(this IServiceCollection services, string endpoint, IConfigurationRoot config, string vaultName)
-            => services.AddProxy(new ProxyConnectionInfo(endpoint, config, vaultName));
+        public static IServiceCollection AddProxyWithCertFromKeyVault(this IServiceCollection services, string endpoint, KeyVaultConfiguration config, string certName)
+            => services.AddProxy(new ProxyConnectionInfo(endpoint, config, certName));
 
         private static IServiceCollection AddProxy(this IServiceCollection services, ProxyConnectionInfo proxyConnection)
         {
