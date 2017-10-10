@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Loader;
+using Sia.Shared.Validation;
 
 namespace Sia.Gateway.Initialization
 {
@@ -126,13 +127,36 @@ namespace Sia.Gateway.Initialization
             services.AddSession();
             services.AddCors();
             services.AddSockets();
-            services.AddSignalR().AddRedis(redisOptions =>
-            {
-                redisOptions.Options.EndPoints.Add(config["Redis:CacheEndpoint"]);
-                redisOptions.Options.Ssl = true;
-                redisOptions.Options.Password = config["Redis:Password"];
-            });
+            services.AddSignalR(config);
             services.AddScoped<HubConnectionBuilder>();
         }
-    }
+
+        private static IServiceCollection AddSignalR(this IServiceCollection services, IConfigurationRoot config)
+        {
+            var signalRBuilder = services.AddSignalR();
+            if (config.TryGetConfigValue("Redis:CacheEndpoint", out string cacheEndpoint)
+                && config.TryGetConfigValue("Redis:Password", out string cachePassword))
+            {
+                signalRBuilder.AddRedis(redisOptions =>
+                {
+                    redisOptions.Options.EndPoints.Add(cacheEndpoint);
+                    redisOptions.Options.Ssl = true;
+                    redisOptions.Options.Password = cachePassword;
+                });
+            }
+
+            return services;
+        }
+
+        
+ 
+         private static bool TryGetConfigValue(this IConfigurationRoot config, string configName, out string configValue)
+         { 
+             ThrowIf.NullOrWhiteSpace(configName, nameof(configName)); 
+ 
+             configValue = config[configName]; 
+
+             return !string.IsNullOrEmpty(configValue); 
+        }
+}
 }
