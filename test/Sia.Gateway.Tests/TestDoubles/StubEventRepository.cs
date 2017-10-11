@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Sia.Gateway.Protocol;
 
 namespace Sia.Gateway.Tests.TestDoubles
 {
@@ -32,7 +33,9 @@ namespace Sia.Gateway.Tests.TestDoubles
         {
             return Task.FromResult(_events.First(ev => ev.Id == id && ev.IncidentId == incidentId));
         }
-        
+
+        public Task<IEnumerable<Event>> GetEventsAsync(long incidentId, PaginationMetadata pagination, AuthenticatedUserContext userContext) => throw new System.NotImplementedException();
+
         public Task<Event> PostEvent(long incidentId, NewEvent newEvent, AuthenticatedUserContext userContext)
         {
             return Task.FromResult(Mapper.Map(newEvent, new Event()));

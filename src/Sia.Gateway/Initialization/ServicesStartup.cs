@@ -30,8 +30,8 @@ namespace Sia.Gateway.Initialization
 
         public static void AddFirstPartyServices(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
         {
+            ConfigureAuth(services, config);
 
-            var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config["Incident:ClientId"], config["Incident:ClientSecret"], config["AzureAd:Tenant"]);
 
             if (env.IsDevelopment()) services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
             if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(config.GetConnectionString("incidentStaging")));
@@ -42,7 +42,6 @@ namespace Sia.Gateway.Initialization
             services.AddScoped<IEngagementRepository, EngagementRepository>();
 
             services.AddSingleton<IConfigurationRoot>(i => config);
-            services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
         }
 
         private static void AddTicketingConnector(IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
@@ -63,7 +62,7 @@ namespace Sia.Gateway.Initialization
             services.AddNoTicketingSystem();
         }
 
-        private static bool TryGetConfigValue(IConfigurationRoot config, string configName, out string configValue)
+        private static bool TryGetConfigValue(this IConfigurationRoot config, string configName, out string configValue)
         {
             ThrowIf.NullOrWhiteSpace(configName, nameof(configName));
             configValue = config[configName];
@@ -94,6 +93,12 @@ namespace Sia.Gateway.Initialization
                     services.AddProxyWithoutAuth(proxyEndpoint);
                     return;
             }
+        }
+
+        private static void ConfigureAuth(IServiceCollection services, IConfigurationRoot config)
+        {
+            var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config["Incident:ClientId"], config["Incident:ClientSecret"], config["AzureAd:Tenant"]);
+            services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
         }
 
         private static void LoadConnectorFromAssembly(IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config, string ticketConnectorAssemblyPath)
@@ -141,13 +146,27 @@ namespace Sia.Gateway.Initialization
             services.AddSession();
             services.AddCors();
             services.AddSockets();
-            services.AddSignalR().AddRedis(redisOptions =>
-            {
-                redisOptions.Options.EndPoints.Add(config["Redis:CacheEndpoint"]);
-                redisOptions.Options.Ssl = true;
-                redisOptions.Options.Password = config["Redis:Password"];
-            });
+            services.AddSignalR(config);
             services.AddScoped<HubConnectionBuilder>();
         }
+
+        private static IServiceCollection AddSignalR(this IServiceCollection services, IConfigurationRoot config)
+        {
+            var signalRBuilder = services.AddSignalR();
+            if (config.TryGetConfigValue("Redis:CacheEndpoint", out string cacheEndpoint)
+                && config.TryGetConfigValue("Redis:Password", out string cachePassword))
+            {
+                signalRBuilder.AddRedis(redisOptions =>
+                {
+                    redisOptions.Options.EndPoints.Add(cacheEndpoint);
+                    redisOptions.Options.Ssl = true;
+                    redisOptions.Options.Password = cachePassword;
+                });
+            }
+
+            return services;
+        }
+
+       
     }
 }

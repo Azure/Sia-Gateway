@@ -21,7 +21,7 @@ namespace Sia.Gateway.Requests
     }
     public class GetEventHandler : EventHandler<GetEventRequest, Event>
     {
-        protected GetEventHandler(IEventRepository eventRepository) 
+        public GetEventHandler(IEventRepository eventRepository) 
             : base(eventRepository)
         {
         }
