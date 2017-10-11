@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Loader;
-using Sia.Shared.Validation;
 
 namespace Sia.Gateway.Initialization
 {
@@ -43,7 +42,6 @@ namespace Sia.Gateway.Initialization
             services.AddScoped<IEngagementRepository, EngagementRepository>();
 
             services.AddSingleton<IConfigurationRoot>(i => config);
-            services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
         }
 
         private static void AddTicketingConnector(IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
@@ -64,7 +62,7 @@ namespace Sia.Gateway.Initialization
             services.AddNoTicketingSystem();
         }
 
-        private static bool TryGetConfigValue(IConfigurationRoot config, string configName, out string configValue)
+        private static bool TryGetConfigValue(this IConfigurationRoot config, string configName, out string configValue)
         {
             ThrowIf.NullOrWhiteSpace(configName, nameof(configName));
             configValue = config[configName];
@@ -169,15 +167,6 @@ namespace Sia.Gateway.Initialization
             return services;
         }
 
-        
- 
-         private static bool TryGetConfigValue(this IConfigurationRoot config, string configName, out string configValue)
-         { 
-             ThrowIf.NullOrWhiteSpace(configName, nameof(configName)); 
- 
-             configValue = config[configName]; 
-
-             return !string.IsNullOrEmpty(configValue); 
-        }
-}
+       
+    }
 }
