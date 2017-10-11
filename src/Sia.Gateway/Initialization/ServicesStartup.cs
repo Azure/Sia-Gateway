@@ -36,7 +36,7 @@ namespace Sia.Gateway.Initialization
             if (env.IsDevelopment()) services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
             if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(config.GetConnectionString("incidentStaging")));
 
-            AddTicketingConnector(services, env, config);
+            services.AddTicketingConnector(env, config);
 
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IEngagementRepository, EngagementRepository>();
@@ -45,7 +45,7 @@ namespace Sia.Gateway.Initialization
             services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
         }
 
-        private static void AddTicketingConnector(IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
+        private static void AddTicketingConnector(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
         {
             if (TryGetConfigValue(config, "Connector:Ticket:Path", out var ticketConnectorAssemblyPath))
             {
@@ -111,14 +111,12 @@ namespace Sia.Gateway.Initialization
         private static void AddIncidentClient(this IServiceCollection services, Type ticketType)
         {
             var clientType = typeof(IncidentRepository<>).MakeGenericType(new Type[] { ticketType });
-            services.AddScoped(typeof(IIncidentRepository), clientType);
+            services.AddScoped(typeof(IIncidentRepositoryLogic), clientType);
+            services.AddScoped<IIncidentRepository, IncidentRepositoryWrapper>();
         }
 
         public static void AddThirdPartyServices(this IServiceCollection services, IConfigurationRoot config)
         {
-            //Adds every request type in the Sia.Gateway assembly
-            services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
-
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IUrlHelper, UrlHelper>(iFactory
                     => new UrlHelper(iFactory.GetService<IActionContextAccessor>().ActionContext)
@@ -148,6 +146,9 @@ namespace Sia.Gateway.Initialization
                 redisOptions.Options.Password = config["Redis:Password"];
             });
             services.AddScoped<HubConnectionBuilder>();
+
+            //Adds every request type in the Sia.Gateway assembly
+            services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
         }
     }
 }

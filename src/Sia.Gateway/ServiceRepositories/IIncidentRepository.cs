@@ -22,7 +22,7 @@ namespace Sia.Gateway.ServiceRepositories
     {
     }
 
-    public class IncidentRepository<TTicket> : IIncidentRepository
+    public class IncidentRepository<TTicket> : IIncidentRepositoryLogic
     {
         private readonly IncidentContext _context;
         private readonly Connector<TTicket> _connector;
@@ -74,6 +74,37 @@ namespace Sia.Gateway.ServiceRepositories
 
             return Mapper.Map<Incident>(dataIncident);
         }
+    }
 
+    //Why does this exist?
+    //Purely because I haven't been able to get Mediatr to work with generics
+    public interface IIncidentRepositoryLogic
+    {
+        Task<Incident> Handle(GetIncidentRequest getIncident);
+        Task<IEnumerable<Incident>> Handle(GetIncidentsRequest request);
+        Task<IEnumerable<Incident>> Handle(GetIncidentsByTicketRequest request);
+        Task<Incident> Handle(PostIncidentRequest request);
+    }
+
+    public class IncidentRepositoryWrapper : IIncidentRepository
+    {
+        private readonly IIncidentRepositoryLogic _actualIncidentRepository;
+
+        public IncidentRepositoryWrapper(IIncidentRepositoryLogic actualIncidentRepository)
+        {
+            _actualIncidentRepository = actualIncidentRepository;
+        }
+
+        public Task<Incident> Handle(GetIncidentRequest message)
+            => _actualIncidentRepository.Handle(message);
+
+        public Task<IEnumerable<Incident>> Handle(GetIncidentsRequest message)
+            => _actualIncidentRepository.Handle(message);
+
+        public Task<IEnumerable<Incident>> Handle(GetIncidentsByTicketRequest message)
+            => _actualIncidentRepository.Handle(message);
+
+        public Task<Incident> Handle(PostIncidentRequest message)
+            => _actualIncidentRepository.Handle(message);
     }
 }
