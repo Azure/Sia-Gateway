@@ -19,12 +19,4 @@ namespace Sia.Gateway.Requests
         public NewEvent NewEvent { get; }
         public long IncidentId { get; }
     }
-    public class PostEventHandler
-        : PostHandler<IEventRepository, PostEventRequest, Event>
-    {
-        public PostEventHandler(IEventRepository repository)
-            : base(repository)
-        {
-        }
-    }
 }

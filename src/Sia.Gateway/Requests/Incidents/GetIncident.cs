@@ -15,12 +15,4 @@ namespace Sia.Gateway.Requests
         }
         public long Id { get; }
     }
-    public class GetIncidentHandler :
-        GetHandler<IIncidentRepository, GetIncidentRequest, Incident>
-    {
-        public GetIncidentHandler(IIncidentRepository repository)
-            : base(repository)
-        {
-        }
-    }
 }

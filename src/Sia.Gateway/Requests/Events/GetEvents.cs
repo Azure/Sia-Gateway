@@ -22,13 +22,4 @@ namespace Sia.Gateway.Requests.Events
         public long IncidentId { get; }
         public PaginationMetadata Pagination { get; }
     }
-
-    public class GetEventsHandler 
-        : GetManyHandler<IEventRepository, GetEventsRequest, Event>
-    {
-        public GetEventsHandler(IEventRepository eventRepository)
-            : base(eventRepository)
-        {
-        }
-    }
 }

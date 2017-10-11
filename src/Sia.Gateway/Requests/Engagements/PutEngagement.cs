@@ -20,12 +20,4 @@ namespace Sia.Gateway.Requests
         public long EngagementId { get; }
         public long IncidentId { get; }
     }
-    public class PutEngagementHandler
-        : PutHandler<IEngagementRepository, PutEngagementRequest>
-    {
-        public PutEngagementHandler(IEngagementRepository repository)
-            : base(repository)
-        {
-        }
-    }
 }

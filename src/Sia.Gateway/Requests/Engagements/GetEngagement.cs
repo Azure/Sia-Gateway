@@ -17,12 +17,4 @@ namespace Sia.Gateway.Requests
         public long Id { get; }
         public long IncidentId { get; }
     }
-    public class GetEngagementHandler
-        : GetHandler<IEngagementRepository, GetEngagementRequest, Engagement>
-    {
-        public GetEngagementHandler(IEngagementRepository repository)
-            : base(repository)
-        {
-        }
-    }
 }

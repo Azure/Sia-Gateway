@@ -16,13 +16,4 @@ namespace Sia.Gateway.Requests
             TicketId = ticketId;
         }
     }
-
-    public class GetIncidentsByTicketHandler
-        : GetManyHandler<IIncidentRepository, GetIncidentsByTicketRequest, Incident>
-    {
-        public GetIncidentsByTicketHandler(IIncidentRepository repository)
-            : base(repository)
-        {
-        }
-    }
 }

@@ -30,19 +30,13 @@ namespace Sia.Gateway.Tests.TestDoubles
         public bool IsSuccessStatusCodeToRespondWith { get; set; }
         public string ContentToRespondWith { get; set; }
 
-        public Task<Event> GetAsync(GetEventRequest request)
-        {
-            return Task.FromResult(_events.First(ev => ev.Id == request.Id && ev.IncidentId == request.IncidentId));
-        }
+        public Task<Event> Handle(GetEventRequest request) 
+            => Task.FromResult(_events.First(ev => ev.Id == request.Id && ev.IncidentId == request.IncidentId));
 
-        public Task<IEnumerable<Event>> GetManyAsync(GetEventsRequest request)
-        {
-            return Task.FromResult(_events.AsEnumerable());
-        }
+        public Task<IEnumerable<Event>> Handle(GetEventsRequest request)
+            => Task.FromResult(_events.AsEnumerable());
 
-        public Task<Event> PostAsync(PostEventRequest request)
-        {
-            return Task.FromResult(Mapper.Map(request.NewEvent, new Event()));
-        }
+        public Task<Event> Handle(PostEventRequest request)
+            => Task.FromResult(Mapper.Map(request.NewEvent, new Event()));
     }
 }

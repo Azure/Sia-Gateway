@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
-using Sia.Domain.ApiModels;
-using Sia.Gateway.Authentication;
-using Sia.Gateway.Protocol;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Events;
-using Sia.Gateway.ServiceRepositories.Operations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +14,9 @@ using System.Threading.Tasks;
 namespace Sia.Gateway.ServiceRepositories
 {
     public interface IEventRepository
-        : IGet<GetEventRequest, Event>,
-        IPost<PostEventRequest, Event>,
-        IGetMany<GetEventsRequest, Event>
+        : IAsyncRequestHandler<GetEventRequest, Event>,
+        IAsyncRequestHandler<PostEventRequest, Event>,
+        IAsyncRequestHandler<GetEventsRequest, IEnumerable<Event>>
     {
     }
 
@@ -33,7 +30,7 @@ namespace Sia.Gateway.ServiceRepositories
             _context = context;
         }
 
-        public async Task<Event> GetAsync(GetEventRequest request)
+        public async Task<Event> Handle(GetEventRequest request)
         {
             var eventRecord = await _context.Events.FirstOrDefaultAsync(ev => ev.IncidentId == request.IncidentId && ev.Id == request.Id);
             if (eventRecord == null) throw new KeyNotFoundException();
@@ -41,16 +38,15 @@ namespace Sia.Gateway.ServiceRepositories
             return Mapper.Map<Event>(eventRecord);
         }
 
-        public async Task<IEnumerable<Event>> GetManyAsync(GetEventsRequest request)
-        {
-            return await _context.Events
+        public async Task<IEnumerable<Event>> Handle(GetEventsRequest request)
+                => await _context.Events
                 .Where(ev => ev.IncidentId == request.IncidentId)
                 .WithPagination(request.Pagination)
                 .ProjectTo<Event>()
                 .ToListAsync();
-        }
+        
 
-        public async Task<Event> PostAsync(PostEventRequest request)
+        public async Task<Event> Handle(PostEventRequest request)
         {
             if (request.NewEvent == null) throw new ArgumentNullException(nameof(request.NewEvent));
 

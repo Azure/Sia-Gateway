@@ -1,13 +1,11 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sia.Connectors.Tickets;
 using Sia.Data.Incidents;
 using Sia.Domain;
-using Sia.Domain.ApiModels;
-using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
-using Sia.Gateway.ServiceRepositories.Operations;
 using Sia.Shared.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -17,10 +15,10 @@ using System.Threading.Tasks;
 namespace Sia.Gateway.ServiceRepositories
 {
     public interface IIncidentRepository
-        : IGet<GetIncidentRequest, Incident>,
-        IGetMany<GetIncidentsRequest, Incident>,
-        IGetMany<GetIncidentsByTicketRequest, Incident>,
-        IPost<PostIncidentRequest, Incident>
+        : IAsyncRequestHandler<GetIncidentRequest, Incident>,
+        IAsyncRequestHandler<GetIncidentsRequest, IEnumerable<Incident>>,
+        IAsyncRequestHandler<GetIncidentsByTicketRequest, IEnumerable<Incident>>,
+        IAsyncRequestHandler<PostIncidentRequest, Incident>
     {
     }
 
@@ -35,7 +33,7 @@ namespace Sia.Gateway.ServiceRepositories
             _connector = connector;
         }
 
-        public async Task<Incident> GetAsync(GetIncidentRequest getIncident)
+        public async Task<Incident> Handle(GetIncidentRequest getIncident)
         {
             var incidentRecord = await _context.Incidents.WithEagerLoading().FirstOrDefaultAsync(cr => cr.Id == getIncident.Id);
             if (incidentRecord == null) throw new KeyNotFoundException();
@@ -45,7 +43,7 @@ namespace Sia.Gateway.ServiceRepositories
             return _connector.Converter.AssembleIncident(incidentRecord, ticket);
         }
 
-        public async Task<IEnumerable<Incident>> GetManyAsync(GetIncidentsRequest request)
+        public async Task<IEnumerable<Incident>> Handle(GetIncidentsRequest request)
         {
             var incidentRecords = await _context.Incidents
                 .WithEagerLoading()
@@ -54,7 +52,7 @@ namespace Sia.Gateway.ServiceRepositories
             return incidentRecords;
         }
 
-        public async Task<IEnumerable<Incident>> GetManyAsync(GetIncidentsByTicketRequest request)
+        public async Task<IEnumerable<Incident>> Handle(GetIncidentsByTicketRequest request)
         {
             var incidentRecords = await _context.Incidents
                 .WithEagerLoading()
@@ -64,7 +62,7 @@ namespace Sia.Gateway.ServiceRepositories
             return incidentRecords;
         }
 
-        public async Task<Incident> PostAsync(PostIncidentRequest request)
+        public async Task<Incident> Handle(PostIncidentRequest request)
         {
             if (request.Incident == null) throw new ArgumentNullException(nameof(request.Incident));
             if (request.Incident?.PrimaryTicket?.OriginId == null) throw new ConflictException("Please provide a primary incident with a valid originId");

@@ -19,13 +19,4 @@ namespace Sia.Gateway.Requests
         public long Id { get; }
         public long IncidentId { get; }
     }
-    public class GetEventHandler 
-        : GetHandler<IEventRepository, GetEventRequest, Event>
-    {
-        public GetEventHandler(IEventRepository eventRepository) 
-            : base(eventRepository)
-        {
-        }
-    }
-
 }

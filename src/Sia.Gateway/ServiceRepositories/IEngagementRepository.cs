@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
-using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
-using Sia.Gateway.ServiceRepositories.Operations;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,9 +12,9 @@ using System.Threading.Tasks;
 namespace Sia.Gateway.ServiceRepositories
 {
     public interface IEngagementRepository
-        :IGet<GetEngagementRequest, Engagement>,
-        IPost<PostEngagementRequest, Engagement>,
-        IPut<PutEngagementRequest>
+        :IAsyncRequestHandler<GetEngagementRequest, Engagement>,
+        IAsyncRequestHandler<PostEngagementRequest, Engagement>,
+        IAsyncRequestHandler<PutEngagementRequest>
     {
     }
 
@@ -28,7 +27,7 @@ namespace Sia.Gateway.ServiceRepositories
             _context = context;
         }
 
-        public async Task<Engagement> GetAsync(GetEngagementRequest request)
+        public async Task<Engagement> Handle(GetEngagementRequest request)
         {
             var EngagementRecord = await _context.Engagements
                 .Include(en => en.Participant)
@@ -38,7 +37,7 @@ namespace Sia.Gateway.ServiceRepositories
             return Mapper.Map<Engagement>(EngagementRecord);
         }
 
-        public async Task<Engagement> PostAsync(PostEngagementRequest request)
+        public async Task<Engagement> Handle (PostEngagementRequest request)
         {
             if (request.NewEngagement == null) throw new ArgumentNullException(nameof(request.NewEngagement));
 
@@ -57,7 +56,7 @@ namespace Sia.Gateway.ServiceRepositories
             return Mapper.Map<Engagement>(dataEngagement);
         }
 
-        public async Task PutAsync(PutEngagementRequest request)
+        public async Task Handle(PutEngagementRequest request)
         {
             if (request.UpdateEngagement == null) throw new ArgumentNullException(nameof(UpdateEngagement));
             var existingRecord = await _context.Engagements

@@ -18,13 +18,4 @@ namespace Sia.Gateway.Requests
         public NewIncident Incident { get; private set; }
 
     }
-
-    public class PostIncidentHandler
-        : PostHandler<IIncidentRepository, PostIncidentRequest, Incident>
-    {
-        public PostIncidentHandler(IIncidentRepository repository)
-            : base(repository)
-        {
-        }
-    }
 }
