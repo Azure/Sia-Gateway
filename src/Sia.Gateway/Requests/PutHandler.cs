@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
 {
-    public class PutHandler<TRepository, TRequest>
+    public abstract class PutHandler<TRepository, TRequest>
         : IAsyncRequestHandler<TRequest>
         where TRequest : IRequest
         where TRepository : IPut<TRequest>
