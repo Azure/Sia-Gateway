@@ -14,6 +14,8 @@ using Sia.Data.Incidents;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
 using Sia.Gateway.ServiceRepositories;
+using Sia.Shared.Authentication;
+using Sia.Shared.Validation;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -29,50 +31,69 @@ namespace Sia.Gateway.Initialization
 
         public static void AddFirstPartyServices(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
         {
+            ConfigureAuth(services, config);
 
 
             if (env.IsDevelopment()) services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
             if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(config.GetConnectionString("incidentStaging")));
 
-            AddTicketConnector(services, env, config);
+            AddTicketingConnector(services, env, config);
 
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IEngagementRepository, EngagementRepository>();
 
             services.AddSingleton<IConfigurationRoot>(i => config);
-
-            ConfigureAuth(services, config);
+            services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
         }
 
-        private static void AddTicketConnector(IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
+        private static void AddTicketingConnector(IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
         {
-            var ticketConnectorAssemblyPath = config["Connector:Ticket:Path"];
-
-            if (!string.IsNullOrEmpty(ticketConnectorAssemblyPath))
+            if (TryGetConfigValue(config, "Connector:Ticket:Path", out var ticketConnectorAssemblyPath))
             {
                 LoadConnectorFromAssembly(services, env, config, ticketConnectorAssemblyPath);
+                return;
             }
-            else
+
+            if (TryGetConfigValue(config, "Connector:Ticket:ProxyEndpoint", out var proxyEndpoint))
             {
-                var proxyEndpoint = config["Connector:Ticket:ProxyEndpoint"];
-                if (!string.IsNullOrEmpty(proxyEndpoint))
-                {
-                    services.AddIncidentClient(typeof(Ticket));
-                    var proxyAuthType = config["Connector:Ticket:ProxyAuthType"];
-                    if (proxyAuthType == "Certificate")
-                    {
-                        services.AddProxyWithCert(proxyEndpoint, config["Connector:Ticket:ProxyCertThumbprint"]);
-                    }
-                    else
-                    {
-                        services.AddProxyWithoutAuth(proxyEndpoint);
-                    }
-                }
-                else
-                {
-                    services.AddIncidentClient(typeof(EmptyTicket));
-                    services.AddNoTicketingSystem();
-                }
+                AddProxyConnector(services, config, proxyEndpoint);
+                return;
+            }
+
+            services.AddIncidentClient(typeof(EmptyTicket));
+            services.AddNoTicketingSystem();
+        }
+
+        private static bool TryGetConfigValue(IConfigurationRoot config, string configName, out string configValue)
+        {
+            ThrowIf.NullOrWhiteSpace(configName, nameof(configName));
+            configValue = config[configName];
+            return !string.IsNullOrEmpty(configValue);
+        }
+
+        private static void AddProxyConnector(IServiceCollection services, IConfigurationRoot config, string proxyEndpoint)
+        {
+            services.AddIncidentClient(typeof(Ticket));
+            var proxyAuthType = config["Connector:Ticket:ProxyAuthType"];
+            switch(proxyAuthType)
+            {
+                case "Certificate":
+                    services.AddProxyWithCert(proxyEndpoint, config["Connector:Ticket:ProxyCertThumbprint"]);
+                    return;
+                case "VaultCertificate":
+                    services.AddProxyWithCertFromKeyVault(
+                        proxyEndpoint,
+                        new KeyVaultConfiguration(
+                            config["ClientId"],
+                            config["ClientSecret"],
+                            config["Connector:Ticket:VaultName"]
+                        ),
+                        config["Connector:Ticket:CertName"]
+                    );
+                    return;
+                default:
+                    services.AddProxyWithoutAuth(proxyEndpoint);
+                    return;
             }
         }
 

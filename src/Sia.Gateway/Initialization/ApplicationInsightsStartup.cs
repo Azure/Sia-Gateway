@@ -4,13 +4,19 @@ using Sia.Shared.Authentication;
 
 namespace Sia.Gateway.Initialization
 {
-    public static class SecretVaultStartup
+    public static class ApplicationInsightsStartup
     {
-        public static AzureSecretVault Initialize(IHostingEnvironment env, IConfigurationRoot configuration)
+        public static AzureSecretVault InitializeApplicationInsights(this IHostingEnvironment env, IConfigurationRoot configuration)
         {
             //Needs to be done in the initial Startup.Startup() method because Application Insights registers itself prior
             //to ConfigureServices being run
-            var secrets = new AzureSecretVault(configuration);
+            var secrets = new AzureSecretVault(
+                new KeyVaultConfiguration(
+                    configuration["ClientId"],
+                    configuration["ClientSecret"],
+                    configuration["KeyVault:VaultName"]
+                )
+            );
 
             var instrumentationKey = configuration.GetSection("KeyVault")["InstrumentationKeyName"];
             if (!string.IsNullOrWhiteSpace(instrumentationKey))
