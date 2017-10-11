@@ -19,15 +19,7 @@ namespace Sia.Shared.Authentication
         private const string _secretsEndpoint = "/secrets/";
         private const string _keysEndpoint = "/keys/";
         private const string _certificatesEndpoint = "/certificates/";
-        /*
-         string vaultNameKey = "KeyVault:VaultName",
-            string clientIdKey = "ClientId",
-            string clientSecretKey = "ClientSecret"
 
-            _clientId = configuration[clientIdKey];
-            _secret = configuration[clientSecretKey];
-            _vault = String.Format(secretUriBase, configuration[vaultNameKey]);
-            */
         public AzureSecretVault(KeyVaultConfiguration configuration)
         {
             _config = ThrowIf.Null(configuration, nameof(configuration));
