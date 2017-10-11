@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR.Client;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Protocol;
+using Sia.Gateway.Hubs;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Events;
 using System.Threading.Tasks;
@@ -13,10 +15,15 @@ namespace Sia.Gateway.Controllers
     public class EventsController : BaseController
     {
         private const string notFoundMessage = "Incident or event not found";
+        private readonly HubConnectionBuilder _hubConnectionBuilder;
 
-        public EventsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, IUrlHelper urlHelper) 
+        public EventsController(IMediator mediator,
+            AzureActiveDirectoryAuthenticationInfo authConfig,
+            HubConnectionBuilder hubConnectionBuilder,
+            IUrlHelper urlHelper)
             : base(mediator, authConfig, urlHelper)
         {
+            _hubConnectionBuilder = hubConnectionBuilder;
         }
 
         [HttpGet(Name = nameof(GetEvents))]
@@ -47,7 +54,18 @@ namespace Sia.Gateway.Controllers
             {
                 return NotFound(notFoundMessage);
             }
+            await SendEventToSubscribers(result);
             return Created($"api/incidents/{result.IncidentId}/events/{result.Id}", result);
+        }
+
+        private async Task SendEventToSubscribers(Domain.Event result)
+        {
+            var eventHubConnection = _hubConnectionBuilder
+                    .WithUrl($"{Request.Scheme}://{Request.Host}/{EventsHub.HubPath}")
+                    .Build();
+            await eventHubConnection.StartAsync();
+            await eventHubConnection.SendAsync("Send", result);
+            eventHubConnection.DisposeAsync();
         }
     }
 }
