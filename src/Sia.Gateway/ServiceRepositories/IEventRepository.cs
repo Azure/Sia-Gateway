@@ -41,6 +41,7 @@ namespace Sia.Gateway.ServiceRepositories
         public async Task<IEnumerable<Event>> GetEventsAsync(long incidentId, PaginationMetadata pagination, AuthenticatedUserContext userContext)
         {
             return await _context.Events
+                .Where(ev => ev.IncidentId == incidentId)
                 .WithPagination(pagination)
                 .ProjectTo<Event>()
                 .ToListAsync();
