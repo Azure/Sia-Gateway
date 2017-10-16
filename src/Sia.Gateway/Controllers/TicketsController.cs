@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Sia.Domain;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
@@ -11,8 +12,8 @@ namespace Sia.Gateway.Controllers
     [Route("[controller]")]
     public class TicketsController : BaseController
     {
-        public TicketsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, IUrlHelper urlHelper) 
-            : base(mediator, authConfig, urlHelper)
+        public TicketsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, ILoggerFactory loggerFactory, IUrlHelper urlHelper) 
+            : base(mediator, authConfig, loggerFactory, urlHelper)
         {
         }
 
