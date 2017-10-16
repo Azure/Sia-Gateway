@@ -36,7 +36,7 @@ namespace Sia.Gateway.Controllers
             {
                 return NotFound(notFoundMessage);
             }
-            return Created($"api/incidents/{result.IncidentId}/engagements/{result.Id}", result);
+            return Created($"incidents/{result.IncidentId}/engagements/{result.Id}", result);
         }
 
         [HttpPut("{engagementId}")]
