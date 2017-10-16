@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
@@ -12,8 +13,8 @@ namespace Sia.Gateway.Controllers
     public class IncidentsController : BaseController
     {
 
-        public IncidentsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, IUrlHelper urlHelper) 
-            : base(mediator, authConfig, urlHelper)
+        public IncidentsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, ILoggerFactory loggerFactory, IUrlHelper urlHelper) 
+            : base(mediator, authConfig, loggerFactory, urlHelper)
         {
         }
 

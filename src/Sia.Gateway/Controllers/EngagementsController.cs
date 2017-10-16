@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
@@ -12,8 +13,8 @@ namespace Sia.Gateway.Controllers
     {
         private const string notFoundMessage = "Incident or engagement not found";
 
-        public EngagementsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, IUrlHelper urlHelper) 
-            : base(mediator, authConfig, urlHelper)
+        public EngagementsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, ILoggerFactory loggerFactory, IUrlHelper urlHelper) 
+            : base(mediator, authConfig, loggerFactory, urlHelper)
         {
         }
 
