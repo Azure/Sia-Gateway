@@ -8,31 +8,31 @@ using System.Threading.Tasks;
 
 namespace Sia.Shared.Data
 {
-    public interface IDynamicDataStorage
+    public interface IHasJsonDataString
     {
         string Data { get; set; }
     }
 
-    public interface IDynamicDataSource
+    public interface IHasJsonDataObject
     {
-        dynamic Data { get; set; }
+        object Data { get; set; }
     }
 
-    public class ResolveFromDynamic<TSource, TDestination>
+    public class ResolveJsonToString<TSource, TDestination>
         : IValueResolver<TSource, TDestination, string>
-        where TSource: IDynamicDataSource
-        where TDestination: IDynamicDataStorage
+        where TSource: IHasJsonDataObject
+        where TDestination: IHasJsonDataString
     {
         public string Resolve(TSource source, TDestination destination, string destMember, ResolutionContext context)
             => JsonConvert.SerializeObject(source.Data);
     }
 
-    public class ResolveToDynamic<TSource, TDestination>
+    public class ResolveStringToJson<TSource, TDestination>
         : IValueResolver<TSource, TDestination, object>
-        where TSource : IDynamicDataStorage
-        where TDestination : IDynamicDataSource
+        where TSource : IHasJsonDataString
+        where TDestination : IHasJsonDataObject
     {
         public object Resolve(TSource source, TDestination destination, object destMember, ResolutionContext context)
-            => JsonConvert.DeserializeObject<ExpandoObject>(source.Data);
+            => JsonConvert.DeserializeObject(source.Data);
     }
 }

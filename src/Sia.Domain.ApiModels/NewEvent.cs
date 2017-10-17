@@ -6,7 +6,7 @@ using System.Dynamic;
 namespace Sia.Domain.ApiModels
 {
     public class NewEvent
-        :IDynamicDataSource
+        :IHasJsonDataObject
     {
         [Required]
         public long? EventTypeId { get; set; }
@@ -14,6 +14,6 @@ namespace Sia.Domain.ApiModels
         public DateTime? Occurred { get; set; }
         [Required]
         public DateTime? EventFired { get; set; }
-        public dynamic Data { get; set; } = new ExpandoObject();
+        public object Data { get; set; }
     }
 }

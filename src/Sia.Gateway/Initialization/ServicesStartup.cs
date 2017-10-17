@@ -133,7 +133,7 @@ namespace Sia.Gateway.Initialization
 
             services.AddMvc(options =>
             {
-                options.OutputFormatters.Insert(0, new DynamicOutputFormatter(
+                options.OutputFormatters.Insert(0, new PartialSerializedJsonOutputFormatter(
                         new MvcJsonOptions().SerializerSettings,
                         ArrayPool<char>.Shared));
             });

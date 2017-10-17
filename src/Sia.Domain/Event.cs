@@ -7,13 +7,13 @@ using System.Text;
 
 namespace Sia.Domain
 {
-    public class Event : IEntity, IDynamicDataSource
+    public class Event : IEntity, IHasJsonDataObject
     {
         public long Id { get; set; }
         public long? IncidentId { get; set; }
         public long EventTypeId { get; set; }
         public DateTime Occurred { get; set; }
         public DateTime EventFired { get; set; }
-        public dynamic Data { get; set; } = new ExpandoObject();
+        public object Data { get; set; }
     }
 }

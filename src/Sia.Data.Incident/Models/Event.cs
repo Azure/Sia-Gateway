@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sia.Data.Incidents.Models
 {
-    public class Event : IEntity, IDynamicDataStorage
+    public class Event : IEntity, IHasJsonDataString
     {
         public long Id { get; set; }
         public long? IncidentId { get; set; }

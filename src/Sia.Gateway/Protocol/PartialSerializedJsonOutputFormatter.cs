@@ -10,9 +10,9 @@ using Sia.Shared.Data;
 
 namespace Sia.Gateway.Protocol
 {
-    public class DynamicOutputFormatter : JsonOutputFormatter
+    public class PartialSerializedJsonOutputFormatter : JsonOutputFormatter
     {
-        public DynamicOutputFormatter(JsonSerializerSettings serializerSettings, ArrayPool<char> charPool)
+        public PartialSerializedJsonOutputFormatter(JsonSerializerSettings serializerSettings, ArrayPool<char> charPool)
             : base(serializerSettings, charPool)
         {
 
@@ -20,12 +20,12 @@ namespace Sia.Gateway.Protocol
 
         public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
-            var dataStream = (IEnumerable<IDynamicDataSource>)context.Object;
+            var dataStream = (IEnumerable<IHasJsonDataObject>)context.Object;
 
             foreach (var objectToWrite in dataStream)
             {
-                var dynamicData = objectToWrite.Data;
-                if (dynamicData is string) objectToWrite.Data = Deserialize((string)dynamicData);
+                var jsonData = objectToWrite.Data;
+                if (jsonData is string) objectToWrite.Data = Deserialize((string)jsonData);
             }
 
             return base.WriteResponseBodyAsync(context, selectedEncoding);
@@ -43,7 +43,7 @@ namespace Sia.Gateway.Protocol
                 .Substring(0, enumIntName.Length - NumberOfCharactersInGenericTypeNotUsedByGetInterfaceMethod));
             if (enumerableInterface is null) return false;
 
-            return !(type.GetGenericArguments()[0].GetInterface(nameof(IDynamicDataSource)) is null);
+            return !(type.GetGenericArguments()[0].GetInterface(nameof(IHasJsonDataObject)) is null);
         }
 
         private object Deserialize(string serializedData) => JsonConvert.DeserializeObject(serializedData);

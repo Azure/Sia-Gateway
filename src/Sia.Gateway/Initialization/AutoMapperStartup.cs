@@ -34,24 +34,24 @@ namespace Sia.Gateway.Initialization
                 configuration.CreateMap<Participant, Data.Incidents.Models.Participant>();
                 configuration.CreateMap<Data.Incidents.Models.Participant, Participant>();
                 configuration.CreateMap<NewEvent, Data.Incidents.Models.Event>().EqualityInsertOnly()
-                    .ResolveFromDynamic();
+                    .UseResolveJsonToString();
                 configuration.CreateMap<Event, Data.Incidents.Models.Event>().EqualityById()
-                    .ResolveFromDynamic();
+                    .UseResolveJsonToString();
                 configuration.CreateMap<Data.Incidents.Models.Event, Event>().EqualityById()
-                    .ResolveToDynamic();
+                    .UseResolveStringToJson();
             });
         }
 
-        private static IMappingExpression<TSource, TDestination> ResolveFromDynamic<TSource, TDestination>(this IMappingExpression<TSource, TDestination> mapping)
-            where TSource: IDynamicDataSource
-            where TDestination: IDynamicDataStorage
-            => mapping.ForMember((ev) => ev.Data, (config) => config.ResolveUsing<ResolveFromDynamic<TSource, TDestination>>());
+        private static IMappingExpression<TSource, TDestination> UseResolveJsonToString<TSource, TDestination>(this IMappingExpression<TSource, TDestination> mapping)
+            where TSource: IHasJsonDataObject
+            where TDestination: IHasJsonDataString
+            => mapping.ForMember((ev) => ev.Data, (config) => config.ResolveUsing<ResolveJsonToString<TSource, TDestination>>());
 
 
-        private static IMappingExpression<TSource, TDestination> ResolveToDynamic<TSource, TDestination>(this IMappingExpression<TSource, TDestination> mapping)
-            where TSource : IDynamicDataStorage
-            where TDestination : IDynamicDataSource
-            => mapping.ForMember((ev) => ev.Data, (config) => config.ResolveUsing<ResolveToDynamic<TSource, TDestination>>());
+        private static IMappingExpression<TSource, TDestination> UseResolveStringToJson<TSource, TDestination>(this IMappingExpression<TSource, TDestination> mapping)
+            where TSource : IHasJsonDataString
+            where TDestination : IHasJsonDataObject
+            => mapping.ForMember((ev) => ev.Data, (config) => config.ResolveUsing<ResolveStringToJson<TSource, TDestination>>());
 
 
         public static IMappingExpression<T1, T2> EqualityInsertOnly<T1, T2>(this IMappingExpression<T1, T2> mappingExpression)
