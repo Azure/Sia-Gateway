@@ -42,10 +42,8 @@ namespace Sia.Gateway.Protocol
             var enumerableInterface = type.GetInterface(enumIntName
                 .Substring(0, enumIntName.Length - NumberOfCharactersInGenericTypeNotUsedByGetInterfaceMethod));
             if (enumerableInterface is null) return false;
-            
-            var canWrite = !(type.GetGenericArguments()[0].GetInterface(nameof(IDynamicDataSource)) is null);
-            return canWrite;
 
+            return !(type.GetGenericArguments()[0].GetInterface(nameof(IDynamicDataSource)) is null);
         }
 
         private object Deserialize(string serializedData) => JsonConvert.DeserializeObject(serializedData);
