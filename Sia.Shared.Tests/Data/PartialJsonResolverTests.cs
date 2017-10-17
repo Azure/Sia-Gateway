@@ -31,13 +31,13 @@ namespace Sia.Shared.Tests.Data
         }
 
         [TestMethod]
-        public void ResolveStringToJson_Method_Resolve_SerializesSourceArgumentObjectToString()
+        public void ResolveStringToJson_Method_Resolve_SerializesSourceArgumentStringToObject()
         {
-            var expectedResult = new JsonSerializationTestObject();
             var input = new TestHasJsonDataString()
             {
                 Data = JsonSerializationTestObject.ExpectedSerialization()
             };
+            var expectedResult = new JsonSerializationTestObject();
             var objectUnderTest = new ResolveStringToJson<TestHasJsonDataString, TestHasJsonDataObject>();
 
 
