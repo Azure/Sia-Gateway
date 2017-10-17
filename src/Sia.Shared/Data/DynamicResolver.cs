@@ -25,7 +25,6 @@ namespace Sia.Shared.Data
     {
         public string Resolve(TSource source, TDestination destination, string destMember, ResolutionContext context)
             => JsonConvert.SerializeObject(source.Data);
-
     }
 
     public class ResolveToDynamic<TSource, TDestination>
