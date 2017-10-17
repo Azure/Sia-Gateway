@@ -15,7 +15,5 @@ namespace Sia.Domain
         public DateTime Occurred { get; set; }
         public DateTime EventFired { get; set; }
         public dynamic Data { get; set; } = new ExpandoObject();
-
-
     }
 }
