@@ -34,9 +34,6 @@ namespace Sia.Shared.Data
         where TDestination : IDynamicDataSource
     {
         public object Resolve(TSource source, TDestination destination, object destMember, ResolutionContext context)
-        {
-            var result = JsonConvert.DeserializeObject<ExpandoObject>(source.Data);
-            return result;
-        }
+            => JsonConvert.DeserializeObject<ExpandoObject>(source.Data);
     }
 }
