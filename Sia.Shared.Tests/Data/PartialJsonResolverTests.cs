@@ -60,12 +60,12 @@ namespace Sia.Shared.Tests.Data
         public int b { get; set; } = 1;
     }
 
-    internal class TestHasJsonDataString : IHasJsonDataString
+    internal class TestHasJsonDataString : IJsonDataString
     {
         public string Data { get; set; }
     }
 
-    internal class TestHasJsonDataObject : IHasJsonDataObject
+    internal class TestHasJsonDataObject : IJsonDataObject
     {
         public object Data { get; set; }
     }

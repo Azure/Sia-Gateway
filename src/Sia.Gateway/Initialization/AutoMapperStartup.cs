@@ -43,14 +43,14 @@ namespace Sia.Gateway.Initialization
         }
 
         private static IMappingExpression<TSource, TDestination> UseResolveJsonToString<TSource, TDestination>(this IMappingExpression<TSource, TDestination> mapping)
-            where TSource: IHasJsonDataObject
-            where TDestination: IHasJsonDataString
+            where TSource: IJsonDataObject
+            where TDestination: IJsonDataString
             => mapping.ForMember((ev) => ev.Data, (config) => config.ResolveUsing<ResolveJsonToString<TSource, TDestination>>());
 
 
         private static IMappingExpression<TSource, TDestination> UseResolveStringToJson<TSource, TDestination>(this IMappingExpression<TSource, TDestination> mapping)
-            where TSource : IHasJsonDataString
-            where TDestination : IHasJsonDataObject
+            where TSource : IJsonDataString
+            where TDestination : IJsonDataObject
             => mapping.ForMember((ev) => ev.Data, (config) => config.ResolveUsing<ResolveStringToJson<TSource, TDestination>>());
 
 

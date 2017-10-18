@@ -6,7 +6,7 @@ using System.Dynamic;
 namespace Sia.Domain.ApiModels
 {
     public class NewEvent
-        :IHasJsonDataObject
+        :IJsonDataObject
     {
         [Required]
         public long? EventTypeId { get; set; }

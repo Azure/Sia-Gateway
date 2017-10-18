@@ -20,7 +20,7 @@ namespace Sia.Gateway.Protocol
 
         public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
-            var dataStream = (IEnumerable<IHasJsonDataObject>)context.Object;
+            var dataStream = (IEnumerable<IJsonDataObject>)context.Object;
 
             foreach (var objectToWrite in dataStream)
             {
@@ -43,7 +43,7 @@ namespace Sia.Gateway.Protocol
                 .Substring(0, enumIntName.Length - NumberOfCharactersInGenericTypeNotUsedByGetInterfaceMethod));
             if (enumerableInterface is null) return false;
 
-            return !(type.GetGenericArguments()[0].GetInterface(nameof(IHasJsonDataObject)) is null);
+            return !(type.GetGenericArguments()[0].GetInterface(nameof(IJsonDataObject)) is null);
         }
 
         private object Deserialize(string serializedData) => JsonConvert.DeserializeObject(serializedData);

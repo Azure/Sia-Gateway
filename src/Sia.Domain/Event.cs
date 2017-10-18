@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Sia.Domain
 {
-    public class Event : IEntity, IHasJsonDataObject
+    public class Event : IEntity, IJsonDataObject
     {
         public long Id { get; set; }
         public long? IncidentId { get; set; }
