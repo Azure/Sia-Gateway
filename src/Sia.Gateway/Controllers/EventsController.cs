@@ -65,7 +65,7 @@ namespace Sia.Gateway.Controllers
                     .Build();
             await eventHubConnection.StartAsync();
             await eventHubConnection.SendAsync("Send", result);
-            eventHubConnection.DisposeAsync();
+            await eventHubConnection.DisposeAsync();
         }
     }
 }
