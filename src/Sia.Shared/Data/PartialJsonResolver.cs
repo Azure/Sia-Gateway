@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Sia.Shared.Data
 {
+    
     public interface IJsonDataString
     {
         string Data { get; set; }
@@ -24,7 +25,7 @@ namespace Sia.Shared.Data
         where TDestination: IJsonDataString
     {
         public string Resolve(TSource source, TDestination destination, string destMember, ResolutionContext context)
-            => JsonConvert.SerializeObject(source.Data);
+            => source.Data is null ? null : JsonConvert.SerializeObject(source.Data);
     }
 
     public class ResolveStringToJson<TSource, TDestination>
@@ -33,6 +34,6 @@ namespace Sia.Shared.Data
         where TDestination : IJsonDataObject
     {
         public object Resolve(TSource source, TDestination destination, object destMember, ResolutionContext context)
-            => JsonConvert.DeserializeObject(source.Data);
+            => source.Data is null ? null : JsonConvert.DeserializeObject(source.Data);
     }
 }

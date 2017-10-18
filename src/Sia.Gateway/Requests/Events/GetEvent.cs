@@ -1,8 +1,10 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Gateway.Authentication;
-using Sia.Gateway.Requests.Events;
-using Sia.Gateway.ServiceRepositories;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
@@ -19,17 +21,25 @@ namespace Sia.Gateway.Requests
         public long Id { get; }
         public long IncidentId { get; }
     }
-    public class GetEventHandler : EventHandler<GetEventRequest, Event>
-    {
-        public GetEventHandler(IEventRepository eventRepository) 
-            : base(eventRepository)
-        {
-        }
 
-        public override async Task<Event> Handle(GetEventRequest request)
+    public class GetEventHandler : IAsyncRequestHandler<GetEventRequest, Event>
+    {
+        private readonly IncidentContext _context;
+
+        public GetEventHandler(IncidentContext context)
         {
-            return await _eventRepository.GetEvent(request.IncidentId, request.Id, request.UserContext);
+            _context = context;
+        }
+        public async Task<Event> Handle(GetEventRequest request)
+        {
+            var eventRecord = await _context
+                                    .Events
+                                    .FirstOrDefaultAsync( ev 
+                                        => ev.IncidentId == request.IncidentId 
+                                        && ev.Id == request.Id);
+            if (eventRecord == null) throw new KeyNotFoundException();
+
+            return Mapper.Map<Event>(eventRecord);
         }
     }
-
 }

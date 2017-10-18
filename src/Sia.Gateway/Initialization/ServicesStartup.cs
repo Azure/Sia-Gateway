@@ -13,17 +13,14 @@ using Sia.Connectors.Tickets.TicketProxy;
 using Sia.Data.Incidents;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
-using Sia.Gateway.ServiceRepositories;
 using Sia.Shared.Authentication;
 using Sia.Shared.Validation;
-using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
-using System.Net;
 using System.Reflection;
 using System.Runtime.Loader;
 using Sia.Gateway.Protocol;
 using System.Buffers;
+using Sia.Domain;
 
 namespace Sia.Gateway.Initialization
 {
@@ -38,15 +35,12 @@ namespace Sia.Gateway.Initialization
             if (env.IsDevelopment()) services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
             if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(config.GetConnectionString("incidentStaging")));
 
-            AddTicketingConnector(services, env, config);
-
-            services.AddScoped<IEventRepository, EventRepository>();
-            services.AddScoped<IEngagementRepository, EngagementRepository>();
+            services.AddTicketingConnector(env, config);
 
             services.AddSingleton<IConfigurationRoot>(i => config);
         }
 
-        private static void AddTicketingConnector(IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
+        private static void AddTicketingConnector(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
         {
             if (TryGetConfigValue(config, "Connector:Ticket:Path", out var ticketConnectorAssemblyPath))
             {
@@ -73,7 +67,7 @@ namespace Sia.Gateway.Initialization
 
         private static void AddProxyConnector(IServiceCollection services, IConfigurationRoot config, string proxyEndpoint)
         {
-            services.AddIncidentClient(typeof(Ticket));
+            services.AddIncidentClient(typeof(ProxyTicket));
             var proxyAuthType = config["Connector:Ticket:ProxyAuthType"];
             switch(proxyAuthType)
             {
@@ -117,15 +111,13 @@ namespace Sia.Gateway.Initialization
 
         private static void AddIncidentClient(this IServiceCollection services, Type ticketType)
         {
-            var clientType = typeof(IncidentRepository<>).MakeGenericType(new Type[] { ticketType });
-            services.AddScoped(typeof(IIncidentRepository), clientType);
+            var handlerType = typeof(GetIncidentHandler<>).MakeGenericType(new Type[] { ticketType });
+            services.AddScoped(typeof(IGetIncidentHandler), handlerType);
+            services.AddScoped<IAsyncRequestHandler<GetIncidentRequest, Incident>, GetIncidentHandlerWrapper>();
         }
 
         public static void AddThirdPartyServices(this IServiceCollection services, IConfigurationRoot config)
         {
-            //Adds every request type in the Sia.Gateway assembly
-            services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
-
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IUrlHelper, UrlHelper>(iFactory
                     => new UrlHelper(iFactory.GetService<IActionContextAccessor>().ActionContext)
@@ -155,6 +147,9 @@ namespace Sia.Gateway.Initialization
             services.AddSockets();
             services.AddSignalR(config);
             services.AddScoped<HubConnectionBuilder>();
+
+            //Adds every request type in the Sia.Gateway assembly
+            services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
         }
 
         private static IServiceCollection AddSignalR(this IServiceCollection services, IConfigurationRoot config)
