@@ -18,9 +18,13 @@ namespace Sia.Gateway.Initialization
                 )
             );
 
-            var vaultTask = secrets.Get(configuration.GetSection("KeyVault")["InstrumentationKeyName"]);
-            vaultTask.Wait();
-            configuration.GetSection("ApplicationInsights")["InstrumentationKey"] = vaultTask.Result;
+            var instrumentationKey = configuration.GetSection("KeyVault")["InstrumentationKeyName"];
+            if (!string.IsNullOrWhiteSpace(instrumentationKey))
+            {
+                var vaultTask = secrets.Get(instrumentationKey);
+                vaultTask.Wait();
+                configuration.GetSection("ApplicationInsights")["InstrumentationKey"] = vaultTask.Result;
+            }
 
             return secrets;
         }

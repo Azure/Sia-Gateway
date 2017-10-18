@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Sia.Gateway.Protocol;
 using Sia.Gateway.Requests.Events;
 
 namespace Sia.Gateway.Tests.TestDoubles
