@@ -8,8 +8,6 @@ using System.Text;
 
 namespace Sia.Shared.Tests.Data
 {
-    
-
     [TestClass]
     public class PartialJsonResolverTests
     {
