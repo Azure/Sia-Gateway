@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Loader;
+using Sia.Gateway.Protocol;
+using System.Buffers;
 
 namespace Sia.Gateway.Initialization
 {
@@ -129,7 +131,12 @@ namespace Sia.Gateway.Initialization
                     => new UrlHelper(iFactory.GetService<IActionContextAccessor>().ActionContext)
                 );
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.OutputFormatters.Insert(0, new PartialSerializedJsonOutputFormatter(
+                        new MvcJsonOptions().SerializerSettings,
+                        ArrayPool<char>.Shared));
+            });
             services
                 .AddAuthentication(authOptions =>
                 {

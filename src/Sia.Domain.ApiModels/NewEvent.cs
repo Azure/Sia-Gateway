@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Sia.Shared.Data;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.Dynamic;
 
 namespace Sia.Domain.ApiModels
 {
     public class NewEvent
+        :IJsonDataObject
     {
         [Required]
         public long? EventTypeId { get; set; }
@@ -11,5 +14,6 @@ namespace Sia.Domain.ApiModels
         public DateTime? Occurred { get; set; }
         [Required]
         public DateTime? EventFired { get; set; }
+        public object Data { get; set; }
     }
 }
