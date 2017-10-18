@@ -2,8 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
+using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests;
-using Sia.Gateway.ServiceRepositories;
 using Sia.Gateway.Tests.TestDoubles;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,13 +17,7 @@ namespace Sia.Gateway.Tests.Requests
 
         [TestInitialize]
         public void ConfigureAutomapper()
-        {
-            Mapper.Initialize(configuration =>
-            {
-                configuration.CreateMap<NewIncident, Incident>();
-            });
-            _mapper = Mapper.Instance;
-        }
+            => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
         public async Task Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents()
@@ -32,9 +26,13 @@ namespace Sia.Gateway.Tests.Requests
             var expectedIncident = new NewIncident
             {
                 Title = expectedIncidentTitle,
+                PrimaryTicket = new Ticket()
+                {
+                    OriginId = "testOnlyPleaseIgnore"
+                }
             };
-            IIncidentRepository mockRepository = new StubIncidentRepository(new List<Incident>(), _mapper);
-            var serviceUnderTest = new PostIncidentHandler(mockRepository);
+
+            var serviceUnderTest = new PostIncidentHandler(MockFactory.IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents)));
             var request = new PostIncidentRequest(expectedIncident, new DummyAuthenticatedUserContext());
 
 
