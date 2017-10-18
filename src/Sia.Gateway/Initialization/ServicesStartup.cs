@@ -13,13 +13,9 @@ using Sia.Connectors.Tickets.TicketProxy;
 using Sia.Data.Incidents;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
-using Sia.Gateway.ServiceRepositories;
 using Sia.Shared.Authentication;
 using Sia.Shared.Validation;
-using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
-using System.Net;
 using System.Reflection;
 using System.Runtime.Loader;
 using Sia.Domain;
@@ -38,9 +34,6 @@ namespace Sia.Gateway.Initialization
             if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(config.GetConnectionString("incidentStaging")));
 
             services.AddTicketingConnector(env, config);
-
-            services.AddScoped<IEventRepository, EventRepository>();
-            services.AddScoped<IEngagementRepository, EngagementRepository>();
 
             services.AddSingleton<IConfigurationRoot>(i => config);
             services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);

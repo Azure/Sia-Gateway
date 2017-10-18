@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Gateway.Authentication;
-using Sia.Gateway.ServiceRepositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

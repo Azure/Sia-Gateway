@@ -4,10 +4,8 @@ using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
-using Sia.Gateway.ServiceRepositories;
 using Sia.Shared.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests

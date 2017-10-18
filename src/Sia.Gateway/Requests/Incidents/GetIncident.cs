@@ -4,7 +4,6 @@ using Sia.Connectors.Tickets;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Gateway.Authentication;
-using Sia.Gateway.ServiceRepositories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
