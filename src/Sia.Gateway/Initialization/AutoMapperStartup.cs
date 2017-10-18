@@ -2,6 +2,7 @@
 using AutoMapper.EquivalencyExpression;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
+using Sia.Gateway.Protocol;
 using Sia.Shared.Data;
 
 namespace Sia.Gateway.Initialization
@@ -32,25 +33,35 @@ namespace Sia.Gateway.Initialization
 
                 configuration.CreateMap<Participant, Data.Incidents.Models.Participant>();
                 configuration.CreateMap<Data.Incidents.Models.Participant, Participant>();
-
-                configuration.CreateMap<NewEvent, Data.Incidents.Models.Event>().EqualityInsertOnly();
-                configuration.CreateMap<Event, Data.Incidents.Models.Event>().EqualityById();
-                configuration.CreateMap<Data.Incidents.Models.Event, Event>().EqualityById();
+                configuration.CreateMap<NewEvent, Data.Incidents.Models.Event>().EqualityInsertOnly()
+                    .UseResolveJsonToString();
+                configuration.CreateMap<Event, Data.Incidents.Models.Event>().EqualityById()
+                    .UseResolveJsonToString();
+                configuration.CreateMap<Data.Incidents.Models.Event, Event>().EqualityById()
+                    .UseResolveStringToJson();
             });
         }
 
+        private static IMappingExpression<TSource, TDestination> UseResolveJsonToString<TSource, TDestination>(this IMappingExpression<TSource, TDestination> mapping)
+            where TSource: IJsonDataObject
+            where TDestination: IJsonDataString
+            => mapping.ForMember((ev) => ev.Data, (config) => config.ResolveUsing<ResolveJsonToString<TSource, TDestination>>());
+
+
+        private static IMappingExpression<TSource, TDestination> UseResolveStringToJson<TSource, TDestination>(this IMappingExpression<TSource, TDestination> mapping)
+            where TSource : IJsonDataString
+            where TDestination : IJsonDataObject
+            => mapping.ForMember((ev) => ev.Data, (config) => config.ResolveUsing<ResolveStringToJson<TSource, TDestination>>());
+
+
         public static IMappingExpression<T1, T2> EqualityInsertOnly<T1, T2>(this IMappingExpression<T1, T2> mappingExpression)
             where T1 : class
-            where T2 : class
-        {
-            return mappingExpression.EqualityComparison((one, two) => false);
-        }
+            where T2 : class 
+            => mappingExpression.EqualityComparison((one, two) => false);
 
         public static IMappingExpression<T1, T2> EqualityById<T1, T2>(this IMappingExpression<T1, T2> mappingExpression)
             where T1 : class, IEntity
-            where T2 : class, IEntity
-        {
-            return mappingExpression.EqualityComparison((one, two) => one.Id == two.Id);
-        }
+            where T2 : class, IEntity 
+            => mappingExpression.EqualityComparison((one, two) => one.Id == two.Id);
     }
 }
