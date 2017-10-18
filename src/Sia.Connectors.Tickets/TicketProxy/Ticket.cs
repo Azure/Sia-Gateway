@@ -1,6 +1,6 @@
 ﻿namespace Sia.Connectors.Tickets.TicketProxy
 {
-    public class Ticket
+    public class ProxyTicket
     {
         public string OriginId { get; set; }
         public long IncidentSystemId { get; set; }

@@ -1,8 +1,8 @@
 ﻿namespace Sia.Connectors.Tickets.TicketProxy
 {
-    public class ProxyConnector : Connector<Ticket>
+    public class ProxyConnector : Connector<ProxyTicket>
     {
-        public ProxyConnector(Client<Ticket> client, Converter<Ticket> converter) 
+        public ProxyConnector(Client<ProxyTicket> client, Converter<ProxyTicket> converter) 
             : base(client, converter)
         {
         }

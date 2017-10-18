@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Loader;
+using Sia.Domain;
 
 namespace Sia.Gateway.Initialization
 {
@@ -72,7 +73,7 @@ namespace Sia.Gateway.Initialization
 
         private static void AddProxyConnector(IServiceCollection services, IConfigurationRoot config, string proxyEndpoint)
         {
-            services.AddIncidentClient(typeof(Ticket));
+            services.AddIncidentClient(typeof(ProxyTicket));
             var proxyAuthType = config["Connector:Ticket:ProxyAuthType"];
             switch(proxyAuthType)
             {
@@ -110,9 +111,9 @@ namespace Sia.Gateway.Initialization
 
         private static void AddIncidentClient(this IServiceCollection services, Type ticketType)
         {
-            var clientType = typeof(IncidentRepository<>).MakeGenericType(new Type[] { ticketType });
-            services.AddScoped(typeof(IIncidentRepositoryLogic), clientType);
-            services.AddScoped<IIncidentRepository, IncidentRepositoryWrapper>();
+            var handlerType = typeof(GetIncidentHandler<>).MakeGenericType(new Type[] { ticketType });
+            services.AddScoped(typeof(IGetIncidentHandler), handlerType);
+            services.AddScoped<IAsyncRequestHandler<GetIncidentRequest, Incident>, GetIncidentHandlerWrapper>();
         }
 
         public static void AddThirdPartyServices(this IServiceCollection services, IConfigurationRoot config)

@@ -22,9 +22,9 @@ namespace Sia.Gateway.Initialization
         private static IServiceCollection AddProxy(this IServiceCollection services, ProxyConnectionInfo proxyConnection)
         {
             return services
-                .AddScoped<Converter<Ticket>, ProxyConverter>()
-                .AddScoped<Client<Ticket>>(serv => proxyConnection.GetClient())
-                .AddScoped<Connector<Ticket>, ProxyConnector>();
+                .AddScoped<Converter<ProxyTicket>, ProxyConverter>()
+                .AddScoped<Client<ProxyTicket>>(serv => proxyConnection.GetClient())
+                .AddScoped<Connector<ProxyTicket>, ProxyConnector>();
         }
     }
 }
