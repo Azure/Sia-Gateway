@@ -48,17 +48,13 @@ namespace Sia.Gateway.Requests
                 return incidents;
             }
 
-            var primaryTicket = new Ticket
-            {
-                TicketingSystemId = 1,
-                OriginId = message.TicketId
-            };
             var newIncident = new NewIncident
             {
-                PrimaryTicket = primaryTicket,
-                Tickets = new List<Ticket> {
-                        primaryTicket
-                    }
+                PrimaryTicket = new Ticket
+                {
+                    TicketingSystemId = 1,
+                    OriginId = message.TicketId
+                }
             };
 
             var dataIncident = Mapper.Map<Data.Incidents.Models.Incident>(newIncident);
