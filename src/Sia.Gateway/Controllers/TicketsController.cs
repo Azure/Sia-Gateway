@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Sia.Domain;
+using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Requests;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
@@ -19,11 +21,7 @@ namespace Sia.Gateway.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var result = await _mediator.Send(new GetIncidentsByTicketRequest(id, _authContext));
-            if (result == null)
-            {
-                return NotFound($"{nameof(Incident)} not found");
-            }
+            var result = await _mediator.Send(new GetIncidentsByTicketCreateIfNeededRequest(id, _authContext));
             return Ok(result);
         }
     }
