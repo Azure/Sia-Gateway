@@ -32,7 +32,7 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new GetEngagementHandler(MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetEngagementHandler(await MockFactory.IncidentContext("Get"));
             var request = new GetEngagementRequest(1, 1, new DummyAuthenticatedUserContext());
 
 
@@ -50,7 +50,7 @@ namespace Sia.Gateway.Tests.Requests
         [ExpectedException(typeof(KeyNotFoundException))]
         public async Task Handle_WhenRecordDoesNotExistInEF_ThrowKeyNotFoundException()
         {
-            var serviceUnderTest = new GetEngagementHandler(MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetEngagementHandler(await MockFactory.IncidentContext("Get"));
             var request = new GetEngagementRequest(100_000, 1, new DummyAuthenticatedUserContext());
 
 

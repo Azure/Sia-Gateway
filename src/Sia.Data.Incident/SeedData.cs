@@ -3,6 +3,7 @@ using Sia.Data.Incidents.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Sia.Data.Incidents
 {
@@ -12,9 +13,9 @@ namespace Sia.Data.Incidents
         const int differentEventTypes = 8;
         const int eventCountForManyEvents = 1000;
         //Some dev/test/demo data that was based on actual incidents has been [REDACTED]
-        public static void Add(IncidentContext incidentContext, SeedType seedtype = SeedType.Basic)
+        public static Task<int> Add(IncidentContext incidentContext, SeedType seedtype = SeedType.Basic)
         {
-            if (incidentContext.Incidents.Any()) return; //This context already has seed data loaded
+            if (incidentContext.Incidents.Any()) return Task.FromResult(0); //This context already has seed data loaded
 
             var firstTestIncidentSystem = new TicketingSystem
             {
@@ -79,6 +80,12 @@ namespace Sia.Data.Incidents
                     new Event
                     {
                         EventTypeId = 1,
+                        Occurred = DateTime.Parse("05/05/1975"),
+                        EventFired = DateTime.Parse("06/06/1976")
+                    },
+                    new Event
+                    {
+                        EventTypeId = 111,
                         Occurred = DateTime.Parse("05/05/1975"),
                         EventFired = DateTime.Parse("06/06/1976")
                     }
@@ -174,7 +181,7 @@ namespace Sia.Data.Incidents
             incidentContext.Add(thirdTestCrisis);
             incidentContext.Add(fourthTestCrisis);
 
-            incidentContext.SaveChanges();
+            return incidentContext.SaveChangesAsync();
         }
 
         private static ICollection<Event> GenerateManyEvents()

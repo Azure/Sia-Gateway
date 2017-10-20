@@ -26,7 +26,7 @@ namespace Sia.Gateway.Tests.Requests
                 EventTypeId = expectedEventTypeId,
                 IncidentId = expectedIncidentId
             };
-            var serviceUnderTest = new GetEventHandler(MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetEventHandler(await MockFactory.IncidentContext("Get"));
             var request = new GetEventRequest(expectedIncidentId, expectedEventId, new DummyAuthenticatedUserContext());
 
 

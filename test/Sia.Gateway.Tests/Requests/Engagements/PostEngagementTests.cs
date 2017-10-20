@@ -32,7 +32,12 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new PostEngagementHandler(MockFactory.IncidentContext(nameof(PostEngagementTests) + nameof(Handle_WhenContextSavesEngagement_ReturnCorrectEngagementWithUpdateTime)));
+            var serviceUnderTest = new PostEngagementHandler(
+                await MockFactory.IncidentContext(
+                    nameof(PostEngagementTests)
+                    + "one"
+                )
+            );
             var request = new PostEngagementRequest(1, inputEngagement, new DummyAuthenticatedUserContext());
 
             var result = await serviceUnderTest.Handle(request);
@@ -61,7 +66,7 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new PostEngagementHandler(MockFactory.IncidentContext(nameof(PostEngagementTests) + nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException)));
+            var serviceUnderTest = new PostEngagementHandler(await MockFactory.IncidentContext(nameof(PostEngagementTests) + nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException)));
             var request = new PostEngagementRequest(100_000, inputEngagement, new DummyAuthenticatedUserContext());
 
             var result = await serviceUnderTest.Handle(request);

@@ -30,7 +30,7 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new PostIncidentHandler(MockFactory.IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents)));
+            var serviceUnderTest = new PostIncidentHandler(await MockFactory.IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents)));
             var request = new PostIncidentRequest(expectedIncident, new DummyAuthenticatedUserContext());
 
 

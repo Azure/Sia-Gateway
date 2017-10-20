@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sia.Domain;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests;
@@ -20,14 +18,17 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task Handle_WhenContextSavesEngagement_EngagementRecordInDatabaseReflectsUpdate()
+        public async Task Handle_WhenContextUpdatesEngagement_EngagementRecordInDatabaseReflectsUpdate()
         {
             var inputEngagement = new UpdateEngagement()
             {
                 TimeDisengaged = DateTime.Parse("10/10/1970")
             };
 
-            var context = MockFactory.IncidentContext(nameof(PutEngagementTests) + nameof(Handle_WhenContextSavesEngagement_EngagementRecordInDatabaseReflectsUpdate));
+            var context = await MockFactory.IncidentContext(
+                nameof(PutEngagementTests) 
+                + nameof(Handle_WhenContextUpdatesEngagement_EngagementRecordInDatabaseReflectsUpdate)
+            );
 
             var serviceUnderTest = new PutEngagementHandler(context);
             var request = new PutEngagementRequest(1, 1, inputEngagement, new DummyAuthenticatedUserContext());
@@ -50,10 +51,10 @@ namespace Sia.Gateway.Tests.Requests
                 TimeDisengaged = DateTime.Parse("10/10/1970")
             };
 
-            var context = MockFactory.IncidentContext(nameof(PutEngagementTests) + nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException));
+            var context = await MockFactory.IncidentContext(nameof(PutEngagementTests) + nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException));
 
             var serviceUnderTest = new PutEngagementHandler(context);
-            var request = new PutEngagementRequest(1, 1, inputEngagement, new DummyAuthenticatedUserContext());
+            var request = new PutEngagementRequest(100_000, 1, inputEngagement, new DummyAuthenticatedUserContext());
 
 
             await serviceUnderTest.Handle(request);
