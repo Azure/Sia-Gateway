@@ -13,8 +13,6 @@ namespace Sia.Gateway.Tests.Requests
     [TestClass]
     public class PostIncidentTests
     {
-        private IMapper _mapper;
-
         [TestInitialize]
         public void ConfigureAutomapper()
             => AutoMapperStartup.InitializeAutomapper();
