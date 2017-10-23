@@ -8,6 +8,7 @@ namespace Sia.Data.Playbooks.Models
     public class Action : IEntity
     {
         public long Id { get; set; }
+        public string Name { get; set; }
         public ActionTemplate ActionTemplate { get; set; }
         public long ActionTemplateId { get; set; }
         public ICollection<ConditionSet> ConditionSets { get; set; }

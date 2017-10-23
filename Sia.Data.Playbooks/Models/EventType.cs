@@ -9,6 +9,7 @@ namespace Sia.Data.Playbooks.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public dynamic Data { get; set; }
         public ICollection<EventTypeToActionAssociation> ActionAssociations { get; set; }
             = new HashSet<EventTypeToActionAssociation>();
         public ICollection<Action> Actions
