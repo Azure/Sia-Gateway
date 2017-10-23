@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 
-namespace Sia.Domain.Playbooks
+namespace Sia.Domain.Playbook
 {
     public class EventType
     {

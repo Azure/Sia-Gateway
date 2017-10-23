@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sia.Domain.Playbooks
+namespace Sia.Domain.Playbook
 {
     public class ActionTemplateSource : Source
     {
-        public string Name { get; set; }
+        
     }
 }
