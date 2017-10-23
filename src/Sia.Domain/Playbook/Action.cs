@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Sia.Shared.Data;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Sia.Domain.Playbook
 {
-    public class Action
+    public class Action : IEntity
     {
         public long Id { get; set; }
         public bool IsUrl { get; set; }

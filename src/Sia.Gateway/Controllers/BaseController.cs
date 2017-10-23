@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Sia.Gateway.Authentication;
 using Sia.Gateway.Validation.Filters;
 
-
 namespace Sia.Gateway.Controllers
 {
     [Return400BadRequestWhenModelStateInvalid]
@@ -25,6 +24,5 @@ namespace Sia.Gateway.Controllers
             _authConfig = authConfig;
             _urlHelper = urlHelper;
         }
-
     }
 }

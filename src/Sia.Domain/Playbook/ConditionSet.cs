@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Sia.Shared.Data;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Sia.Domain.Playbook
 {
-    public class ConditionSet
+    public class ConditionSet : IEntity
     {
         public long Id { get; set; }
         public string Name { get; set; }
