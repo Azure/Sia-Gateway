@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Sia.Connectors.Tickets.None;
 using Sia.Domain;
+using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests;
-using Sia.Gateway.ServiceRepositories;
 using Sia.Gateway.Tests.TestDoubles;
 using System.Threading.Tasks;
 
@@ -10,18 +11,20 @@ namespace Sia.Gateway.Tests.Requests
     [TestClass]
     public class GetIncidentTests
     {
+        [TestInitialize]
+        public void ConfigureAutomapper()
+            => AutoMapperStartup.InitializeAutomapper();
         [TestMethod]
         public async Task Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncident()
         {
-            long expectedIncidentId = 200;
-            string expectedIncidentTitle = "The thing we were looking for";
+            long expectedIncidentId = 1;
+            string expectedIncidentTitle = "Customers are unable to access [REDACTED] from [REDACTED]";
             var expectedIncident = new Incident
             {
                 Id = expectedIncidentId,
                 Title = expectedIncidentTitle
             };
-            IIncidentRepository mockClient = new StubIncidentRepository(expectedIncident, null);
-            var serviceUnderTest = new GetIncidentHandler(mockClient);
+            var serviceUnderTest = new GetIncidentHandler<EmptyTicket>(MockFactory.IncidentContext("Get"), new NoConnector(new NoClient(), new NoConverter()));
             var request = new GetIncidentRequest(expectedIncidentId, new DummyAuthenticatedUserContext());
 
 

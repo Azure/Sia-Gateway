@@ -1,8 +1,12 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Gateway.Authentication;
-using Sia.Gateway.ServiceRepositories;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+
 
 namespace Sia.Gateway.Requests
 {
@@ -17,17 +21,24 @@ namespace Sia.Gateway.Requests
         public long Id { get; }
         public long IncidentId { get; }
     }
-    public class GetEngagementHandler : IAsyncRequestHandler<GetEngagementRequest, Engagement>
-    {
-        private IEngagementRepository _incidentRepository;
 
-        public GetEngagementHandler(IEngagementRepository incidentRepository)
+    public class GetEngagementHandler
+        : IAsyncRequestHandler<GetEngagementRequest, Engagement>
+    {
+        private readonly IncidentContext _context;
+
+        public GetEngagementHandler(IncidentContext context)
         {
-            _incidentRepository = incidentRepository;
+            _context = context;
         }
         public async Task<Engagement> Handle(GetEngagementRequest request)
         {
-            return await _incidentRepository.GetEngagementAsync(request.IncidentId, request.Id, request.UserContext);
+            var EngagementRecord = await _context.Engagements
+                .Include(en => en.Participant)
+                .FirstOrDefaultAsync(ev => ev.IncidentId == request.IncidentId && ev.Id == request.Id);
+            if (EngagementRecord == null) throw new KeyNotFoundException();
+
+            return Mapper.Map<Engagement>(EngagementRecord);
         }
     }
 }

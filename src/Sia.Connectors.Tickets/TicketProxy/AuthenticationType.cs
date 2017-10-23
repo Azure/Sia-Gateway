@@ -3,6 +3,7 @@
     public enum AuthenticationType
     {
         None,
-        Certificate
+        Certificate,
+        CertificateFromKeyVault
     }
 }

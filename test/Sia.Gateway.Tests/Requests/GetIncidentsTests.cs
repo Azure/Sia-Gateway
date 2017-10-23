@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sia.Domain;
+using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests;
-using Sia.Gateway.ServiceRepositories;
 using Sia.Gateway.Tests.TestDoubles;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,11 +12,19 @@ namespace Sia.Gateway.Tests.Requests
     [TestClass]
     public class GetIncidentsTests
     {
+        [TestInitialize]
+        public void ConfigureAutomapper()
+            => AutoMapperStartup.InitializeAutomapper();
+
         [TestMethod]
         public async Task Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents()
         {
-            long[] expectedIncidentIds = { 200, 300, 400 };
-            string[] expectedIncidentTitles = { "First", "Second", "Third" };
+            long[] expectedIncidentIds = { 1, 2, 3 };
+            string[] expectedIncidentTitles = {
+                "Customers are unable to access [REDACTED] from [REDACTED]",
+                "Loss of [REDACTED] Connectivity in [REDACTED]",
+                "[REDACTED] and [REDACTED] service management operations for a subset of users in [REDACTED] are failing"
+            };
             Incident[] expectedIncidents = new Incident[expectedIncidentIds.Length];
             for (int i = 0; i < expectedIncidents.Length; i++)
             {
@@ -26,8 +34,7 @@ namespace Sia.Gateway.Tests.Requests
                     Title = expectedIncidentTitles[i]
                 };
             }
-            IIncidentRepository mockRepository = new StubIncidentRepository(expectedIncidents, null);
-            var serviceUnderTest = new GetIncidentsHandler(mockRepository);
+            var serviceUnderTest = new GetIncidentsHandler(MockFactory.IncidentContext("Get"));
             var request = new GetIncidentsRequest(new DummyAuthenticatedUserContext());
 
 

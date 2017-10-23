@@ -1,7 +1,9 @@
-﻿using MediatR;
+﻿using AutoMapper.QueryableExtensions;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Gateway.Authentication;
-using Sia.Gateway.ServiceRepositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,23 +11,28 @@ namespace Sia.Gateway.Requests
 {
     public class GetIncidentsRequest : AuthenticatedRequest, IRequest<IEnumerable<Incident>>
     {
-        public GetIncidentsRequest(AuthenticatedUserContext userContext) : base(userContext)
+        public GetIncidentsRequest(AuthenticatedUserContext userContext)
+            : base(userContext)
         {
         }
     }
 
-    public class GetIncidentsHandler : IAsyncRequestHandler<GetIncidentsRequest, IEnumerable<Incident>>
+    public class GetIncidentsHandler
+        : IAsyncRequestHandler<GetIncidentsRequest, IEnumerable<Incident>>
     {
-        private IIncidentRepository _incidentRepository;
-
-        public GetIncidentsHandler(IIncidentRepository incidentClient)
+        private readonly IncidentContext _context;
+        public GetIncidentsHandler(IncidentContext context)
         {
-            _incidentRepository = incidentClient;
+            _context = context;
         }
-        public async Task<IEnumerable<Incident>> Handle(GetIncidentsRequest message)
+        public async Task<IEnumerable<Incident>> Handle(GetIncidentsRequest request)
         {
-            var incidentResponse = await _incidentRepository.GetIncidentsAsync(message.UserContext);
-            return incidentResponse;
+            var incidentRecords = await _context.Incidents
+                .WithEagerLoading()
+                .ProjectTo<Incident>()
+                .ToListAsync();
+            return incidentRecords;
         }
     }
+
 }

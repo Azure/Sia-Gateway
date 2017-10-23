@@ -1,7 +1,11 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Sia.Connectors.Tickets;
+using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Gateway.Authentication;
-using Sia.Gateway.ServiceRepositories;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
@@ -15,18 +19,53 @@ namespace Sia.Gateway.Requests
         }
         public long Id { get; }
     }
-    public class GetIncidentHandler : IAsyncRequestHandler<GetIncidentRequest, Incident>
+
+    public class GetIncidentHandler<TTicket> : IGetIncidentHandler
     {
-        private IIncidentRepository _incidentRepository;
-
-        public GetIncidentHandler(IIncidentRepository incidentRepository)
+        private readonly IncidentContext _context;
+        private readonly Connector<TTicket> _connector;
+        public GetIncidentHandler(IncidentContext context, Connector<TTicket> connector)
         {
-            _incidentRepository = incidentRepository;
+            _context = context;
+            _connector = connector;
+        }
+        public async Task<Incident> Handle(GetIncidentRequest getIncident)
+        {
+            var incidentRecord = await _context.Incidents
+                                        .WithEagerLoading()
+                                        .FirstOrDefaultAsync(cr => cr.Id == getIncident.Id);
+            if (incidentRecord == null) throw new KeyNotFoundException();
+
+            var remoteId = incidentRecord
+                                .Tickets
+                                .FirstOrDefault(t => t.IsPrimary)
+                                .OriginId;
+
+            var ticket = await _connector.Client.GetAsync(remoteId);
+
+            return _connector
+                    .Converter
+                    .AssembleIncident(incidentRecord, ticket);
+        }
+    }
+
+    public interface IGetIncidentHandler
+    {
+        Task<Incident> Handle(GetIncidentRequest getIncident);
+    }
+
+    //Why does this exist?
+    //Purely because I haven't been able to get Mediatr to work with generics
+    public class GetIncidentHandlerWrapper : IAsyncRequestHandler<GetIncidentRequest, Incident>
+    {
+        private readonly IGetIncidentHandler _actualHandler;
+
+        public GetIncidentHandlerWrapper(IGetIncidentHandler actualHandler)
+        {
+            _actualHandler = actualHandler;
         }
 
-        public async Task<Incident> Handle(GetIncidentRequest request)
-        {
-            return await _incidentRepository.GetIncidentAsync(request.Id, request.UserContext);
-        }
+        public Task<Incident> Handle(GetIncidentRequest message)
+            => _actualHandler.Handle(message);
     }
 }

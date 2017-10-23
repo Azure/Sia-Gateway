@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>Microsoft.Sia.Connectors.Tickets</PackageId>
-    <Version>1.0.5-alpha</Version>
+    <Version>1.0.6-alpha</Version>
     <Authors>pdimit, magpint, jache, chtownes</Authors>
     <Company>Microsoft</Company>
     <Product>SRE Incident Assistant</Product>
@@ -15,13 +15,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.1.1" />
-    <PackageReference Include="Microsoft.Sia.Shared" Version="1.0.7-alpha" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
     <ProjectReference Include="..\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj" />
     <ProjectReference Include="..\Sia.Domain\Sia.Domain.csproj" />
+    <ProjectReference Include="..\Sia.Shared\Sia.Shared.csproj" />
   </ItemGroup>
 
 </Project>

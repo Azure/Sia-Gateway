@@ -1,8 +1,11 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
-using Sia.Gateway.ServiceRepositories;
+using Sia.Shared.Exceptions;
+using System;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
@@ -16,20 +19,27 @@ namespace Sia.Gateway.Requests
         }
 
         public NewIncident Incident { get; private set; }
-
     }
 
-    public class PostIncidentHandler : IAsyncRequestHandler<PostIncidentRequest, Incident>
+    public class PostIncidentHandler
+    : IAsyncRequestHandler<PostIncidentRequest, Incident>
     {
-        private IIncidentRepository _incidentRepository;
-
-        public PostIncidentHandler(IIncidentRepository incidentClient)
+        private readonly IncidentContext _context;
+        public PostIncidentHandler(IncidentContext context)
         {
-            _incidentRepository = incidentClient;
+            _context = context;
         }
-        public async Task<Incident> Handle(PostIncidentRequest message)
+        public async Task<Incident> Handle(PostIncidentRequest request)
         {
-            return await _incidentRepository.PostIncidentAsync(message.Incident, message.UserContext);
+            if (request.Incident == null) throw new ArgumentNullException(nameof(request.Incident));
+            if (request.Incident?.PrimaryTicket?.OriginId == null) throw new ConflictException("Please provide a primary incident with a valid originId");
+
+            var dataIncident = Mapper.Map<Data.Incidents.Models.Incident>(request.Incident);
+
+            var result = _context.Incidents.Add(dataIncident);
+            await _context.SaveChangesAsync();
+
+            return Mapper.Map<Incident>(dataIncident);
         }
     }
 }

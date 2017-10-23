@@ -2,6 +2,7 @@
 using Sia.Data.Incidents.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Sia.Data.Incidents
 {
@@ -11,8 +12,10 @@ namespace Sia.Data.Incidents
         const int differentEventTypes = 8;
         const int eventCountForManyEvents = 1000;
         //Some dev/test/demo data that was based on actual incidents has been [REDACTED]
-        public static void Add(IncidentContext incidentContext, SeedType seedtype)
+        public static void Add(IncidentContext incidentContext, SeedType seedtype = SeedType.Basic)
         {
+            if (incidentContext.Incidents.Any()) return; //This context already has seed data loaded
+
             var firstTestIncidentSystem = new TicketingSystem
             {
                 Name = "Not Our Ticketing System Name"

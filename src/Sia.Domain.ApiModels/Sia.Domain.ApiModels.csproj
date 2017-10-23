@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sia.Domain\Sia.Domain.csproj" />
+    <ProjectReference Include="..\Sia.Shared\Sia.Shared.csproj" />
   </ItemGroup>
 
 </Project>
