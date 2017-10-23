@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Sia.Shared" Version="1.0.9-alpha" />
+    <PackageReference Include="Microsoft.Sia.Shared" Version="1.1.0-alpha" />
   </ItemGroup>
 
 </Project>

@@ -10,7 +10,6 @@ namespace Sia.Domain.Playbook
         public string Name { get; set; }
         public SourceObject SourceObject { get; set; }
         public string Key { get; set; }
-        public string Name { get; set; }
     }
 
     public enum SourceObject
