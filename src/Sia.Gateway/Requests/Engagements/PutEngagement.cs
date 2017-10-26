@@ -5,6 +5,7 @@ using Sia.Data.Incidents;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
@@ -35,10 +36,11 @@ namespace Sia.Gateway.Requests
         }
         public async Task Handle(PutEngagementRequest request)
         {
-            if (request.UpdateEngagement == null) throw new ArgumentNullException(nameof(UpdateEngagement));
+            if (request.UpdateEngagement is null) throw new ArgumentNullException(nameof(UpdateEngagement));
             var existingRecord = await _context.Engagements
                 .Include(en => en.Participant)
                 .FirstOrDefaultAsync(engagement => engagement.IncidentId == request.IncidentId && engagement.Id == request.EngagementId);
+            if (existingRecord is null) throw new KeyNotFoundException();
 
             var updatedModel = Mapper.Map(request.UpdateEngagement, existingRecord);
 

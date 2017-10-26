@@ -34,7 +34,7 @@ namespace Sia.Gateway.Tests.Requests
                     Title = expectedIncidentTitles[i]
                 };
             }
-            var serviceUnderTest = new GetIncidentsHandler(MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetIncidentsHandler(await MockFactory.IncidentContext("Get"));
             var request = new GetIncidentsRequest(new DummyAuthenticatedUserContext());
 
 

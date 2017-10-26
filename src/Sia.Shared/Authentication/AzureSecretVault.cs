@@ -9,11 +9,7 @@ using System.Threading.Tasks;
 
 namespace Sia.Shared.Authentication
 {
-    public interface ISecretVault
-    {
-        Task<string> Get(string secretName);
-    }
-    public class AzureSecretVault : ISecretVault
+    public class AzureSecretVault
     {
         private readonly KeyVaultConfiguration _config;
         private const string _secretsEndpoint = "/secrets/";

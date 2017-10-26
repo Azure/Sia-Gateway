@@ -21,7 +21,7 @@ namespace Sia.Gateway.Tests.Requests
         [TestMethod]
         public async Task Handle_WhenIncidentNotExist_ReturnNewIncident()
         {
-            var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(await MockFactory.IncidentContext("Get"));
             var request = new GetIncidentsByTicketCreateIfNeededRequest("100", new DummyAuthenticatedUserContext());
 
 
@@ -36,7 +36,7 @@ namespace Sia.Gateway.Tests.Requests
         public async Task Handle_WhenIncidentExists_ReturnCorrectIncidents()
         {
 
-            var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(await MockFactory.IncidentContext("Get"));
             var request = new GetIncidentsByTicketCreateIfNeededRequest("44444444", new DummyAuthenticatedUserContext());
 
             var result = (await serviceUnderTest.Handle(request)).ToList();
