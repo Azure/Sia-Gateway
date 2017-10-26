@@ -18,7 +18,7 @@ using Sia.Shared.Validation;
 using System;
 using System.Reflection;
 using System.Runtime.Loader;
-using Sia.Gateway.Protocol;
+using Sia.Shared.Protocol;
 using System.Buffers;
 using Sia.Domain;
 

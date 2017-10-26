@@ -36,5 +36,8 @@
     <ProjectReference Include="..\Sia.Connectors.Tickets\Sia.Connectors.Tickets.csproj" />
     <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Validation\" />
+  </ItemGroup>
 
 </Project>

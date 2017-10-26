@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Authentication;
-using Sia.Gateway.Protocol;
+using Sia.Shared.Protocol;
 using Sia.Gateway.Hubs;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Events;

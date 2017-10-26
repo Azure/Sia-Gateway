@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Sia.Gateway.Authentication;
-using Sia.Gateway.Protocol;
+using Sia.Shared.Protocol;
 using Sia.Data.Incidents;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
