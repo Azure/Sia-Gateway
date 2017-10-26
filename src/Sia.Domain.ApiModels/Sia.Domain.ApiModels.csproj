@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Microsoft.Sia.Domain.ApiModels</PackageId>
-    <Version>1.1.0-alpha</Version>
+    <Version>1.1.1-alpha</Version>
     <Authors>pdimit, magpint, jache, chtownes</Authors>
     <Company>Microsoft</Company>
     <Product>SRE Incident Assistant</Product>
