@@ -13,9 +13,9 @@ namespace Sia.Data.Incidents
         const int differentEventTypes = 8;
         const int eventCountForManyEvents = 1000;
         //Some dev/test/demo data that was based on actual incidents has been [REDACTED]
-        public static Task<int> Add(IncidentContext incidentContext, SeedType seedtype = SeedType.Basic)
+        public static int Add(IncidentContext incidentContext, SeedType seedtype = SeedType.Basic)
         {
-            if (incidentContext.Incidents.Any()) return Task.FromResult(0); //This context already has seed data loaded
+            if (incidentContext.Incidents.Any()) return 0; //This context already has seed data loaded
 
             var firstTestIncidentSystem = new TicketingSystem
             {
@@ -55,8 +55,8 @@ namespace Sia.Data.Incidents
                 {
                     new Engagement
                     {
-                        TimeEngaged = DateTime.Parse("03/03/1973"),
-                        TimeDisengaged = DateTime.Parse("04/04/1974"),
+                        TimeEngaged = new DateTime(1973, 3, 3),
+                        TimeDisengaged =  new DateTime(1974, 4, 4),
                         Participant = new Participant
                         {
                             Alias = "pdimit",
@@ -66,7 +66,7 @@ namespace Sia.Data.Incidents
                     },
                     new Engagement
                     {
-                        TimeEngaged = DateTime.Parse("03/03/1973"),
+                        TimeEngaged =  new DateTime(1973, 3, 3),
                         Participant = new Participant
                         {
                             Alias = "satyan",
@@ -80,14 +80,14 @@ namespace Sia.Data.Incidents
                     new Event
                     {
                         EventTypeId = 1,
-                        Occurred = DateTime.Parse("05/05/1975"),
-                        EventFired = DateTime.Parse("06/06/1976")
+                        Occurred = new DateTime(1975, 5, 5),
+                        EventFired = new DateTime(1976, 6, 6)
                     },
                     new Event
                     {
                         EventTypeId = 111,
-                        Occurred = DateTime.Parse("05/05/1975"),
-                        EventFired = DateTime.Parse("06/06/1976")
+                        Occurred = new DateTime(1975, 5, 5),
+                        EventFired = new DateTime(1976, 6, 7)
                     }
                 },
                 Title = "Customers are unable to access [REDACTED] from [REDACTED]"
@@ -104,8 +104,8 @@ namespace Sia.Data.Incidents
                 {
                     new Engagement
                     {
-                        TimeEngaged = DateTime.Parse("03/03/1973"),
-                        TimeDisengaged = DateTime.Parse("04/04/1974"),
+                        TimeEngaged = new DateTime(1973, 3, 3),
+                        TimeDisengaged = new DateTime(1974, 4, 4),
                         Participant = new Participant
                         {
                             Alias = "jache",
@@ -132,8 +132,8 @@ namespace Sia.Data.Incidents
                 {
                     new Engagement
                     {
-                        TimeEngaged = DateTime.Parse("03/03/1973"),
-                        TimeDisengaged = DateTime.Parse("04/04/1974"),
+                        TimeEngaged = new DateTime(1973, 3, 3),
+                        TimeDisengaged = new DateTime(1974, 4, 4),
                         Participant = new Participant
                         {
                             Alias = "magpint",
@@ -160,8 +160,8 @@ namespace Sia.Data.Incidents
                 {
                     new Engagement
                     {
-                        TimeEngaged = DateTime.Parse("03/03/1973"),
-                        TimeDisengaged = DateTime.Parse("04/04/1974"),
+                        TimeEngaged = new DateTime(1973, 3, 3),
+                        TimeDisengaged = new DateTime(1974, 4, 4),
                         Participant = new Participant
                         {
                             Alias = "mcheck",
@@ -181,7 +181,9 @@ namespace Sia.Data.Incidents
             incidentContext.Add(thirdTestCrisis);
             incidentContext.Add(fourthTestCrisis);
 
-            return incidentContext.SaveChangesAsync();
+            var seedTask = incidentContext.SaveChangesAsync();
+            Task.WaitAll(seedTask);
+            return seedTask.Result;
         }
 
         private static ICollection<Event> GenerateManyEvents()

@@ -31,7 +31,7 @@ namespace Sia.Gateway.Tests.TestDoubles
                     .UseInMemoryDatabase(instance)
                     .Options;
                 context = new IncidentContext(options);
-                await SeedData.Add(context);
+                SeedData.Add(context);
                 _contextBeingGenerated.TryAdd(instance, false);
                 if (_contexts.TryAdd(instance, context)) return context;
                 if (_contexts.TryGetValue(instance, out var otherContext)) return otherContext;

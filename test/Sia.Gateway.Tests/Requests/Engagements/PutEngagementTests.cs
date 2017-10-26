@@ -22,7 +22,7 @@ namespace Sia.Gateway.Tests.Requests
         {
             var inputEngagement = new UpdateEngagement()
             {
-                TimeDisengaged = DateTime.Parse("10/10/1970")
+                TimeDisengaged = new DateTime(1970, 10, 10)
             };
 
             var context = await MockFactory.IncidentContext(
@@ -38,7 +38,7 @@ namespace Sia.Gateway.Tests.Requests
             var result = context.Engagements.First(e => e.Id == 1);
 
 
-            Assert.AreEqual(DateTime.Parse("10/10/1970"), result.TimeDisengaged);
+            Assert.AreEqual(new DateTime(1970, 10, 10), result.TimeDisengaged);
         }
 
 
@@ -48,7 +48,7 @@ namespace Sia.Gateway.Tests.Requests
         {
             var inputEngagement = new UpdateEngagement()
             {
-                TimeDisengaged = DateTime.Parse("10/10/1970")
+                TimeDisengaged = new DateTime(1070, 10, 10)
             };
 
             var context = await MockFactory.IncidentContext(nameof(PutEngagementTests) + nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException));

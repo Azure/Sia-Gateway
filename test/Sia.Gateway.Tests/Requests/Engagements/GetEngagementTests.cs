@@ -22,8 +22,8 @@ namespace Sia.Gateway.Tests.Requests
             var expectedEngagement = new Engagement
             {
                 Id = 1,
-                TimeEngaged = DateTime.Parse("03/03/1973"),
-                TimeDisengaged = DateTime.Parse("04/04/1974"),
+                TimeEngaged = new DateTime(1973, 3, 3),
+                TimeDisengaged = new DateTime(1974, 4, 4),
                 Participant = new Participant
                 {
                     Alias = "pdimit",
