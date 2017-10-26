@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sia.Shared\Sia.Shared.csproj" />
+    <ProjectReference Include="..\..\domain\Domain\Sia.Shared\Sia.Shared.csproj" />
   </ItemGroup>
 
 </Project>
