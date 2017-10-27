@@ -5,7 +5,7 @@ using Sia.Gateway.Requests.Playbook;
 using System.Net.Http;
 using Sia.Shared.Authentication.Http;
 
-namespace Sia.Playbook.Requests
+namespace Sia.Gateway.Requests
 {
     public class PostActionTemplateRequest : AuthenticatedRequest<Domain.Playbook.ActionTemplate>
     {

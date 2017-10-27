@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using Sia.Shared.Authentication.Http;
 
-namespace Sia.Playbook.Requests
+namespace Sia.Gateway.Requests
 {
     public class PostEventTypeRequest : AuthenticatedRequest<Domain.Playbook.EventType>
     {

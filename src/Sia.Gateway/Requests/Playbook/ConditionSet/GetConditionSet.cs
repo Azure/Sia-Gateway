@@ -4,7 +4,7 @@ using Sia.Shared.Authentication.Http;
 using Sia.Shared.Requests;
 using System.Net.Http;
 
-namespace Sia.Playbook.Requests
+namespace Sia.Gateway.Requests
 {
     public class GetConditionSetRequest : AuthenticatedRequest<Domain.Playbook.ConditionSet>
     {

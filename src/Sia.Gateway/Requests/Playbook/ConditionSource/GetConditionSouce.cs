@@ -6,7 +6,7 @@ using Sia.Shared.Requests;
 using System;
 using System.Net.Http;
 
-namespace Sia.Playbook.Requests
+namespace Sia.Gateway.Requests
 {
     public class GetConditionSourceRequest : AuthenticatedRequest<ConditionSource>
     {

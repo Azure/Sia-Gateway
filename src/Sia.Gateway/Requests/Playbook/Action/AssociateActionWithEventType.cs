@@ -4,7 +4,7 @@ using Sia.Gateway.Requests.Playbook;
 using Sia.Shared.Authentication.Http;
 using System.Net.Http;
 
-namespace Sia.Playbook.Requests
+namespace Sia.Gateway.Requests
 {
     public class AssociateActionWithEventTypeRequest : AuthenticatedRequest
     {
