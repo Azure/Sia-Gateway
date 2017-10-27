@@ -8,6 +8,7 @@ using Sia.Shared.Authentication;
 using Sia.Gateway.Requests;
 using Sia.Domain.ApiModels.Playbooks;
 using Sia.Shared.Controllers;
+using Sia.Domain.Playbook;
 
 namespace Sia.Gateway.Controllers
 {
@@ -19,13 +20,13 @@ namespace Sia.Gateway.Controllers
         {
         }
 
-        [HttpGet("{id}", Name = nameof(Get))]
+        [HttpGet("{id}", Name = nameof(Get) + nameof(EventType))]
         public async Task<IActionResult> Get(long id)
             => Ok(await _mediator.Send(new GetEventTypeRequest(id, _authContext)));
 
         [HttpPost()]
         public async Task<IActionResult> Post(CreateEventType content)
-            => CreatedAtRoute(nameof(Get), await _mediator.Send(new PostEventTypeRequest(content, _authContext)));
+            => CreatedAtRoute(nameof(Get) + nameof(EventType), await _mediator.Send(new PostEventTypeRequest(content, _authContext)));
 
         [HttpPut("{eventTypeId}/actions/{actionId}")]
         public async Task<IActionResult> AssociateAction(long actionId, long eventTypeId)
