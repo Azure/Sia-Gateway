@@ -13,7 +13,9 @@ using Sia.Connectors.Tickets.TicketProxy;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Gateway.Requests;
+using Sia.Gateway.Requests.Playbook;
 using Sia.Shared.Authentication;
+using Sia.Shared.Authentication.Http;
 using Sia.Shared.Protocol;
 using Sia.Shared.Validation;
 using System;
@@ -37,6 +39,15 @@ namespace Sia.Gateway.Initialization
             services.AddTicketingConnector(env, config);
 
             services.AddSingleton<IConfigurationRoot>(i => config);
+
+            var httpClients = new HttpClientLookup();
+
+            if (TryGetConfigValue(config, "Services:Playbook", out string playbookBaseUrl))
+            {
+                httpClients.RegisterEndpoint("Playbook", playbookBaseUrl);
+            }
+
+            services.AddSingleton(httpClients);
         }
 
         private static void AddTicketingConnector(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
