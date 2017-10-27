@@ -5,14 +5,15 @@ using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
-using Sia.Gateway.Authentication;
+using Sia.Shared.Authentication;
+using Sia.Shared.Requests;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
 {
-    public class GetIncidentsByTicketCreateIfNeededRequest : AuthenticatedRequest, IRequest<IEnumerable<Incident>>
+    public class GetIncidentsByTicketCreateIfNeededRequest : AuthenticatedRequest<IEnumerable<Incident>>
     {
         public GetIncidentsByTicketCreateIfNeededRequest(string ticketId, AuthenticatedUserContext userContext)
             : base(userContext)
@@ -24,19 +25,15 @@ namespace Sia.Gateway.Requests
 
     }
 
-    public class GetIncidentsByTicketCreateIfNeededRequestHandler : IAsyncRequestHandler<GetIncidentsByTicketCreateIfNeededRequest, IEnumerable<Incident>>
+    public class GetIncidentsByTicketCreateIfNeededRequestHandler : IncidentContextHandler<GetIncidentsByTicketCreateIfNeededRequest, IEnumerable<Incident>>
     {
-
-        private IncidentContext _context;
-
         public GetIncidentsByTicketCreateIfNeededRequestHandler(IncidentContext context)
+            :base(context)
         {
-            _context = context;
+
         }
 
-        public IncidentContext Context { get; }
-
-        public async Task<IEnumerable<Incident>> Handle(GetIncidentsByTicketCreateIfNeededRequest message)
+        public override async Task<IEnumerable<Incident>> Handle(GetIncidentsByTicketCreateIfNeededRequest message)
         {
             var incidents = await _context.Incidents
                 .WithEagerLoading()

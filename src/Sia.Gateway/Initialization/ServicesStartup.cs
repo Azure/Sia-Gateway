@@ -1,26 +1,25 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sia.Connectors.Tickets.None;
 using Sia.Connectors.Tickets.TicketProxy;
 using Sia.Data.Incidents;
-using Sia.Gateway.Authentication;
+using Sia.Domain;
 using Sia.Gateway.Requests;
 using Sia.Shared.Authentication;
+using Sia.Shared.Protocol;
 using Sia.Shared.Validation;
 using System;
+using System.Buffers;
 using System.Reflection;
 using System.Runtime.Loader;
-using Sia.Shared.Protocol;
-using System.Buffers;
-using Sia.Domain;
 
 namespace Sia.Gateway.Initialization
 {

@@ -4,14 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
-using Sia.Gateway.Authentication;
+using Sia.Shared.Authentication;
+using Sia.Shared.Requests;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
 {
-    public class PostEventRequest : AuthenticatedRequest, IRequest<Event>
+    public class PostEventRequest : AuthenticatedRequest<Event>
     {
         public PostEventRequest(long incidentId, NewEvent newEvent, AuthenticatedUserContext userContext)
             :base(userContext)
@@ -24,15 +25,14 @@ namespace Sia.Gateway.Requests
         public long IncidentId { get; }
     }
 
-    public class PostEventHandler : IAsyncRequestHandler<PostEventRequest, Event>
+    public class PostEventHandler : IncidentContextHandler<PostEventRequest, Event>
     {
-        private readonly IncidentContext _context;
-
         public PostEventHandler(IncidentContext context)
+            : base(context)
         {
-            _context = context;
+
         }
-        public async Task<Event> Handle(PostEventRequest request)
+        public override async Task<Event> Handle(PostEventRequest request)
         {
             if (request.NewEvent == null) throw new ArgumentNullException(nameof(request.NewEvent));
 

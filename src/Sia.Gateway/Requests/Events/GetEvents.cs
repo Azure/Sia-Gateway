@@ -3,15 +3,16 @@ using Sia.Domain;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Sia.Gateway.Authentication;
+using Sia.Shared.Authentication;
 using Sia.Shared.Protocol;
 using Sia.Data.Incidents;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Sia.Shared.Requests;
 
 namespace Sia.Gateway.Requests.Events
 {
-    public class GetEventsRequest : AuthenticatedRequest, IRequest<IEnumerable<Event>>
+    public class GetEventsRequest : AuthenticatedRequest<IEnumerable<Event>>
     {
         public GetEventsRequest(long incidentId, PaginationMetadata pagination, AuthenticatedUserContext userContext) 
             : base(userContext)
@@ -25,15 +26,14 @@ namespace Sia.Gateway.Requests.Events
     }
 
     public class GetEventsHandler 
-        : IAsyncRequestHandler<GetEventsRequest, IEnumerable<Event>>
+        : IncidentContextHandler<GetEventsRequest, IEnumerable<Event>>
     {
-        private readonly IncidentContext _context;
-
         public GetEventsHandler(IncidentContext context)
+            :base(context)
         {
-            _context = context;
+
         }
-        public async Task<IEnumerable<Event>> Handle(GetEventsRequest request)
+        public override async Task<IEnumerable<Event>> Handle(GetEventsRequest request)
                 => await _context.Events
                 .Where(ev => ev.IncidentId == request.IncidentId)
                 .WithPagination(request.Pagination)

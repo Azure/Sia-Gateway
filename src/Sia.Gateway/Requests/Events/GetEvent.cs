@@ -3,14 +3,15 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
-using Sia.Gateway.Authentication;
+using Sia.Shared.Authentication;
+using Sia.Shared.Requests;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
 {
 
-    public class GetEventRequest : AuthenticatedRequest, IRequest<Event>
+    public class GetEventRequest : AuthenticatedRequest<Event>
     {
         public GetEventRequest(long incidentId, long id, AuthenticatedUserContext userContext)
             :base(userContext)
@@ -22,15 +23,15 @@ namespace Sia.Gateway.Requests
         public long IncidentId { get; }
     }
 
-    public class GetEventHandler : IAsyncRequestHandler<GetEventRequest, Event>
+    public class GetEventHandler 
+        : IncidentContextHandler<GetEventRequest, Event>
     {
-        private readonly IncidentContext _context;
-
         public GetEventHandler(IncidentContext context)
+            :base(context)
         {
-            _context = context;
+
         }
-        public async Task<Event> Handle(GetEventRequest request)
+        public override async Task<Event> Handle(GetEventRequest request)
         {
             var eventRecord = await _context
                                     .Events

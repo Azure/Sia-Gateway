@@ -3,14 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Sia.Connectors.Tickets;
 using Sia.Data.Incidents;
 using Sia.Domain;
-using Sia.Gateway.Authentication;
+using Sia.Shared.Authentication;
+using Sia.Shared.Requests;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
 {
-    public class GetIncidentRequest : AuthenticatedRequest, IRequest<Incident>
+    public class GetIncidentRequest : AuthenticatedRequest<Incident>
     {
         public GetIncidentRequest(long id, AuthenticatedUserContext userContext)
             :base(userContext)
