@@ -20,11 +20,11 @@ namespace Sia.Gateway.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(long id, long conditionSetId)
-            => Ok(await _mediator.Send(new GetConditionRequest(id, conditionSetId, _authContext)));
+        public async Task<IActionResult> Get(long actionId, long id, long conditionSetId)
+            => Ok(await _mediator.Send(new GetConditionRequest(actionId, id, conditionSetId, _authContext)));
 
         [HttpPost()]
-        public async Task<IActionResult> Post(CreateCondition content, long conditionSetId)
-            => Ok(await _mediator.Send(new PostConditionRequest(conditionSetId, content,  _authContext)));
+        public async Task<IActionResult> Post(CreateCondition content, long actionId, long conditionSetId)
+            => Ok(await _mediator.Send(new PostConditionRequest(actionId, conditionSetId, content,  _authContext)));
     }
 }
