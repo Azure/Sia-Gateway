@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sia.Domain;
 using Sia.Gateway.Initialization;
-using Sia.Gateway.Protocol;
+using Sia.Shared.Protocol;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Events;
 using Sia.Gateway.Tests.TestDoubles;

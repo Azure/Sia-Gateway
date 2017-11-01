@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sia.Gateway.Middleware;
+using Sia.Shared.Middleware;
 using System;
 using System.Threading.Tasks;
 
