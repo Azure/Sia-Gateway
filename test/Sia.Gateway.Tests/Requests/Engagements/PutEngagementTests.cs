@@ -30,12 +30,14 @@ namespace Sia.Gateway.Tests.Requests
                 + nameof(Handle_WhenContextUpdatesEngagement_EngagementRecordInDatabaseReflectsUpdate)
             );
 
+            var incident = context.Incidents.FirstOrDefault();
+            var engagement = incident.Engagements.FirstOrDefault();
             var serviceUnderTest = new PutEngagementHandler(context);
-            var request = new PutEngagementRequest(1, 1, inputEngagement, new DummyAuthenticatedUserContext());
+            var request = new PutEngagementRequest(incident.Id, engagement.Id, inputEngagement, new DummyAuthenticatedUserContext());
 
 
             await serviceUnderTest.Handle(request);
-            var result = context.Engagements.First(e => e.Id == 1);
+            var result = context.Engagements.First(e => e.Id == engagement.Id);
 
 
             Assert.AreEqual(new DateTime(1970, 10, 10), result.TimeDisengaged);
