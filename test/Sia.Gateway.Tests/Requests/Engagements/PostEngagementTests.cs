@@ -8,6 +8,7 @@ using Sia.Gateway.Tests.TestDoubles;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Sia.Gateway.Tests.Requests
 {
@@ -32,13 +33,16 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new PostEngagementHandler(
-                await MockFactory.IncidentContext(
+            var context = await MockFactory.IncidentContext(
                     nameof(PostEngagementTests)
                     + "one"
-                )
+                );
+            var incident = context.Incidents.FirstOrDefault();
+            var serviceUnderTest = new PostEngagementHandler(
+               context
             );
-            var request = new PostEngagementRequest(1, inputEngagement, new DummyAuthenticatedUserContext());
+
+            var request = new PostEngagementRequest(incident.Id, inputEngagement, new DummyAuthenticatedUserContext());
 
             var result = await serviceUnderTest.Handle(request);
 
@@ -66,7 +70,7 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new PostEngagementHandler(await MockFactory.IncidentContext(nameof(PostEngagementTests) + nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException)));
+            var serviceUnderTest = new PostEngagementHandler(await MockFactory.IncidentContext(nameof(PostEngagementTests) /*+ nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException)*/));
             var request = new PostEngagementRequest(100_000, inputEngagement, new DummyAuthenticatedUserContext());
 
             var result = await serviceUnderTest.Handle(request);
