@@ -92,7 +92,7 @@ namespace Sia.Gateway.Initialization
 
         private static void ConfigureAuth(IServiceCollection services, IConfigurationRoot config)
         {
-            var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config["Incident:ClientId"], config["Incident:ClientSecret"], config["AzureAd:Tenant"]);
+            var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config["Incident:ClientId"], config["ClientId"], config["ClientSecret"], config["AzureAd:Tenant"]);
             services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
         }
 
