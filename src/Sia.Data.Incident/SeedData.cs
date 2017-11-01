@@ -99,7 +99,15 @@ namespace Sia.Data.Incidents
                     thirdTestTicket
                 },
                 Title = "Loss of [REDACTED] Connectivity in [REDACTED]",
-                Events = new List<Event>(),
+                Events = new List<Event>()
+                {
+                    new Event
+                    {
+                        EventTypeId = 1,
+                        Occurred = new DateTime(1975, 5, 5),
+                        EventFired = new DateTime(1976, 6, 6)
+                    }
+                },
                 Engagements = new List<Engagement>
                 {
                     new Engagement
