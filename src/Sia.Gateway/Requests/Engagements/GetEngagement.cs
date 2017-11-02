@@ -3,14 +3,15 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
-using Sia.Gateway.Authentication;
+using Sia.Shared.Authentication;
+using Sia.Shared.Requests;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
 namespace Sia.Gateway.Requests
 {
-    public class GetEngagementRequest : AuthenticatedRequest, IRequest<Engagement>
+    public class GetEngagementRequest : AuthenticatedRequest<Engagement>
     {
         public GetEngagementRequest(long incidentId, long id, AuthenticatedUserContext userContext)
             : base(userContext)
@@ -23,15 +24,14 @@ namespace Sia.Gateway.Requests
     }
 
     public class GetEngagementHandler
-        : IAsyncRequestHandler<GetEngagementRequest, Engagement>
+        : IncidentContextHandler<GetEngagementRequest, Engagement>
     {
-        private readonly IncidentContext _context;
-
         public GetEngagementHandler(IncidentContext context)
+            :base(context)
         {
-            _context = context;
+
         }
-        public async Task<Engagement> Handle(GetEngagementRequest request)
+        public override async Task<Engagement> Handle(GetEngagementRequest request)
         {
             var EngagementRecord = await _context.Engagements
                 .Include(en => en.Participant)

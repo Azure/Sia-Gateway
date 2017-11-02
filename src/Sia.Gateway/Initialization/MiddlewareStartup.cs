@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Sia.Gateway.Hubs;
-using Sia.Gateway.Middleware;
+using Sia.Shared.Middleware;
 using System;
 using System.Collections.Generic;
 

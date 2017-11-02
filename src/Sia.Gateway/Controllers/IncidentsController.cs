@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
-using Sia.Gateway.Authentication;
+using Sia.Shared.Authentication;
 using Sia.Gateway.Requests;
 using System.Threading.Tasks;
+using Sia.Shared.Controllers;
 
 namespace Sia.Gateway.Controllers
 {

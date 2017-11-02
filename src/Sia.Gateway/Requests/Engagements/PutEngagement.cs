@@ -3,7 +3,8 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain.ApiModels;
-using Sia.Gateway.Authentication;
+using Sia.Shared.Authentication;
+using Sia.Shared.Requests;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,15 +27,15 @@ namespace Sia.Gateway.Requests
     }
 
     public class PutEngagementHandler
-        : IAsyncRequestHandler<PutEngagementRequest>
-    {
-        private readonly IncidentContext _context;
+        : IncidentContextHandler<PutEngagementRequest>
+    { 
 
         public PutEngagementHandler(IncidentContext context)
+            :base(context)
         {
-            _context = context;
+
         }
-        public async Task Handle(PutEngagementRequest request)
+        public override async Task Handle(PutEngagementRequest request)
         {
             if (request.UpdateEngagement is null) throw new ArgumentNullException(nameof(UpdateEngagement));
             var existingRecord = await _context.Engagements

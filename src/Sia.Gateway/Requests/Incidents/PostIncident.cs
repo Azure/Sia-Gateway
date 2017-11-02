@@ -3,14 +3,15 @@ using MediatR;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
-using Sia.Gateway.Authentication;
+using Sia.Shared.Authentication;
 using Sia.Shared.Exceptions;
+using Sia.Shared.Requests;
 using System;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
 {
-    public class PostIncidentRequest : AuthenticatedRequest, IRequest<Incident>
+    public class PostIncidentRequest : AuthenticatedRequest<Incident>
     {
         public PostIncidentRequest(NewIncident incident, AuthenticatedUserContext userContext)
             :base(userContext)
@@ -22,14 +23,14 @@ namespace Sia.Gateway.Requests
     }
 
     public class PostIncidentHandler
-    : IAsyncRequestHandler<PostIncidentRequest, Incident>
+    : IncidentContextHandler<PostIncidentRequest, Incident>
     {
-        private readonly IncidentContext _context;
         public PostIncidentHandler(IncidentContext context)
+            :base(context)
         {
-            _context = context;
+
         }
-        public async Task<Incident> Handle(PostIncidentRequest request)
+        public override async Task<Incident> Handle(PostIncidentRequest request)
         {
             if (request.Incident == null) throw new ArgumentNullException(nameof(request.Incident));
             if (request.Incident?.PrimaryTicket?.OriginId == null) throw new ConflictException("Please provide a primary incident with a valid originId");
