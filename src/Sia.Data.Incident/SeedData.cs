@@ -43,6 +43,12 @@ namespace Sia.Data.Incidents
                 TicketingSystem = firstTestIncidentSystem,
                 IsPrimary = true
             };
+            var demoTestTicket = new Ticket()
+            {
+                OriginId = "100",
+                TicketingSystem = firstTestIncidentSystem,
+                IsPrimary = true
+            };
 
             var firstTestCrisis = new Incident()
             {
@@ -180,6 +186,79 @@ namespace Sia.Data.Incidents
                 }
             };
 
+            var paginationFiller = new Event()
+            {
+                Occurred = DateTime.UtcNow.AddMinutes(50)
+            }.Repeat(50);
+            var demoEvents = new List<Event>
+                {
+                    new Event()
+                    {
+                        EventTypeId = 3,
+                        Occurred = DateTime.UtcNow.AddMinutes(0)
+                    },
+                    new Event()
+                    {
+                        EventTypeId = 15,
+                        Occurred = DateTime.UtcNow.AddMinutes(0)
+                    },
+                    new Event()
+                    {
+                        EventTypeId = 15,
+                        Occurred = DateTime.UtcNow.AddMinutes(0)
+                    },
+                    new Event()
+                    {
+                        EventTypeId = 15,
+                        Occurred = DateTime.UtcNow.AddMinutes(0)
+                    },
+                    new Event()
+                    {
+                        EventTypeId = 1,
+                        Occurred = DateTime.UtcNow.AddMinutes(3)
+                    },
+                    new Event()
+                    {
+                        EventTypeId = 1,
+                        Occurred = DateTime.UtcNow.AddMinutes(5)
+                    },
+                    new Event()
+                    {
+                        EventTypeId = 13,
+                        Occurred = DateTime.UtcNow.AddMinutes(7)
+                    },
+                    new Event()
+                    {
+                        EventTypeId = 1,
+                        Occurred = DateTime.UtcNow.AddMinutes(8)
+                    },
+                    new Event()
+                    {
+                        EventTypeId = 17,
+                        Occurred = DateTime.UtcNow.AddMinutes(11)
+                    },
+                    new Event()
+                    {
+                        EventTypeId = 4,
+                        Occurred = DateTime.UtcNow.AddMinutes(15)
+                    },
+                    new Event()
+                    {
+                        EventTypeId = 5,
+                        Occurred = DateTime.UtcNow.AddMinutes(20)
+                    }
+                };
+            demoEvents.AddRange(paginationFiller);
+            var demoTestCrisis = new Incident()
+            {
+                Tickets = new List<Ticket>()
+                {
+                    demoTestTicket
+                },
+                Title = "Core Router Down in ABCD Data Center",
+                Events = demoEvents
+            };
+
             incidentContext.Add(firstTestIncidentSystem);
             incidentContext.Add(secondTestIncidentSystem);
 
@@ -188,6 +267,7 @@ namespace Sia.Data.Incidents
             incidentContext.Add(secondTestCrisis);
             incidentContext.Add(thirdTestCrisis);
             incidentContext.Add(fourthTestCrisis);
+            incidentContext.Add(demoTestCrisis);
 
             var seedTask = incidentContext.SaveChangesAsync();
             Task.WaitAll(seedTask);
@@ -217,5 +297,12 @@ namespace Sia.Data.Incidents
         private static DateTime RandomTimeInTheLast5Hours(Random randSequence) =>
              DateTime.UtcNow.AddSeconds(-randSequence.Next(0, numberOfSecondsInFiveHours));
 
+        private static IEnumerable<T> Repeat<T>(this T toRepeat, int numberOfTimes)
+            => toRepeat.Repeat().Take(numberOfTimes);
+
+        private static IEnumerable<T> Repeat<T>(this T toRepeat)
+        {
+            while (true) { yield return toRepeat; }
+        }
     }
 }
