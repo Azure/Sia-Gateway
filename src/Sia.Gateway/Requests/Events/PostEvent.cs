@@ -36,15 +36,15 @@ namespace Sia.Gateway.Requests
         {
             if (request.NewEvent == null) throw new ArgumentNullException(nameof(request.NewEvent));
 
-            var dataCrisis = await _context
+            var dataIncident = await _context
                                    .Incidents
                                    .Include(cr => cr.Events)
                                    .FirstOrDefaultAsync(x => x.Id == request.IncidentId);
-            if (dataCrisis == null) throw new KeyNotFoundException();
+            if (dataIncident == null) throw new KeyNotFoundException();
 
             var dataEvent = Mapper.Map<Data.Incidents.Models.Event>(request.NewEvent);
 
-            dataCrisis.Events.Add(dataEvent);
+            dataIncident.Events.Add(dataEvent);
             await _context.SaveChangesAsync();
 
             return Mapper.Map<Event>(dataEvent);
