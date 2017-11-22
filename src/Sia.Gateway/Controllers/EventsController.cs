@@ -10,6 +10,7 @@ using Sia.Gateway.Requests.Events;
 using System.Threading.Tasks;
 using Sia.Shared.Controllers;
 using Sia.Shared.Data;
+using Sia.Data.Incidents.Filters;
 
 namespace Sia.Gateway.Controllers
 {

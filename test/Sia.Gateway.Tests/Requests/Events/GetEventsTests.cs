@@ -8,6 +8,7 @@ using Sia.Gateway.Tests.TestDoubles;
 using System.Linq;
 using System.Threading.Tasks;
 using Sia.Shared.Data;
+using Sia.Data.Incidents.Filters;
 
 namespace Sia.Gateway.Tests.Requests
 {
