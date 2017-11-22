@@ -9,20 +9,26 @@ using Sia.Data.Incidents;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Sia.Shared.Requests;
+using Sia.Shared.Data;
 
 namespace Sia.Gateway.Requests.Events
 {
     public class GetEventsRequest : AuthenticatedRequest<IEnumerable<Event>>
     {
-        public GetEventsRequest(long incidentId, PaginationMetadata pagination, AuthenticatedUserContext userContext) 
+        public GetEventsRequest(long incidentId,
+            PaginationMetadata pagination,
+            EventFilters filter,
+            AuthenticatedUserContext userContext) 
             : base(userContext)
         {
             IncidentId = incidentId;
             Pagination = pagination;
+            Filter = filter;
         }
 
         public long IncidentId { get; }
         public PaginationMetadata Pagination { get; }
+        public EventFilters Filter { get; }
     }
 
     public class GetEventsHandler 
@@ -36,6 +42,7 @@ namespace Sia.Gateway.Requests.Events
         public override async Task<IEnumerable<Event>> Handle(GetEventsRequest request)
                 => await _context.Events
                 .Where(ev => ev.IncidentId == request.IncidentId)
+                .WithFilter(request.Filter)
                 .WithPagination(request.Pagination)
                 .ProjectTo<Event>()
                 .ToListAsync();

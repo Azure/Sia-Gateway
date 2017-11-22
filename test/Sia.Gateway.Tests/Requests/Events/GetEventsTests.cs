@@ -7,6 +7,7 @@ using Sia.Gateway.Requests.Events;
 using Sia.Gateway.Tests.TestDoubles;
 using System.Linq;
 using System.Threading.Tasks;
+using Sia.Shared.Data;
 
 namespace Sia.Gateway.Tests.Requests
 {
@@ -24,9 +25,9 @@ namespace Sia.Gateway.Tests.Requests
             long[] expectedEventIds = { 1, 2 };
             long[] expectedEventTypeIds = { 1, 111 };
 
-
+            var filters = new EventFilters();
             var serviceUnderTest = new GetEventsHandler(await MockFactory.IncidentContext("Get"));
-            var request = new GetEventsRequest(1, new PaginationMetadata(), new DummyAuthenticatedUserContext());
+            var request = new GetEventsRequest(1, new PaginationMetadata(), filters, new DummyAuthenticatedUserContext());
 
 
             var result = (await serviceUnderTest.Handle(request)).ToList();
