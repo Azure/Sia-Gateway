@@ -1,4 +1,5 @@
-﻿using Sia.Data.Incidents;
+﻿using Newtonsoft.Json;
+using Sia.Data.Incidents;
 using Sia.Data.Incidents.Models;
 using System;
 using System.Collections.Generic;
@@ -105,7 +106,11 @@ namespace Sia.Data.Incidents
                     {
                         EventTypeId = 1,
                         Occurred = new DateTime(1975, 5, 5),
-                        EventFired = new DateTime(1976, 6, 6)
+                        EventFired = new DateTime(1976, 6, 6),
+                        Data = JsonConvert.SerializeObject(new
+                        {
+                            Alias = "aliasValue"
+                        })
                     }
                 },
                 Engagements = new List<Engagement>

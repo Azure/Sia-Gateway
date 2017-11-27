@@ -7,17 +7,24 @@ using System.Text;
 
 namespace Sia.Data.Incidents.Filters
 {
-    public class EventFilters:Filters<Event>
+    public class EventFilters: DataFilters<Event>
     {
         public long? IncidentId { get; set; }
         public long? EventTypeId { get; set; }
         public DateTime? Occurred { get; set; }
         public DateTime? EventFired { get; set; }
 
+
         public override IQueryable<Event> Filter(IQueryable<Event> source)
-            => source.Where(ev => !IncidentId.HasValue || ev.IncidentId == IncidentId)
-                .Where(ev => !EventTypeId.HasValue || ev.EventTypeId == EventTypeId)
-                .Where(ev => !Occurred.HasValue || ev.Occurred == Occurred)
-                .Where(ev => !EventFired.HasValue || ev.EventFired == EventFired);
+        {
+            var working = source;
+
+            if (IncidentId.HasValue) working = working.Where(ev => ev.IncidentId == IncidentId);
+            if (EventTypeId.HasValue) working = working.Where(ev => ev.EventTypeId == EventTypeId);
+            if (Occurred.HasValue) working = working.Where(ev => ev.Occurred == Occurred);
+            if (EventFired.HasValue) working = working.Where(ev => ev.EventFired == EventFired);
+
+            return base.Filter(working);
+        }
     }
 }
