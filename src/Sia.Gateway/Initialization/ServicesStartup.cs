@@ -148,8 +148,15 @@ namespace Sia.Gateway.Initialization
                 .AddJwtBearer(jwtOptions =>
                 {
                     jwtOptions.Authority = String.Format(config["AzureAd:AadInstance"], config["AzureAd:Tenant"]);
-                    jwtOptions.Audience = config["Frontend:ClientId"];
+                    jwtOptions.Audience = config["ClientId"];
                     jwtOptions.SaveToken = true;
+                    jwtOptions.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = String.Format(config["AzureAd:AadInstance"], config["ClientId"]),
+                        ValidateAudience = true,
+                        ValidAudience = config["ClientId"]
+                    };
                 });
             services.AddDistributedMemoryCache();
             services.AddSession();
