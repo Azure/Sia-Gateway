@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sia.Data.Incidents", "src\Sia.Data.Incident\Sia.Data.Incidents.csproj", "{269ABD9E-3E8E-4F7D-8D45-6FE13F405C5A}"
 EndProject
@@ -24,6 +24,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sia.Shared", "domain\Domain\Sia.Shared\Sia.Shared.csproj", "{B258FBE4-E2D5-465E-805B-DE989CEA8CC5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sia.Shared.Tests", "domain\Domain\Sia.Shared.Tests\Sia.Shared.Tests.csproj", "{26C3DFC8-1AF2-4AD8-B54C-A4535285440C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{9845797A-7F60-4400-B4C4-D748417E1F64}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.gitmodules = .gitmodules
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
