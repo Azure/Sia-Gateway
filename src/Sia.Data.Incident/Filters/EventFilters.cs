@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 
 namespace Sia.Data.Incidents.Filters
 {
@@ -26,5 +28,13 @@ namespace Sia.Data.Incidents.Filters
 
             return base.Filter(working);
         }
+
+        public override StringValues NonDataFilterValues() => JsonConvert.SerializeObject(new
+        {
+            IncidentId = IncidentId,
+            EventTypeId = EventTypeId,
+            Occurred = Occurred,
+            EventFired = EventFired
+        });
     }
 }
