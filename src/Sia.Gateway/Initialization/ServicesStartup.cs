@@ -50,24 +50,6 @@ namespace Sia.Gateway.Initialization
             services.AddSingleton(httpClients);
         }
 
-        private static void AddTicketingConnector(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
-        {
-            if (TryGetConfigValue(config, "Connector:Ticket:Path", out var ticketConnectorAssemblyPath))
-            {
-                LoadConnectorFromAssembly(services, env, config, ticketConnectorAssemblyPath);
-                return;
-            }
-
-            if (TryGetConfigValue(config, "Connector:Ticket:ProxyEndpoint", out var proxyEndpoint))
-            {
-                AddProxyConnector(services, config, proxyEndpoint);
-                return;
-            }
-
-            services.AddIncidentClient(typeof(EmptyTicket));
-            services.AddNoTicketingSystem();
-        }
-
         private static bool TryGetConfigValue(this IConfigurationRoot config, string configName, out string configValue)
         {
             ThrowIf.NullOrWhiteSpace(configName, nameof(configName));
@@ -75,55 +57,10 @@ namespace Sia.Gateway.Initialization
             return !string.IsNullOrEmpty(configValue);
         }
 
-        private static void AddProxyConnector(IServiceCollection services, IConfigurationRoot config, string proxyEndpoint)
-        {
-            services.AddIncidentClient(typeof(ProxyTicket));
-            var proxyAuthType = config["Connector:Ticket:ProxyAuthType"];
-            switch(proxyAuthType)
-            {
-                case "Certificate":
-                    services.AddProxyWithCert(proxyEndpoint, config["Connector:Ticket:ProxyCertThumbprint"]);
-                    return;
-                case "VaultCertificate":
-                    services.AddProxyWithCertFromKeyVault(
-                        proxyEndpoint,
-                        new KeyVaultConfiguration(
-                            config["ClientId"],
-                            config["ClientSecret"],
-                            config["Connector:Ticket:VaultName"]
-                        ),
-                        config["Connector:Ticket:CertName"]
-                    );
-                    return;
-                default:
-                    services.AddProxyWithoutAuth(proxyEndpoint);
-                    return;
-            }
-        }
-
         private static void ConfigureAuth(IServiceCollection services, IConfigurationRoot config)
         {
             var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config["Playbook:ClientId"], config["ClientId"], config["ClientSecret"], config["AzureAd:Tenant"]);
             services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
-        }
-
-        private static void LoadConnectorFromAssembly(IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config, string ticketConnectorAssemblyPath)
-        {
-            var connectorAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(ticketConnectorAssemblyPath);
-            var connectorInitializerType = connectorAssembly.GetType("Sia.Gateway.Initialization.Initialization");
-
-            var ticketType = (Type)connectorInitializerType.GetMethod("TicketType").Invoke(null, null);
-            services.AddIncidentClient(ticketType);
-
-            var connectorConfigureServices = connectorInitializerType.GetMethod("AddConnector", new Type[] { typeof(IServiceCollection), typeof(IConfigurationRoot), typeof(IHostingEnvironment) });
-            connectorConfigureServices.Invoke(null, new object[] { services, config, env });
-        }
-
-        private static void AddIncidentClient(this IServiceCollection services, Type ticketType)
-        {
-            var handlerType = typeof(GetIncidentHandler<>).MakeGenericType(new Type[] { ticketType });
-            services.AddScoped(typeof(IGetIncidentHandler), handlerType);
-            services.AddScoped<IAsyncRequestHandler<GetIncidentRequest, Incident>, GetIncidentHandlerWrapper>();
         }
 
         public static void AddThirdPartyServices(this IServiceCollection services, IConfigurationRoot config)

@@ -47,7 +47,18 @@ namespace Sia.Connectors.Tickets.TicketProxy
             AuthenticationType = authType;
         }
 
-        public ProxyClient GetClient() => new ProxyClient(ClientFactory.GetClient(), Endpoint);
+        public ProxyClient Client
+        {
+            get
+            {
+                if(_client == null)
+                {
+                    _client = new ProxyClient(ClientFactory.GetClient(), Endpoint);
+                }
+                return _client;
+            }
+        }
+        protected ProxyClient _client;
         public AuthenticationType AuthenticationType { get; protected set; }
         public string Endpoint { get; protected set; }
         public string CertIdentifier { get; protected set; }

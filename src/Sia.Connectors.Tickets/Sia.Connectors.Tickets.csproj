@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>Microsoft.Sia.Connectors.Tickets</PackageId>
-    <Version>1.0.6-alpha</Version>
-    <Authors>pdimit, magpint, jache, chtownes</Authors>
+    <Version>1.1.0-alpha</Version>
+    <Authors>Microsoft</Authors>
     <Company>Microsoft</Company>
     <Product>SRE Incident Assistant</Product>
     <Description>Ticketing system connector primitives for SIA</Description>

@@ -1,9 +1,11 @@
-﻿namespace Sia.Connectors.Tickets.TicketProxy
+﻿using Microsoft.Extensions.Logging;
+
+namespace Sia.Connectors.Tickets.TicketProxy
 {
-    public class ProxyConnector : Connector<ProxyTicket>
+    public class ProxyConnector : Connector
     {
-        public ProxyConnector(Client<ProxyTicket> client, Converter<ProxyTicket> converter) 
-            : base(client, converter)
+        public ProxyConnector(ProxyClient client, ILogger logger) 
+            : base(client, logger)
         {
         }
     }

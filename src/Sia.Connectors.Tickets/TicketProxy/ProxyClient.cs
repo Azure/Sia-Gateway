@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Sia.Connectors.Tickets.TicketProxy
 {
-    public class ProxyClient : Client<ProxyTicket>
+    public class ProxyClient : TicketingClient
     {
         private readonly string _endpoint;
         private readonly HttpClient _client;
@@ -15,12 +15,12 @@ namespace Sia.Connectors.Tickets.TicketProxy
             _client = singletonClient;
         }
 
-        public override async Task<ProxyTicket> GetAsync(string originId)
+        public override async Task<object> GetAsync(string originId)
         {
             string incidentUrl = $"{_endpoint}/{originId}";
             var response = await _client.GetAsync(incidentUrl);
             var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ProxyTicket>(content);
+            return JsonConvert.DeserializeObject<ProxyData>(content);
         }
     }
 }
