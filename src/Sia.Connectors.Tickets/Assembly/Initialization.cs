@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sia.Connectors.Tickets;
-using Sia.Connectors.Tickets.None;
 using System;
 using System.Runtime.Loader;
 

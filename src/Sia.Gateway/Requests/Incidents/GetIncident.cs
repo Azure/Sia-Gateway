@@ -22,16 +22,13 @@ namespace Sia.Gateway.Requests
         public long Id { get; }
     }
 
-    public class GetIncidentHandler : IAsyncRequestHandler<GetIncidentRequest, Incident>
+    public class GetIncidentHandler : IncidentConnectorHandler<GetIncidentRequest, Incident>
     {
-        private readonly IncidentContext _context;
-        private readonly Connector _connector;
+        
         public GetIncidentHandler(IncidentContext context, Connector connector)
-        {
-            _context = context;
-            _connector = connector;
-        }
-        public async Task<Incident> Handle(GetIncidentRequest getIncident)
+            :base(context, connector){}
+
+        public override async Task<Incident> Handle(GetIncidentRequest getIncident)
         {
             var incidentRecord = await _context
                 .Incidents
@@ -41,9 +38,7 @@ namespace Sia.Gateway.Requests
 
             var incident = Mapper.Map<Incident>(incidentRecord);
 
-            incident.Tickets = (await _connector
-                    .GetData(incident.Tickets.AsEnumerable())
-                ).ToList();
+            await AttachTickets(incident);
 
             return incident;
         }

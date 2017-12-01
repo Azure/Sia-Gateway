@@ -24,8 +24,12 @@ namespace Sia.Gateway.Tests.Requests
                 Id = expectedIncidentId,
                 Title = expectedIncidentTitle
             };
-            var serviceUnderTest = new GetIncidentHandler<EmptyTicket>(await MockFactory.IncidentContext("Get"), new NoConnector(new NoClient(), new NoConverter()));
-            var request = new GetIncidentRequest(expectedIncidentId, new DummyAuthenticatedUserContext());
+            var serviceUnderTest = new GetIncidentHandler(
+                await MockFactory.IncidentContext("Get"),
+                new NoConnector(new NoClient(), null));
+            var request = new GetIncidentRequest(
+                expectedIncidentId,
+                new DummyAuthenticatedUserContext());
 
 
             var result = await serviceUnderTest.Handle(request);
