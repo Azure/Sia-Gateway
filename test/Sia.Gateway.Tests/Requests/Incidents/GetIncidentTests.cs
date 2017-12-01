@@ -26,7 +26,7 @@ namespace Sia.Gateway.Tests.Requests
             };
             var serviceUnderTest = new GetIncidentHandler(
                 await MockFactory.IncidentContext("Get"),
-                new NoConnector(new NoClient(), null));
+                new NoConnector(new NoClient(), new StubLoggerFactory()));
             var request = new GetIncidentRequest(
                 expectedIncidentId,
                 new DummyAuthenticatedUserContext());

@@ -24,7 +24,7 @@ namespace Sia.Gateway.Tests.Requests
         {
             var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(
                 await MockFactory.IncidentContext("Get"),
-                new NoConnector(new NoClient(), null)
+                new NoConnector(new NoClient(), new StubLoggerFactory())
             );
             var request = new GetIncidentsByTicketCreateIfNeededRequest("100", new DummyAuthenticatedUserContext());
 
@@ -42,7 +42,7 @@ namespace Sia.Gateway.Tests.Requests
 
             var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(
                 await MockFactory.IncidentContext("Get"),
-                new NoConnector(new NoClient(), null)
+                new NoConnector(new NoClient(), new StubLoggerFactory())
             );
             var request = new GetIncidentsByTicketCreateIfNeededRequest("44444444", new DummyAuthenticatedUserContext());
 

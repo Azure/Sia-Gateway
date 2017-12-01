@@ -4,8 +4,8 @@ namespace Sia.Connectors.Tickets.None
 {
     public class NoConnector : Connector
     {
-        public NoConnector(NoClient client, ILogger logger)
-            : base(client, logger)
+        public NoConnector(NoClient client, ILoggerFactory loggerFactory)
+            : base(client, loggerFactory)
         {
         }
     }

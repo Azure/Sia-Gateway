@@ -22,16 +22,11 @@ namespace Sia.Gateway.Requests
             _connector = connector;
         }
 
-        protected async Task AttachTickets(Incident incident)
-            => incident.Tickets = (await _connector
-                    .GetData(incident.Tickets.AsEnumerable())
-                ).ToList();
+        protected void AttachTickets(Incident incident)
+            => _connector.GetData(incident.Tickets);
 
         protected void AttachTickets(List<Incident> incidents)
-            => Task.WaitAll(
-                incidents
-                .Select(inc => AttachTickets(inc))
-                .ToArray()
-            );
+            => incidents.Map(inc => AttachTickets(inc));
+               
     }
 }

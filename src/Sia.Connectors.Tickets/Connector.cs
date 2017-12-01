@@ -10,14 +10,14 @@ namespace Sia.Connectors.Tickets
 {
     public class Connector
     {
-        public Connector(TicketingClient client, ILogger logger)
+        public Connector(TicketingClient client, ILoggerFactory loggerFactory)
         {
             Client = client;
-            Logger = logger;
+            Logger = loggerFactory.CreateLogger<Connector>();
         }
         protected TicketingClient Client { get; }
         protected ILogger Logger { get; }
-        public virtual async Task<Ticket> GetData(Ticket persistedTicket)
+        public virtual async Task GetData(Ticket persistedTicket)
         {
             try
             {
@@ -31,19 +31,13 @@ namespace Sia.Connectors.Tickets
                     new object[] { persistedTicket.Id }
                 );
             }
-            
-            return persistedTicket;
         }
 
-        public virtual Task<IEnumerable<Ticket>> GetData(IEnumerable<Ticket> persistedTickets)
-        {
-            var hydrationTasks = persistedTickets
-                .Select(tick => GetData(tick))
-                .ToArray();
-            Task.WaitAll(hydrationTasks);
-            return Task.FromResult(
-                hydrationTasks.Select(task => task.Result)
+        public virtual void GetData(ICollection<Ticket> persistedTickets)
+            => Task.WaitAll(
+                persistedTickets
+                .Select(tic => GetData(tic))
+                .ToArray()
             );
-        }
     }
 }

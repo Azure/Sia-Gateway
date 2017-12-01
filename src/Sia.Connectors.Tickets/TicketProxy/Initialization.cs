@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Sia.Connectors.Tickets;
 using Sia.Connectors.Tickets.TicketProxy;
 using Sia.Shared.Authentication;
@@ -32,16 +33,23 @@ namespace Sia.Gateway.Initialization
             this IServiceCollection services,
             ProxyConnectionInfo proxyConnection
         ) => services
-                .AddScoped<TicketingClient>(serv => proxyConnection.Client)
+                .AddScoped(serv => proxyConnection)
+                .AddScoped<TicketingClient, ProxyClient>()
                 .AddScoped<Connector, ProxyConnector>();
 
-        public static void AddProxyConnector(this IServiceCollection services, IConfigurationRoot config, string proxyEndpoint)
+        public static void AddProxyConnector(
+            this IServiceCollection services,
+            IConfigurationRoot config,
+            string proxyEndpoint)
         {
             var proxyAuthType = config["Connector:Ticket:ProxyAuthType"];
             switch (proxyAuthType)
             {
                 case "Certificate":
-                    services.AddProxyWithCert(proxyEndpoint, config["Connector:Ticket:ProxyCertThumbprint"]);
+                    services.AddProxyWithCert(
+                        proxyEndpoint,
+                        config["Connector:Ticket:ProxyCertThumbprint"]
+                    );
                     return;
                 case "VaultCertificate":
                     services.AddProxyWithCertFromKeyVault(

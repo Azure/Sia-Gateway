@@ -28,7 +28,10 @@ namespace Sia.Gateway.Initialization
     public static class ServicesStartup
     {
 
-        public static void AddFirstPartyServices(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot config)
+        public static void AddFirstPartyServices(
+            this IServiceCollection services,
+            IHostingEnvironment env,
+            IConfigurationRoot config)
         {
             ConfigureAuth(services, config);
 

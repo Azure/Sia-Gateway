@@ -1,20 +1,25 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Sia.Shared.Authentication;
 using Sia.Shared.Validation;
 using System;
+using System.Net.Http;
 
 namespace Sia.Connectors.Tickets.TicketProxy
 {
     public class ProxyConnectionInfo
     {
-        private AzureSecretVault _keyVault;
+        
 
         /// <summary>
         /// Instantiates ProxyConnectionInfo with no Authentication
         /// </summary>
         /// <param name="endpoint">Proxy Endpoint</param>
-        public ProxyConnectionInfo(string endpoint)
-            : this(endpoint, AuthenticationType.None)
+        public ProxyConnectionInfo(
+            string endpoint
+        ) : this(
+            endpoint, 
+            AuthenticationType.None)
         { }
 
         /// <summary>
@@ -22,8 +27,13 @@ namespace Sia.Connectors.Tickets.TicketProxy
         /// </summary>
         /// <param name="endpoint">Proxy Endpoint</param>
         /// <param name="certThumbprint">Thumbprint for searching local certificate store</param>
-        public ProxyConnectionInfo(string endpoint, string certThumbprint)
-            : this(endpoint, AuthenticationType.Certificate)
+        public ProxyConnectionInfo(
+            string endpoint, 
+            string certThumbprint
+        ) : this(
+            endpoint,
+            AuthenticationType.Certificate
+        )
         {
             CertIdentifier = ThrowIf.NullOrWhiteSpace(certThumbprint, nameof(certThumbprint));
         }
@@ -34,50 +44,55 @@ namespace Sia.Connectors.Tickets.TicketProxy
         /// <param name="endpoint">Proxy Endpoint</param>
         /// <param name="config">Configuration root for initialization</param>
         /// <param name="vaultName">Key vault name</param>
-        public ProxyConnectionInfo(string endpoint, KeyVaultConfiguration config, string vaultName)
-            : this(endpoint, AuthenticationType.CertificateFromKeyVault)
+        public ProxyConnectionInfo(
+            string endpoint,
+            KeyVaultConfiguration config, 
+            string vaultName
+        ) : this(
+            endpoint,
+            AuthenticationType.CertificateFromKeyVault
+        )
         {
-            _keyVault = new AzureSecretVault(config);
+            Vault = new AzureSecretVault(config);
             CertIdentifier = ThrowIf.NullOrWhiteSpace(vaultName, nameof(vaultName));
         }
 
-        protected ProxyConnectionInfo(string endpoint, AuthenticationType authType)
+        protected ProxyConnectionInfo(
+            string endpoint,
+            AuthenticationType authType
+        )
         {
             Endpoint = ThrowIf.NullOrWhiteSpace(endpoint, nameof(endpoint));
             AuthenticationType = authType;
         }
 
-        public ProxyClient Client
+        public HttpClient GetClient (ILoggerFactory loggerFactory)
         {
-            get
+            if(_client is null)
             {
-                if(_client == null)
-                {
-                    _client = new ProxyClient(ClientFactory.GetClient(), Endpoint);
-                }
-                return _client;
+                _client = ClientFactory(loggerFactory).GetClient();
             }
+            return _client;
         }
-        protected ProxyClient _client;
-        public AuthenticationType AuthenticationType { get; protected set; }
-        public string Endpoint { get; protected set; }
-        public string CertIdentifier { get; protected set; }
 
-        protected IHttpClientFactory ClientFactory
+        private HttpClient _client;
+        private AzureSecretVault Vault { get; }
+        public AuthenticationType AuthenticationType { get; protected set; }
+        public string Endpoint { get; }
+        private string CertIdentifier { get; }
+
+        protected IHttpClientFactory ClientFactory(ILoggerFactory loggerFactory)
         {
-            get
+            switch (AuthenticationType)
             {
-                switch (AuthenticationType)
-                {
-                    case AuthenticationType.Certificate:
-                        return new LocalCertificateRetriever(CertIdentifier);
-                    case AuthenticationType.CertificateFromKeyVault:
-                        return new KeyVaultCertificateRetriever(_keyVault, CertIdentifier);
-                    case AuthenticationType.None:
-                        return new UnauthenticatedClientFactory();
-                    default:
-                        throw new NotImplementedException($"Unrecognized authentication type {AuthenticationType.GetName(typeof(AuthenticationType), AuthenticationType)}");
-                }
+                case AuthenticationType.Certificate:
+                    return new LocalCertificateRetriever(CertIdentifier, loggerFactory);
+                case AuthenticationType.CertificateFromKeyVault:
+                    return new KeyVaultCertificateRetriever(Vault, CertIdentifier, loggerFactory);
+                case AuthenticationType.None:
+                    return new UnauthenticatedClientFactory();
+                default:
+                    throw new NotImplementedException($"Unrecognized authentication type {Enum.GetName(typeof(AuthenticationType), AuthenticationType)}");
             }
         }
     }

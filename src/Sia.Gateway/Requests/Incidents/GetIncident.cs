@@ -22,7 +22,8 @@ namespace Sia.Gateway.Requests
         public long Id { get; }
     }
 
-    public class GetIncidentHandler : IncidentConnectorHandler<GetIncidentRequest, Incident>
+    public class GetIncidentHandler
+        : IncidentConnectorHandler<GetIncidentRequest, Incident>
     {
         
         public GetIncidentHandler(IncidentContext context, Connector connector)
@@ -38,7 +39,7 @@ namespace Sia.Gateway.Requests
 
             var incident = Mapper.Map<Incident>(incidentRecord);
 
-            await AttachTickets(incident);
+            AttachTickets(incident);
 
             return incident;
         }

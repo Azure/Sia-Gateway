@@ -73,20 +73,9 @@ namespace Sia.Gateway.Requests
             await _context.SaveChangesAsync();
 
             var incidentDto = Mapper.Map<Incident>(result.Entity);
-            await AttachTickets(incidentDto);
+            AttachTickets(incidentDto);
 
             return new List<Incident> { incidentDto };
-        }
-
-        private async Task<IEnumerable<Incident>> ConnectIncidents(List<Incident> incidents)
-        {
-            foreach (var incident in incidents)
-            {
-                incident.Tickets = (await _connector
-                        .GetData(incident.Tickets.ToList()
-                    )).ToList();
-            }
-            return incidents;
         }
     }
 }
