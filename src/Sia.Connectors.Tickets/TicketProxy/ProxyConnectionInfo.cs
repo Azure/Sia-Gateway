@@ -4,6 +4,7 @@ using Sia.Shared.Authentication;
 using Sia.Shared.Validation;
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Sia.Connectors.Tickets.TicketProxy
 {
@@ -66,11 +67,11 @@ namespace Sia.Connectors.Tickets.TicketProxy
             AuthenticationType = authType;
         }
 
-        public HttpClient GetClient (ILoggerFactory loggerFactory)
+        public async Task<HttpClient> GetClientAsync (ILoggerFactory loggerFactory)
         {
             if(_client is null)
             {
-                _client = ClientFactory(loggerFactory).GetClient();
+                _client = await ClientFactory(loggerFactory).GetClientAsync();
             }
             return _client;
         }
