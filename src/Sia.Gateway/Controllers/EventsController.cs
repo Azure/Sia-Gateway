@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Sia.Shared.Controllers;
 using Sia.Shared.Data;
 using Sia.Data.Incidents.Filters;
+using Sia.Data.Incidents.Models;
 
 namespace Sia.Gateway.Controllers
 {
@@ -31,11 +32,11 @@ namespace Sia.Gateway.Controllers
 
         [HttpGet(Name = nameof(GetEvents))]
         public async Task<IActionResult> GetEvents([FromRoute]long incidentId,
-            [FromQuery]PaginationMetadata pagination,
+            [FromQuery]PaginationByFixedPageSize<Event> pagination,
             [FromQuery]EventFilters filter)
         {
             var result = await _mediator.Send(new GetEventsRequest(incidentId, pagination, filter, _authContext));
-            Response.Headers.AddPagination(new LinksHeader(pagination, _urlHelper, nameof(GetEvents)));
+            Response.Headers.AddPagination(new FilteredLinksHeader<Event>(filter, pagination, _urlHelper, nameof(GetEvents)));
             return Ok(result);
         }
 

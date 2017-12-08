@@ -17,7 +17,7 @@ namespace Sia.Gateway.Requests.Events
     public class GetEventsRequest : AuthenticatedRequest<IEnumerable<Event>>
     {
         public GetEventsRequest(long incidentId,
-            PaginationMetadata pagination,
+            IPaginator<Data.Incidents.Models.Event> pagination,
             EventFilters filter,
             AuthenticatedUserContext userContext) 
             : base(userContext)
@@ -28,7 +28,7 @@ namespace Sia.Gateway.Requests.Events
         }
 
         public long IncidentId { get; }
-        public PaginationMetadata Pagination { get; }
+        public IPaginator<Data.Incidents.Models.Event> Pagination { get; }
         public EventFilters Filter { get; }
     }
 

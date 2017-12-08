@@ -28,7 +28,7 @@ namespace Sia.Gateway.Tests.Requests
 
             var filters = new EventFilters();
             var serviceUnderTest = new GetEventsHandler(await MockFactory.IncidentContext("Get"));
-            var request = new GetEventsRequest(1, new PaginationMetadata(), filters, new DummyAuthenticatedUserContext());
+            var request = new GetEventsRequest(1, new PaginationByFixedPageSize<Data.Incidents.Models.Event>(), filters, new DummyAuthenticatedUserContext());
 
 
             var result = (await serviceUnderTest.Handle(request)).ToList();
