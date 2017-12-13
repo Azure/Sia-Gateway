@@ -77,10 +77,10 @@ namespace Sia.Connectors.Tickets.TicketProxy
         }
 
         private HttpClient _client;
-        private AzureSecretVault Vault { get; }
+        private readonly AzureSecretVault Vault;
         public AuthenticationType AuthenticationType { get; protected set; }
-        public string Endpoint { get; }
-        private string CertIdentifier { get; }
+        public readonly string Endpoint;
+        private readonly string CertIdentifier;
 
         protected IHttpClientFactory ClientFactory(ILoggerFactory loggerFactory)
         {

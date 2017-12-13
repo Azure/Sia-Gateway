@@ -23,7 +23,7 @@ namespace Sia.Gateway.Requests
         }
 
         protected void AttachTickets(Incident incident)
-            => _connector.GetData(incident.Tickets);
+            => _connector.AppendData(incident.Tickets);
 
         protected void AttachTickets(List<Incident> incidents)
             => incidents.Map(inc => AttachTickets(inc));

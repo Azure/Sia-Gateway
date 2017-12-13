@@ -17,7 +17,7 @@ namespace Sia.Connectors.Tickets
         }
         protected TicketingClient Client { get; }
         protected ILogger Logger { get; }
-        public virtual async Task GetData(Ticket persistedTicket)
+        public virtual async Task AppendDataAsync(Ticket persistedTicket)
         {
             try
             {
@@ -33,11 +33,13 @@ namespace Sia.Connectors.Tickets
             }
         }
 
-        public virtual void GetData(ICollection<Ticket> persistedTickets)
+        public virtual void AppendData(ICollection<Ticket> persistedTickets)
             => Task.WaitAll(
                 persistedTickets
-                .Select(tic => GetData(tic))
+                .Select(tic => AppendDataAsync(tic))
                 .ToArray()
             );
+
+        
     }
 }
