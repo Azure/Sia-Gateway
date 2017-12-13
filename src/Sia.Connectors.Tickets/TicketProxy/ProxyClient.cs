@@ -1,26 +1,40 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Sia.Shared.Authentication;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Sia.Connectors.Tickets.TicketProxy
 {
-    public class ProxyClient : Client<ProxyTicket>
+    public class ProxyClient : TicketingClient
     {
-        private readonly string _endpoint;
-        private readonly HttpClient _client;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public ProxyClient(HttpClient singletonClient, string endpoint)
+        private ProxyConnectionInfo _connectionInfo { get; }
+        private HttpClient _client { get; set; }
+
+        public ProxyClient(
+            ProxyConnectionInfo connectionInfo,
+            ILoggerFactory loggerFactory
+        )
         {
-            _endpoint = endpoint;
-            _client = singletonClient;
+            _loggerFactory = loggerFactory;
+            _connectionInfo = connectionInfo;
         }
 
-        public override async Task<ProxyTicket> GetAsync(string originId)
+        public override async Task<object> GetAsync(string originId)
         {
-            string incidentUrl = $"{_endpoint}/{originId}";
+            if(_client is null)
+            {
+                _client = await _connectionInfo.GetClientAsync(_loggerFactory);
+            }
+            string incidentUrl = $"{_connectionInfo.Endpoint}/{originId}";
             var response = await _client.GetAsync(incidentUrl);
             var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ProxyTicket>(content);
+            return JsonConvert.DeserializeObject<ProxyData>(content);
         }
+
+
     }
 }

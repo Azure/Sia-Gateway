@@ -2,11 +2,9 @@
 
 namespace Sia.Connectors.Tickets.None
 {
-    public class NoClient : Client<EmptyTicket>
+    public class NoClient : TicketingClient
     {
-        public override Task<EmptyTicket> GetAsync(string originId)
-        {
-            return Task.FromResult(new EmptyTicket());
-        }
+        public override Task<object> GetAsync(string originId)
+            => Task.FromResult<object>(null);
     }
 }
