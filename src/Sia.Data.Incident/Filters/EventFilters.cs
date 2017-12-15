@@ -12,7 +12,7 @@ namespace Sia.Data.Incidents.Filters
     public class EventFilters: DataFilters<Event>
     {
         public long? IncidentId { get; set; }
-        public long? EventTypeId { get; set; }
+        public long[] EventTypes { get; set; }
         public DateTime? Occurred { get; set; }
         public DateTime? EventFired { get; set; }
 
@@ -22,7 +22,7 @@ namespace Sia.Data.Incidents.Filters
             var working = source;
 
             if (IncidentId.HasValue) working = working.Where(ev => ev.IncidentId == IncidentId);
-            if (EventTypeId.HasValue) working = working.Where(ev => ev.EventTypeId == EventTypeId);
+            if (EventTypes != null && EventTypes.Length > 0) working = working.Where(ev => EventTypes.Contains(ev.EventTypeId));
             if (Occurred.HasValue) working = working.Where(ev => ev.Occurred == Occurred);
             if (EventFired.HasValue) working = working.Where(ev => ev.EventFired == EventFired);
 
@@ -32,7 +32,7 @@ namespace Sia.Data.Incidents.Filters
         public override StringValues NonDataFilterValues() => JsonConvert.SerializeObject(new
         {
             IncidentId = IncidentId,
-            EventTypeId = EventTypeId,
+            EventTypes = EventTypes,
             Occurred = Occurred,
             EventFired = EventFired
         });
