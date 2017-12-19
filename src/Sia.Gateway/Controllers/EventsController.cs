@@ -35,7 +35,7 @@ namespace Sia.Gateway.Controllers
             [FromQuery]EventFilters filter)
         {
             var result = await _mediator.Send(new GetEventsRequest(incidentId, pagination, filter, _authContext));
-            Response.Headers.AddPagination(new LinksHeader(pagination, _urlHelper, nameof(GetEvents)));
+            Response.Headers.AddPagination(new FilteredLinksHeader(filter, pagination, _urlHelper, nameof(GetEvents)));
             return Ok(result);
         }
 

@@ -29,12 +29,18 @@ namespace Sia.Data.Incidents.Filters
             return base.Filter(working);
         }
 
-        public override StringValues NonDataFilterValues() => JsonConvert.SerializeObject(new
+        public override IEnumerable<KeyValuePair<string, string>> NonDataFilterValues()
         {
-            IncidentId = IncidentId,
-            EventTypes = EventTypes,
-            Occurred = Occurred,
-            EventFired = EventFired
-        });
+            if(IncidentId.HasValue) yield return new KeyValuePair<string, string>(nameof(IncidentId), IncidentId.Value.ToString());
+            if(!(EventTypes is null) && EventTypes.Length != 0)
+            {
+                foreach (var eventTypeId in EventTypes)
+                {
+                    yield return new KeyValuePair<string, string>(nameof(EventTypes), eventTypeId.ToString());
+                }
+            }
+            if (Occurred.HasValue) yield return new KeyValuePair<string, string>(nameof(Occurred), Occurred.Value.ToString());
+            if (EventFired.HasValue) yield return new KeyValuePair<string, string>(nameof(EventFired), EventFired.Value.ToString());
+        }
     }
 }
