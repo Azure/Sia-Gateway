@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Sia.Connectors.Tickets;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
@@ -13,10 +14,13 @@ using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
 {
-    public class GetIncidentsByTicketCreateIfNeededRequest : AuthenticatedRequest<IEnumerable<Incident>>
+    public class GetIncidentsByTicketCreateIfNeededRequest
+        : AuthenticatedRequest<IEnumerable<Incident>>
     {
-        public GetIncidentsByTicketCreateIfNeededRequest(string ticketId, AuthenticatedUserContext userContext)
-            : base(userContext)
+        public GetIncidentsByTicketCreateIfNeededRequest(
+            string ticketId,
+            AuthenticatedUserContext userContext
+        ) : base(userContext)
         {
             TicketId = ticketId;
         }
@@ -25,23 +29,32 @@ namespace Sia.Gateway.Requests
 
     }
 
-    public class GetIncidentsByTicketCreateIfNeededRequestHandler : IncidentContextHandler<GetIncidentsByTicketCreateIfNeededRequest, IEnumerable<Incident>>
+    public class GetIncidentsByTicketCreateIfNeededRequestHandler
+        : IncidentConnectorHandler<
+            GetIncidentsByTicketCreateIfNeededRequest,
+            IEnumerable<Incident>
+        >
     {
-        public GetIncidentsByTicketCreateIfNeededRequestHandler(IncidentContext context)
-            :base(context)
-        {
 
-        }
+        public GetIncidentsByTicketCreateIfNeededRequestHandler(
+            IncidentContext context,
+            Connector connector
+        ) :base(context, connector){}
 
-        public override async Task<IEnumerable<Incident>> Handle(GetIncidentsByTicketCreateIfNeededRequest message)
+        public override async Task<IEnumerable<Incident>> Handle(
+            GetIncidentsByTicketCreateIfNeededRequest message
+        )
         {
             var incidents = await _context.Incidents
                 .WithEagerLoading()
-                .Where(incident => incident.Tickets.Any(inc => inc.OriginId == message.TicketId))
+                .Where(incident => incident
+                    .Tickets
+                    .Any(inc => inc.OriginId == message.TicketId))
                 .ProjectTo<Incident>().ToListAsync();
 
             if (incidents.Any())
             {
+                AttachTickets(incidents);
                 return incidents;
             }
 
@@ -59,7 +72,10 @@ namespace Sia.Gateway.Requests
             var result = _context.Incidents.Add(dataIncident);
             await _context.SaveChangesAsync();
 
-            return new List<Incident> { Mapper.Map<Incident>(result.Entity) };
+            var incidentDto = Mapper.Map<Incident>(result.Entity);
+            AttachTickets(incidentDto);
+
+            return new List<Incident> { incidentDto };
         }
     }
 }
