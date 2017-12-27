@@ -9,13 +9,16 @@ using Newtonsoft.Json;
 
 namespace Sia.Data.Incidents.Filters
 {
-    public class EventFilters: DataFilters<Event>
+    public class EventFilters: Filters<Event>
     {
         public long? IncidentId { get; set; }
         public long[] EventTypes { get; set; }
         public DateTime? Occurred { get; set; }
         public DateTime? EventFired { get; set; }
-
+        public string DataKey { get; set; }
+        public string DataValue { get; set; }
+        public const string KeyValueComparison = "\"{0}\":\"{1}\"";
+        public const string KeyComparison = "\"{0}\":";
 
         public override IQueryable<Event> Filter(IQueryable<Event> source)
         {
@@ -26,10 +29,18 @@ namespace Sia.Data.Incidents.Filters
             if (Occurred.HasValue) working = working.Where(ev => ev.Occurred == Occurred);
             if (EventFired.HasValue) working = working.Where(ev => ev.EventFired == EventFired);
 
-            return base.Filter(working);
+            if (!String.IsNullOrEmpty(DataKey))
+            {
+                var workingCompare = String.IsNullOrEmpty(DataValue)
+                    ? String.Format(KeyComparison, DataKey)
+                    : String.Format(KeyValueComparison, new string[] { DataKey, DataValue });
+                working = working.Where(obj => obj.Data.Contains(workingCompare));
+            }
+
+            return working;
         }
 
-        public override IEnumerable<KeyValuePair<string, string>> NonDataFilterValues()
+        public override IEnumerable<KeyValuePair<string, string>> FilterValues()
         {
             if(IncidentId.HasValue) yield return new KeyValuePair<string, string>(nameof(IncidentId), IncidentId.Value.ToString());
             if(!(EventTypes is null) && EventTypes.Length != 0)
@@ -41,6 +52,9 @@ namespace Sia.Data.Incidents.Filters
             }
             if (Occurred.HasValue) yield return new KeyValuePair<string, string>(nameof(Occurred), Occurred.Value.ToString());
             if (EventFired.HasValue) yield return new KeyValuePair<string, string>(nameof(EventFired), EventFired.Value.ToString());
+
+            if (!string.IsNullOrWhiteSpace(DataKey)) yield return new KeyValuePair<string, string>(nameof(DataKey), DataKey);
+            if (!string.IsNullOrWhiteSpace(DataValue)) yield return new KeyValuePair<string, string>(nameof(DataValue), DataValue);
         }
     }
 }
