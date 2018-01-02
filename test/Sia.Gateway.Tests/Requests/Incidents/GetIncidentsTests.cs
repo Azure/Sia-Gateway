@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Sia.Connectors.Tickets.None;
 using Sia.Domain;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests;
@@ -34,7 +35,10 @@ namespace Sia.Gateway.Tests.Requests
                     Title = expectedIncidentTitles[i]
                 };
             }
-            var serviceUnderTest = new GetIncidentsHandler(await MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetIncidentsHandler(
+                await MockFactory.IncidentContext("Get"),
+                new NoConnector(new NoClient(), new StubLoggerFactory())
+            );
             var request = new GetIncidentsRequest(new DummyAuthenticatedUserContext());
 
 

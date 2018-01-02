@@ -3,7 +3,7 @@
 Sia can be configured to to work with a separate ticketing system,
 either by leveraging a proxy API or by direct access using a custom connector.
 
-Data from connected ticketing systems can be used to generate events and/or
+Data from connected ticketing systems can be used to
 present additional information and context on the UI.
 
 Sia will still function without a connected ticketing system, and will

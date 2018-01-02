@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Sia.Connectors.Tickets.None;
 using Sia.Domain;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests;
@@ -21,7 +22,10 @@ namespace Sia.Gateway.Tests.Requests
         [TestMethod]
         public async Task Handle_WhenIncidentNotExist_ReturnNewIncident()
         {
-            var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(await MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(
+                await MockFactory.IncidentContext("Get"),
+                new NoConnector(new NoClient(), new StubLoggerFactory())
+            );
             var request = new GetIncidentsByTicketCreateIfNeededRequest("100", new DummyAuthenticatedUserContext());
 
 
@@ -36,7 +40,10 @@ namespace Sia.Gateway.Tests.Requests
         public async Task Handle_WhenIncidentExists_ReturnCorrectIncidents()
         {
 
-            var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(await MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(
+                await MockFactory.IncidentContext("Get"),
+                new NoConnector(new NoClient(), new StubLoggerFactory())
+            );
             var request = new GetIncidentsByTicketCreateIfNeededRequest("44444444", new DummyAuthenticatedUserContext());
 
             var result = (await serviceUnderTest.Handle(request)).ToList();

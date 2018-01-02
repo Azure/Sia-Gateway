@@ -63,7 +63,7 @@ namespace Sia.Data.Incident.Tests.Filters
             var serviceUnderTest = new EventFilters()
             {
                 IncidentId = 1,
-                EventTypeId = 1,
+                EventTypes = new long[] { 1 },
                 Occurred = new DateTime(1970, 1, 1),
                 EventFired = new DateTime(1970, 1, 1)
             };

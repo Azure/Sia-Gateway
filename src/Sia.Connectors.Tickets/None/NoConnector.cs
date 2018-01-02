@@ -1,9 +1,11 @@
-﻿namespace Sia.Connectors.Tickets.None
+﻿using Microsoft.Extensions.Logging;
+
+namespace Sia.Connectors.Tickets.None
 {
-    public class NoConnector : Connector<EmptyTicket>
+    public class NoConnector : Connector
     {
-        public NoConnector(Client<EmptyTicket> client, Converter<EmptyTicket> converter)
-            : base(client, converter)
+        public NoConnector(NoClient client, ILoggerFactory loggerFactory)
+            : base(client, loggerFactory)
         {
         }
     }
