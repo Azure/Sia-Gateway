@@ -11,13 +11,14 @@ using Microsoft.EntityFrameworkCore;
 using Sia.Shared.Requests;
 using Sia.Shared.Data;
 using Sia.Data.Incidents.Filters;
+using Sia.Shared.Protocol.Pagination;
 
 namespace Sia.Gateway.Requests.Events
 {
-    public class GetEventsRequest : AuthenticatedRequest<IEnumerable<Event>>
+    public class GetEventsRequest : AuthenticatedRequest<IPaginationResultMetadata<Event>>
     {
         public GetEventsRequest(long incidentId,
-            IPaginator<Data.Incidents.Models.Event> pagination,
+            IPaginationRequest<Data.Incidents.Models.Event, Event> pagination,
             EventFilters filter,
             AuthenticatedUserContext userContext) 
             : base(userContext)
@@ -28,24 +29,22 @@ namespace Sia.Gateway.Requests.Events
         }
 
         public long IncidentId { get; }
-        public IPaginator<Data.Incidents.Models.Event> Pagination { get; }
+        public IPaginationRequest<Data.Incidents.Models.Event, Event> Pagination { get; }
         public EventFilters Filter { get; }
     }
 
     public class GetEventsHandler 
-        : IncidentContextHandler<GetEventsRequest, IEnumerable<Event>>
+        : IncidentContextHandler<GetEventsRequest, IPaginationResultMetadata<Event>>
     {
         public GetEventsHandler(IncidentContext context)
             :base(context)
         {
 
         }
-        public override async Task<IEnumerable<Event>> Handle(GetEventsRequest request)
+        public override async Task<IPaginationResultMetadata<Event>> Handle(GetEventsRequest request)
                 => await _context.Events
                 .Where(ev => ev.IncidentId == request.IncidentId)
                 .WithFilter(request.Filter)
-                .WithPagination(request.Pagination)
-                .ProjectTo<Event>()
-                .ToListAsync();
+                .GetPaginatedResultAsync(request.Pagination);
     }
 }

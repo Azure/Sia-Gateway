@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Sia.Shared.Data;
 using Sia.Data.Incidents.Filters;
+using Sia.Shared.Protocol.Pagination;
 
 namespace Sia.Gateway.Tests.Requests
 {
@@ -28,10 +29,10 @@ namespace Sia.Gateway.Tests.Requests
 
             var filters = new EventFilters();
             var serviceUnderTest = new GetEventsHandler(await MockFactory.IncidentContext("Get"));
-            var request = new GetEventsRequest(1, new PaginationByFixedPageSize<Data.Incidents.Models.Event>(), filters, new DummyAuthenticatedUserContext());
+            var request = new GetEventsRequest(1, new PaginationByFixedPageSizeRequest<Data.Incidents.Models.Event, Event>(), filters, new DummyAuthenticatedUserContext());
 
 
-            var result = (await serviceUnderTest.Handle(request)).ToList();
+            var result = (await serviceUnderTest.Handle(request)).QueryResult;
 
 
             for (int i = 0; i < expectedEventTypeIds.Length; i++)
