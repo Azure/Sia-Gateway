@@ -37,7 +37,6 @@
     <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\Playbook\" />
     <Folder Include="Validation\" />
   </ItemGroup>
 
