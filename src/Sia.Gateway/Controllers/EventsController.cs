@@ -13,6 +13,7 @@ using Sia.Shared.Data;
 using Sia.Data.Incidents.Filters;
 using Sia.Data.Incidents.Models;
 using Sia.Shared.Protocol.Pagination;
+using Sia.Gateway.Protocol.Pagination;
 
 namespace Sia.Gateway.Controllers
 {
@@ -33,7 +34,7 @@ namespace Sia.Gateway.Controllers
 
         [HttpGet(Name = nameof(GetEvents))]
         public async Task<IActionResult> GetEvents([FromRoute]long incidentId,
-            [FromQuery]PaginationByFixedPageSizeRequest<Event, Domain.Event> pagination,
+            [FromQuery]EventTimelinePaginationRequest pagination,
             [FromQuery]EventFilters filter)
         {
             var result = await _mediator.Send(new GetEventsRequest(incidentId, pagination, filter, _authContext));
