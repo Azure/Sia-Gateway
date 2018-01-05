@@ -41,7 +41,7 @@ namespace Sia.Gateway.Protocol.Pagination
                 CursorTime = ev.Occurred
             };
 
-        public override Expression<Func<Data.Incidents.Models.Event, TimelinePaginationCursor>> DataValueSelector
+        public override Expression<Func<Data.Incidents.Models.Event, TimelinePaginationCursor>> CursorSelector
             => (ev) => new TimelinePaginationCursor()
             {
                 CursorId = ev.Id,
