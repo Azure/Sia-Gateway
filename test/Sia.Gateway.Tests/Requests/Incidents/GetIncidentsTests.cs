@@ -36,13 +36,13 @@ namespace Sia.Gateway.Tests.Requests
                 };
             }
             var serviceUnderTest = new GetIncidentsHandler(
-                await MockFactory.IncidentContext("Get"),
+                await MockFactory.IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents)),
                 new NoConnector(new NoClient(), new StubLoggerFactory())
             );
             var request = new GetIncidentsRequest(new DummyAuthenticatedUserContext());
 
 
-            var result = (await serviceUnderTest.Handle(request)).ToList();
+            var result = (await serviceUnderTest.Handle(request, new System.Threading.CancellationToken())).ToList();
 
 
             for (int i = 0; i < expectedIncidents.Length; i++)

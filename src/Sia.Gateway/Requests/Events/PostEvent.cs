@@ -8,6 +8,7 @@ using Sia.Shared.Authentication;
 using Sia.Shared.Requests;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
@@ -32,20 +33,20 @@ namespace Sia.Gateway.Requests
         {
 
         }
-        public override async Task<Event> Handle(PostEventRequest request)
+        public override async Task<Event> Handle(PostEventRequest request, CancellationToken cancellationToken)
         {
             if (request.NewEvent == null) throw new ArgumentNullException(nameof(request.NewEvent));
 
             var dataIncident = await _context
                                    .Incidents
                                    .Include(cr => cr.Events)
-                                   .FirstOrDefaultAsync(x => x.Id == request.IncidentId);
+                                   .FirstOrDefaultAsync(x => x.Id == request.IncidentId, cancellationToken);
             if (dataIncident == null) throw new KeyNotFoundException();
 
             var dataEvent = Mapper.Map<Data.Incidents.Models.Event>(request.NewEvent);
 
             dataIncident.Events.Add(dataEvent);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Mapper.Map<Event>(dataEvent);
         }

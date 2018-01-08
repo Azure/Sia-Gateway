@@ -22,6 +22,7 @@ namespace Sia.Gateway.Tests.Requests
             var expectedEngagement = new Engagement
             {
                 Id = 1,
+                IncidentId = 1,
                 TimeEngaged = new DateTime(1973, 3, 3),
                 TimeDisengaged = new DateTime(1974, 4, 4),
                 Participant = new Participant
@@ -32,11 +33,11 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new GetEngagementHandler(await MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetEngagementHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEFReturnsSuccessful_ReturnCorrectEngagement)));
             var request = new GetEngagementRequest(1, 1, new DummyAuthenticatedUserContext());
 
 
-            var result = await serviceUnderTest.Handle(request);
+            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
 
 
             Assert.AreEqual(expectedEngagement.Id, result.Id);
@@ -54,7 +55,7 @@ namespace Sia.Gateway.Tests.Requests
             var request = new GetEngagementRequest(100_000, 1, new DummyAuthenticatedUserContext());
 
 
-            var result = await serviceUnderTest.Handle(request);
+            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
 
 
             //Expect exception

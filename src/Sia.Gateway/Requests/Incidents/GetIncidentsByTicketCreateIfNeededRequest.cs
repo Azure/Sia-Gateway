@@ -10,6 +10,7 @@ using Sia.Shared.Authentication;
 using Sia.Shared.Requests;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
@@ -42,7 +43,8 @@ namespace Sia.Gateway.Requests
         ) :base(context, connector){}
 
         public override async Task<IEnumerable<Incident>> Handle(
-            GetIncidentsByTicketCreateIfNeededRequest message
+            GetIncidentsByTicketCreateIfNeededRequest message,
+            CancellationToken cancellationToken
         )
         {
             var incidents = await _context.Incidents
@@ -50,7 +52,8 @@ namespace Sia.Gateway.Requests
                 .Where(incident => incident
                     .Tickets
                     .Any(inc => inc.OriginId == message.TicketId))
-                .ProjectTo<Incident>().ToListAsync();
+                .ProjectTo<Incident>()
+                .ToListAsync(cancellationToken);
 
             if (incidents.Any())
             {
@@ -70,7 +73,7 @@ namespace Sia.Gateway.Requests
             var dataIncident = Mapper.Map<Data.Incidents.Models.Incident>(newIncident);
 
             var result = _context.Incidents.Add(dataIncident);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             var incidentDto = Mapper.Map<Incident>(result.Entity);
             AttachTickets(incidentDto);

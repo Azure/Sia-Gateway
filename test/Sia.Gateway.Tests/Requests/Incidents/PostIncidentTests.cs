@@ -34,7 +34,7 @@ namespace Sia.Gateway.Tests.Requests
             var request = new PostIncidentRequest(expectedIncident, new DummyAuthenticatedUserContext());
 
 
-            var result = await serviceUnderTest.Handle(request);
+            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
 
 
             Assert.AreEqual(expectedIncidentTitle, result.Title);

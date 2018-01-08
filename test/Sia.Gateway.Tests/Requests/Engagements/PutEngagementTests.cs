@@ -36,7 +36,7 @@ namespace Sia.Gateway.Tests.Requests
             var request = new PutEngagementRequest(incident.Id, engagement.Id, inputEngagement, new DummyAuthenticatedUserContext());
 
 
-            await serviceUnderTest.Handle(request);
+            await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
             var result = context.Engagements.First(e => e.Id == engagement.Id);
 
 
@@ -59,7 +59,7 @@ namespace Sia.Gateway.Tests.Requests
             var request = new PutEngagementRequest(100_000, 1, inputEngagement, new DummyAuthenticatedUserContext());
 
 
-            await serviceUnderTest.Handle(request);
+            await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
 
             //Expect exception
         }

@@ -7,6 +7,7 @@ using Sia.Shared.Authentication;
 using Sia.Shared.Exceptions;
 using Sia.Shared.Requests;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
@@ -30,7 +31,7 @@ namespace Sia.Gateway.Requests
         {
 
         }
-        public override async Task<Incident> Handle(PostIncidentRequest request)
+        public override async Task<Incident> Handle(PostIncidentRequest request, CancellationToken cancellationToken)
         {
             if (request.Incident == null) throw new ArgumentNullException(nameof(request.Incident));
             if (request.Incident?.PrimaryTicket?.OriginId == null) throw new ConflictException("Please provide a primary incident with a valid originId");
@@ -38,7 +39,7 @@ namespace Sia.Gateway.Requests
             var dataIncident = Mapper.Map<Data.Incidents.Models.Incident>(request.Incident);
 
             var result = _context.Incidents.Add(dataIncident);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Mapper.Map<Incident>(dataIncident);
         }

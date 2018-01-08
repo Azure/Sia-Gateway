@@ -8,6 +8,7 @@ using Sia.Shared.Authentication;
 using Sia.Shared.Requests;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
@@ -29,12 +30,12 @@ namespace Sia.Gateway.Requests
         public GetIncidentHandler(IncidentContext context, Connector connector)
             :base(context, connector){}
 
-        public override async Task<Incident> Handle(GetIncidentRequest getIncident)
+        public override async Task<Incident> Handle(GetIncidentRequest getIncident, CancellationToken cancellationToken)
         {
             var incidentRecord = await _context
                 .Incidents
                 .WithEagerLoading()
-                .SingleOrDefaultAsync(cr => cr.Id == getIncident.Id);
+                .SingleOrDefaultAsync(cr => cr.Id == getIncident.Id, cancellationToken);
             if (incidentRecord == null) throw new KeyNotFoundException();
 
             var incident = Mapper.Map<Incident>(incidentRecord);

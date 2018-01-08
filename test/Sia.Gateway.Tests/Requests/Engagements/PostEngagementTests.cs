@@ -44,7 +44,7 @@ namespace Sia.Gateway.Tests.Requests
 
             var request = new PostEngagementRequest(incident.Id, inputEngagement, new DummyAuthenticatedUserContext());
 
-            var result = await serviceUnderTest.Handle(request);
+            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
 
             Assert.AreEqual("test", result.Participant.Alias);
             Assert.AreEqual("alsoTest", result.Participant.Team);
@@ -73,7 +73,7 @@ namespace Sia.Gateway.Tests.Requests
             var serviceUnderTest = new PostEngagementHandler(await MockFactory.IncidentContext(nameof(PostEngagementTests) /*+ nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException)*/));
             var request = new PostEngagementRequest(100_000, inputEngagement, new DummyAuthenticatedUserContext());
 
-            var result = await serviceUnderTest.Handle(request);
+            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
 
             //Expect exception
         }

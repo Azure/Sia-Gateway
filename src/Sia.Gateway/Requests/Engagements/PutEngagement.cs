@@ -7,6 +7,7 @@ using Sia.Shared.Authentication;
 using Sia.Shared.Requests;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -35,17 +36,17 @@ namespace Sia.Gateway.Requests
         {
 
         }
-        public override async Task Handle(PutEngagementRequest request)
+        public override async Task Handle(PutEngagementRequest request, CancellationToken cancellationToken)
         {
             if (request.UpdateEngagement is null) throw new ArgumentNullException(nameof(UpdateEngagement));
             var existingRecord = await _context.Engagements
                 .Include(en => en.Participant)
-                .FirstOrDefaultAsync(engagement => engagement.IncidentId == request.IncidentId && engagement.Id == request.EngagementId);
+                .FirstOrDefaultAsync(engagement => engagement.IncidentId == request.IncidentId && engagement.Id == request.EngagementId, cancellationToken);
             if (existingRecord is null) throw new KeyNotFoundException();
 
             var updatedModel = Mapper.Map(request.UpdateEngagement, existingRecord);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

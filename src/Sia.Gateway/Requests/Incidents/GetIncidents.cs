@@ -7,6 +7,7 @@ using Sia.Domain;
 using Sia.Shared.Authentication;
 using Sia.Shared.Requests;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Requests
@@ -26,12 +27,12 @@ namespace Sia.Gateway.Requests
             IncidentContext context,
             Connector connector
         ) : base(context, connector) {}
-        public override async Task<IEnumerable<Incident>> Handle(GetIncidentsRequest request)
+        public override async Task<IEnumerable<Incident>> Handle(GetIncidentsRequest request, CancellationToken cancellationToken)
         {
             var incidentRecords = await _context.Incidents
                 .WithEagerLoading()
                 .ProjectTo<Incident>()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
             AttachTickets(incidentRecords);
             return incidentRecords;
         }

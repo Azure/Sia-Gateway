@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Sia.Shared.Data;
 using Sia.Data.Incidents.Filters;
+using System.Threading;
 
 namespace Sia.Gateway.Tests.Requests
 {
@@ -27,11 +28,11 @@ namespace Sia.Gateway.Tests.Requests
             long[] expectedEventTypeIds = { 1, 111 };
 
             var filters = new EventFilters();
-            var serviceUnderTest = new GetEventsHandler(await MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetEventsHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEFReturnsSuccessful_ReturnCorrectEvents)));
             var request = new GetEventsRequest(1, new PaginationMetadata(), filters, new DummyAuthenticatedUserContext());
 
 
-            var result = (await serviceUnderTest.Handle(request)).ToList();
+            var result = (await serviceUnderTest.Handle(request, new CancellationToken())).ToList();
 
 
             for (int i = 0; i < expectedEventTypeIds.Length; i++)

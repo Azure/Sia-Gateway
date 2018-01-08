@@ -32,7 +32,7 @@ namespace Sia.Gateway.Tests.Requests
                 new DummyAuthenticatedUserContext());
 
 
-            var result = await serviceUnderTest.Handle(request);
+            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
 
 
             Assert.AreEqual(expectedIncidentId, result.Id);

@@ -6,6 +6,7 @@ using Sia.Domain;
 using Sia.Shared.Authentication;
 using Sia.Shared.Requests;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -31,11 +32,11 @@ namespace Sia.Gateway.Requests
         {
 
         }
-        public override async Task<Engagement> Handle(GetEngagementRequest request)
+        public override async Task<Engagement> Handle(GetEngagementRequest request, CancellationToken cancellationToken)
         {
             var EngagementRecord = await _context.Engagements
                 .Include(en => en.Participant)
-                .FirstOrDefaultAsync(ev => ev.IncidentId == request.IncidentId && ev.Id == request.Id);
+                .FirstOrDefaultAsync(ev => ev.IncidentId == request.IncidentId && ev.Id == request.Id, cancellationToken);
             if (EngagementRecord == null) throw new KeyNotFoundException();
 
             return Mapper.Map<Engagement>(EngagementRecord);

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Sia.Shared.Requests;
 using Sia.Shared.Data;
 using Sia.Data.Incidents.Filters;
+using System.Threading;
 
 namespace Sia.Gateway.Requests.Events
 {
@@ -40,12 +41,12 @@ namespace Sia.Gateway.Requests.Events
         {
 
         }
-        public override async Task<IEnumerable<Event>> Handle(GetEventsRequest request)
+        public override async Task<IEnumerable<Event>> Handle(GetEventsRequest request, CancellationToken cancellationToken)
                 => await _context.Events
                 .Where(ev => ev.IncidentId == request.IncidentId)
                 .WithFilter(request.Filter)
                 .WithPagination(request.Pagination)
                 .ProjectTo<Event>()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
     }
 }
