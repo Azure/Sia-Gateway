@@ -51,5 +51,7 @@ namespace Sia.Gateway.Controllers
             }
             return Created($"/incidents/{result.Id}", result);
         }
+
+
     }
 }

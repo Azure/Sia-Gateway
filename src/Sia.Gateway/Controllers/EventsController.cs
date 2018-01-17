@@ -35,7 +35,11 @@ namespace Sia.Gateway.Controllers
             [FromQuery]EventFilters filter)
         {
             var result = await _mediator.Send(new GetEventsRequest(incidentId, pagination, filter, _authContext));
-            Response.Headers.AddPagination(new FilteredLinksHeader(filter, pagination, _urlHelper, nameof(GetEvents)));
+            //add metadata here
+            var headerMetadata = new PaginationMetadata(pagination);
+            //change AddPagenation, remove the metadata insertion, add only links in here (maybe change the name of AddPagenation to AddLinks)
+            Response.Headers.AddPagination(new FilteredLinksHeader(filter, pagination, _urlHelper, nameof(GetEvents), incidentId));
+            //create a new class to contain metadata + links
             return Ok(result);
         }
 
@@ -72,5 +76,7 @@ namespace Sia.Gateway.Controllers
             await eventHubConnection.SendAsync("Send", result);
             await eventHubConnection.DisposeAsync();
         }
+
+
     }
 }
