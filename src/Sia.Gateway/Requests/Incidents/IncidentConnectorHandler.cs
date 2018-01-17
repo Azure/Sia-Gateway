@@ -15,9 +15,6 @@ namespace Sia.Gateway.Requests
         where TRequest : IRequest<TResult>
     {
         protected readonly Connector _connector;
-
-
-
         protected IncidentConnectorHandler(
             IncidentContext context,
             Connector connector
@@ -28,7 +25,6 @@ namespace Sia.Gateway.Requests
 
         protected void AttachTickets(Incident incident)
         {
-     
             if (_connector.Logger.IsEnabled(LogLevel.Debug)) {
                 _connector.Logger.LogDebug("Incident Data For Ticket", incident);
             }
