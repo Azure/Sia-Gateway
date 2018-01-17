@@ -16,7 +16,7 @@ namespace Sia.Connectors.Tickets
             Logger = loggerFactory.CreateLogger<Connector>();
         }
         protected TicketingClient Client { get; }
-        protected ILogger Logger { get; }
+        public ILogger Logger { get; }
         public virtual async Task AppendDataAsync(Ticket persistedTicket)
         {
             try

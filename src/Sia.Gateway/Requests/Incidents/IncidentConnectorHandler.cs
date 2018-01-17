@@ -6,6 +6,7 @@ using Sia.Data.Incidents;
 using Sia.Connectors.Tickets;
 using MediatR;
 using Sia.Domain;
+using Microsoft.Extensions.Logging;
 
 namespace Sia.Gateway.Requests
 {
@@ -14,6 +15,9 @@ namespace Sia.Gateway.Requests
         where TRequest : IRequest<TResult>
     {
         protected readonly Connector _connector;
+
+
+
         protected IncidentConnectorHandler(
             IncidentContext context,
             Connector connector
@@ -23,7 +27,13 @@ namespace Sia.Gateway.Requests
         }
 
         protected void AttachTickets(Incident incident)
-            => _connector.AppendData(incident.Tickets);
+        {
+     
+            if (_connector.Logger.IsEnabled(LogLevel.Debug)) {
+                _connector.Logger.LogDebug("Incident Data For Ticket", incident);
+            }
+            _connector.AppendData(incident.Tickets);
+        }
 
         protected void AttachTickets(List<Incident> incidents)
             => incidents.ForEach(inc => AttachTickets(inc));
