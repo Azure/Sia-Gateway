@@ -18,8 +18,8 @@ namespace Sia.Gateway.Controllers
         {
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
+        public const string GetSingleRouteName = "GetIncident";
+        [HttpGet("{id}", Name = GetSingleRouteName)]
         public async Task<IActionResult> Get(long id)
         {
             var result = await _mediator.Send(new GetIncidentRequest(id, _authContext));

@@ -19,6 +19,8 @@ namespace Sia.Gateway.Controllers
     {
         private const string notFoundMessage = "Incident or event not found";
         private readonly HubConnectionBuilder _hubConnectionBuilder;
+        private readonly OperationLinks _operationLinks;
+        private readonly RelationLinks _relationLinks;
 
         public EventsController(IMediator mediator,
             AzureActiveDirectoryAuthenticationInfo authConfig,
@@ -27,26 +29,44 @@ namespace Sia.Gateway.Controllers
             : base(mediator, authConfig, urlHelper)
         {
             _hubConnectionBuilder = hubConnectionBuilder;
+            _operationLinks = new OperationLinks()
+            {
+                Single = new SingleOperationLinks()
+                {
+                    Get = _urlHelper.Action(GetSingleRouteName),
+                    Post = _urlHelper.Action(PostSingleRouteName)
+                },
+                Multiple = new MultipleOperationLinks()
+                {
+                    Get = _urlHelper.Action(GetMultipleRouteName)
+                }
+            };
+            _relationLinks = new RelationLinks()
+            {
+                Parent = new RelatedParentLinks()
+                {
+                    Incident = _urlHelper.Action(IncidentsController.GetSingleRouteName, nameof(IncidentsController))
+                }
+            };
         }
 
-        [HttpGet(Name = nameof(GetEvents))]
+        public const string GetMultipleRouteName = nameof(GetEvents);
+        [HttpGet(Name = GetMultipleRouteName)]
         public async Task<IActionResult> GetEvents([FromRoute]long incidentId,
             [FromQuery]PaginationMetadata pagination,
             [FromQuery]EventFilters filter)
         {
             var result = await _mediator.Send(new GetEventsRequest(incidentId, pagination, filter, _authContext));
-            //add metadata here
-            var headerMetadata = new PaginationMetadata(pagination);
-            //change AddPagenation, remove the metadata insertion, add only links in here (maybe change the name of AddPagenation to AddLinks)
-            Response.Headers.AddPagination(new FilteredLinksHeader(filter, pagination, _urlHelper, nameof(GetEvents), incidentId));
-            //create a new class to contain metadata + links
+            Response.Headers.AddLinksHeader(new FilteredLinksHeader(filter, pagination, _urlHelper, GetMultipleRouteName, _operationLinks, _relationLinks));
             return Ok(result);
         }
 
-        [HttpGet("{id}", Name = "GetEvent")]
+        public const string GetSingleRouteName = "GetEvent";
+        [HttpGet("{id}", Name = GetSingleRouteName)]
         public async Task<IActionResult> Get([FromRoute]long incidentId, [FromRoute]long id)
         {
             var result = await _mediator.Send(new GetEventRequest(incidentId, id, _authContext));
+            Response.Headers.AddLinksHeader(new LinksHeader(null, _urlHelper, GetSingleRouteName, _operationLinks, _relationLinks));
             if (result == null)
             {
                 return NotFound(notFoundMessage);
@@ -55,7 +75,8 @@ namespace Sia.Gateway.Controllers
             return Ok(result);
         }
 
-        [HttpPost()]
+        public const string PostSingleRouteName = "PostEvent";
+        [HttpPost(Name = PostSingleRouteName)]
         public async Task<IActionResult> Post([FromRoute]long incidentId, [FromBody]NewEvent newEvent)
         {
             var result = await _mediator.Send(new PostEventRequest(incidentId, newEvent, _authContext));
