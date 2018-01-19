@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>Microsoft.Sia.Connectors.Tickets</PackageId>
-    <Version>1.1.16-alpha</Version>
+    <Version>1.1.25-alpha</Version>
     <Authors>Microsoft</Authors>
     <Company>Microsoft</Company>
     <Product>SRE Incident Assistant</Product>
