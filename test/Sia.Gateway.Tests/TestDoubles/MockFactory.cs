@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Sia.Gateway.Tests.TestDoubles
 {
@@ -27,9 +28,7 @@ namespace Sia.Gateway.Tests.TestDoubles
 
             if(_contextBeingGenerated.TryAdd(instance, true))
             {
-                var options = new DbContextOptionsBuilder<IncidentContext>()
-                    .UseInMemoryDatabase(instance)
-                    .Options;
+                var options = CreateFreshContextAndDb(instance);
                 context = new IncidentContext(options);
                 SeedData.Add(context);
                 _contextBeingGenerated.TryAdd(instance, false);
@@ -42,5 +41,17 @@ namespace Sia.Gateway.Tests.TestDoubles
 
         private static ConcurrentDictionary<string, bool> _contextBeingGenerated { get; set; } = new ConcurrentDictionary<string, bool>();
         private static ConcurrentDictionary<string, IncidentContext> _contexts { get; set; } = new ConcurrentDictionary<string, IncidentContext>();
+
+        private static DbContextOptions<IncidentContext> CreateFreshContextAndDb(string instance)
+        {
+            var serviceProvider = new ServiceCollection()
+                .AddEntityFrameworkInMemoryDatabase()
+                .BuildServiceProvider();
+            var builder = new DbContextOptionsBuilder<IncidentContext>()
+                .UseInMemoryDatabase(instance)
+                .UseInternalServiceProvider(serviceProvider);
+            return builder.Options;
+        }
     }
+
 }
