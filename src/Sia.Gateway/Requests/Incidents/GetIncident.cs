@@ -6,6 +6,7 @@ using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Shared.Authentication;
 using Sia.Shared.Requests;
+using Sia.Shared.Protocol;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -32,8 +33,7 @@ namespace Sia.Gateway.Requests
 
         public override async Task<Incident> Handle(GetIncidentRequest getIncident, CancellationToken cancellationToken)
         {
-            var incidentRecord = await _context
-                .Incidents
+            var incidentRecord = await _context.Incidents
                 .WithEagerLoading()
                 .SingleOrDefaultAsync(cr => cr.Id == getIncident.Id, cancellationToken);
             if (incidentRecord == null) throw new KeyNotFoundException();

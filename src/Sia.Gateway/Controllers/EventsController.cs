@@ -19,7 +19,6 @@ namespace Sia.Gateway.Controllers
     {
         private const string notFoundMessage = "Incident or event not found";
         private readonly HubConnectionBuilder _hubConnectionBuilder;
-        private readonly OperationLinks _operationLinks;
         private readonly RelationLinks _relationLinks;
 
         public EventsController(IMediator mediator,
@@ -29,25 +28,26 @@ namespace Sia.Gateway.Controllers
             : base(mediator, authConfig, urlHelper)
         {
             _hubConnectionBuilder = hubConnectionBuilder;
-            _operationLinks = new OperationLinks()
-            {
-                Single = new SingleOperationLinks()
-                {
-                    Post = _urlHelper.Link(PostSingleRouteName, new { })
+            _relationLinks = new RelationLinks();
+        }
 
-        },
-                Multiple = new MultipleOperationLinks()
-                {
-                    Get = _urlHelper.Link(GetMultipleRouteName, new { })
-                }
-            };
-            _relationLinks = new RelationLinks()
+        public void CreateLinks(string id, string incidentId) {
+            _operationLinks.Single = new SingleOperationLinks()
             {
-                Parent = new RelatedParentLinks()
-                {
-                    Incident = _urlHelper.Action(IncidentsController.GetSingleRouteName)
-                }
+                Get = _urlHelper.Link(GetSingleRouteName, new { id }),
+                Post = _urlHelper.Link(PostSingleRouteName, new { })
+
             };
+            _operationLinks.Multiple = new MultipleOperationLinks()
+            {
+                Get = _urlHelper.Link(GetMultipleRouteName, new { })
+            };
+
+            _relationLinks.Parent = new RelatedParentLinks()
+            {
+                Incident = _urlHelper.Link(IncidentsController.GetSingleRouteName, new { id = incidentId })
+            };
+            
         }
 
         public const string GetMultipleRouteName = "GetEvents";
@@ -57,6 +57,9 @@ namespace Sia.Gateway.Controllers
             [FromQuery]EventFilters filter)
         {
             var result = await _mediator.Send(new GetEventsRequest(incidentId, pagination, filter, _authContext));
+
+            CreateLinks(null, incidentId.ToString());
+
             Response.Headers.AddLinksHeader(new FilteredLinksHeader(filter, pagination, _urlHelper, GetMultipleRouteName, _operationLinks, _relationLinks));
             return Ok(result);
         }
@@ -66,7 +69,9 @@ namespace Sia.Gateway.Controllers
         public async Task<IActionResult> Get([FromRoute]long incidentId, [FromRoute]long id)
         {
             var result = await _mediator.Send(new GetEventRequest(incidentId, id, _authContext));
-            _operationLinks.Single.Get = _urlHelper.Link(GetSingleRouteName, new {id = id });
+
+            CreateLinks(id.ToString(), incidentId.ToString());
+
             Response.Headers.AddLinksHeader(new LinksHeader(null, _urlHelper, GetSingleRouteName, _operationLinks, _relationLinks));
             if (result == null)
             {
@@ -86,8 +91,11 @@ namespace Sia.Gateway.Controllers
                 return NotFound(notFoundMessage);
             }
             await SendEventToSubscribers(result);
+
             var newUrl = _urlHelper.Link(GetSingleRouteName, new { id = result.Id });
-            _operationLinks.Single.Get = newUrl;
+
+            CreateLinks(result.Id.ToString(), incidentId.ToString());
+
             Response.Headers.AddLinksHeader(new LinksHeader(null, _urlHelper, PostSingleRouteName, _operationLinks, _relationLinks));
             return Created(newUrl, result);
         }
