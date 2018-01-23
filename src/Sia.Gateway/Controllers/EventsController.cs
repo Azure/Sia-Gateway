@@ -33,20 +33,19 @@ namespace Sia.Gateway.Controllers
             {
                 Single = new SingleOperationLinks()
                 {
-                    //Get = _urlHelper.Action(GetSingleRouteName, nameof(EventsController)),
-                    //Post = _urlHelper.Action(PostSingleRouteName, nameof(EventsController))
+                    Post = _urlHelper.Link(PostSingleRouteName, new { })
 
         },
                 Multiple = new MultipleOperationLinks()
                 {
-                    Get = _urlHelper.Action(GetMultipleRouteName)
+                    Get = _urlHelper.Link(GetMultipleRouteName, new { })
                 }
             };
             _relationLinks = new RelationLinks()
             {
                 Parent = new RelatedParentLinks()
                 {
-                    Incident = _urlHelper.Action(IncidentsController.GetSingleRouteName, nameof(IncidentsController))
+                    Incident = _urlHelper.Action(IncidentsController.GetSingleRouteName)
                 }
             };
         }
@@ -87,7 +86,10 @@ namespace Sia.Gateway.Controllers
                 return NotFound(notFoundMessage);
             }
             await SendEventToSubscribers(result);
-            return Created($"api/incidents/{result.IncidentId}/events/{result.Id}", result);
+            var newUrl = _urlHelper.Link(GetSingleRouteName, new { id = result.Id });
+            _operationLinks.Single.Get = newUrl;
+            Response.Headers.AddLinksHeader(new LinksHeader(null, _urlHelper, PostSingleRouteName, _operationLinks, _relationLinks));
+            return Created(newUrl, result);
         }
 
         private async Task SendEventToSubscribers(Domain.Event result)
