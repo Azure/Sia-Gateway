@@ -14,7 +14,7 @@ using Sia.Data.Incidents.Filters;
 
 namespace Sia.Gateway.Controllers
 {
-    [Route("incidents/{incidentId}/events")]
+    [Route("incidents/{incidentId}/events", Name = "Events")]
     public class EventsController : BaseController
     {
         private const string notFoundMessage = "Incident or event not found";
@@ -33,9 +33,10 @@ namespace Sia.Gateway.Controllers
             {
                 Single = new SingleOperationLinks()
                 {
-                    Get = _urlHelper.Action(GetSingleRouteName),
-                    Post = _urlHelper.Action(PostSingleRouteName)
-                },
+                    //Get = _urlHelper.Action(GetSingleRouteName, nameof(EventsController)),
+                    //Post = _urlHelper.Action(PostSingleRouteName, nameof(EventsController))
+
+        },
                 Multiple = new MultipleOperationLinks()
                 {
                     Get = _urlHelper.Action(GetMultipleRouteName)
@@ -50,7 +51,7 @@ namespace Sia.Gateway.Controllers
             };
         }
 
-        public const string GetMultipleRouteName = nameof(GetEvents);
+        public const string GetMultipleRouteName = "GetEvents";
         [HttpGet(Name = GetMultipleRouteName)]
         public async Task<IActionResult> GetEvents([FromRoute]long incidentId,
             [FromQuery]PaginationMetadata pagination,
@@ -66,6 +67,7 @@ namespace Sia.Gateway.Controllers
         public async Task<IActionResult> Get([FromRoute]long incidentId, [FromRoute]long id)
         {
             var result = await _mediator.Send(new GetEventRequest(incidentId, id, _authContext));
+            _operationLinks.Single.Get = _urlHelper.Link(GetSingleRouteName, new {id = id });
             Response.Headers.AddLinksHeader(new LinksHeader(null, _urlHelper, GetSingleRouteName, _operationLinks, _relationLinks));
             if (result == null)
             {
