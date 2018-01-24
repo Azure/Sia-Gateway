@@ -19,7 +19,7 @@ namespace Sia.Gateway.Controllers
     {
         private const string notFoundMessage = "Incident or event not found";
         private readonly HubConnectionBuilder _hubConnectionBuilder;
-        private readonly RelationLinks _relationLinks;
+        public readonly RelationLinks _relationLinks;
 
         public EventsController(IMediator mediator,
             AzureActiveDirectoryAuthenticationInfo authConfig,
@@ -71,7 +71,7 @@ namespace Sia.Gateway.Controllers
             var result = await _mediator.Send(new GetEventRequest(incidentId, id, _authContext));
 
             CreateLinks(id.ToString(), incidentId.ToString());
-
+           
             Response.Headers.AddLinksHeader(new LinksHeader(null, _urlHelper, GetSingleRouteName, _operationLinks, _relationLinks));
             if (result == null)
             {
