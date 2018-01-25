@@ -38,8 +38,7 @@ namespace Sia.Gateway.Controllers
             }
             catch (NotFoundException ex)
             {
-                //return NoContent(notFoundMessage);
-                return Accepted();
+                return NotFound();
             }
         }
     }
