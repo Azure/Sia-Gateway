@@ -6,6 +6,7 @@ using Sia.Gateway.Requests;
 using Sia.Gateway.Tests.TestDoubles;
 using System.Linq;
 using System.Threading.Tasks;
+using Sia.Shared.Protocol;
 
 namespace Sia.Gateway.Tests.Requests
 {
@@ -39,7 +40,7 @@ namespace Sia.Gateway.Tests.Requests
                 await MockFactory.IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents)),
                 new NoConnector(new NoClient(), new StubLoggerFactory())
             );
-            var request = new GetIncidentsRequest(new DummyAuthenticatedUserContext());
+            var request = new GetIncidentsRequest(new PaginationMetadata(), new DummyAuthenticatedUserContext());
 
 
             var result = (await serviceUnderTest.Handle(request, new System.Threading.CancellationToken())).ToList();
