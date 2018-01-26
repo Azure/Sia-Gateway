@@ -69,14 +69,33 @@ namespace Sia.Gateway.Tests.Requests.Incidents
             //Arrange
             methods.Clear();
             ids.Clear();
-            var linksHeader = new LinksHeader(new PaginationMetadata(), urlHelperMock.Object, "IncidentsController", null,
+
+            var pagination = new PaginationMetadata()
+            {
+                PageNumber = 2,
+                PageSize = 2,
+                TotalRecords = 10
+
+            };
+
+            var linksHeaderWithoutMetadata = new LinksHeader(null, urlHelperMock.Object, "IncidentsController", null,
                 null);
+            var linksHeaderWithMetadata = new LinksHeader(pagination, urlHelperMock.Object, "IncidentsController", null,
+                null);
+
             //Act
-            var linksForSerialization = linksHeader.GetHeaderValues();
+            var linksWithoutMetadata = linksHeaderWithoutMetadata.GetHeaderValues();
+            var linksWithMetadata = linksHeaderWithMetadata.GetHeaderValues();
 
             //Assert
-            Assert.IsNotNull(linksForSerialization.Metadata);
-            //Assert.IsNotNull(linksForSerialization.Links.Pagination);
+            Assert.IsNull(linksWithoutMetadata.Metadata);
+            Assert.IsNull(linksWithoutMetadata.Links.Pagination);
+
+            Assert.IsNotNull(linksWithMetadata.Metadata);
+            Assert.IsNotNull(linksWithMetadata.Links.Pagination);
+            urlHelperMock.Verify(foo => foo.Link("IncidentsController", It.IsAny<object>()), Times.Exactly(2));
+            Assert.AreEqual(ids[0].ToString(), "{ }");
+            Assert.AreEqual(ids[1].ToString(), "{ }");
         }
     }
 }
