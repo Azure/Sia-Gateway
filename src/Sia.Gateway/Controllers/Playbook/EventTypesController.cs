@@ -8,7 +8,9 @@ using Sia.Shared.Authentication;
 using Sia.Gateway.Requests;
 using Sia.Domain.ApiModels.Playbooks;
 using Sia.Shared.Controllers;
+using Sia.Shared.Exceptions;
 using Sia.Domain.Playbook;
+using System.Net;
 
 namespace Sia.Gateway.Controllers
 {
