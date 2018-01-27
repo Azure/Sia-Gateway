@@ -19,66 +19,47 @@ namespace Sia.Gateway.Controllers
         {
         }
 
-        //public void CreateLinks(string id)
-        //{
-        //    var _operationLinks = new OperationLinks()
-        //    {
-        //        Single = new SingleOperationLinks()
-        //        {
-        //            Get = _urlHelper.Link(GetSingleRouteName, new { id }),
-        //            Post = _urlHelper.Link(PostSingleRouteName, new { })
-        //        },
-        //        Multiple = new MultipleOperationLinks()
-        //        {
-        //            Get = _urlHelper.Link(GetMultipleRouteName, new { })
-        //        }
+        public LinksHeader CreateLinks(string id, PaginationMetadata pagination, string routeName)
+        {
+            var _operationLinks = new OperationLinks()
+            {
+                Single = new SingleOperationLinks()
+                {
+                    Get = _urlHelper.Link(GetSingleRouteName, new { id }),
+                    Post = _urlHelper.Link(PostSingleRouteName, new { })
+                },
+                Multiple = new MultipleOperationLinks()
+                {
+                    Get = _urlHelper.Link(GetMultipleRouteName, new { })
+                }
 
-        //    };
+            };
+            RelationLinks _relationLinks = null;
+            if (id != null)
+            {
+                 _relationLinks = new RelationLinks()
+                {
+                    Children = new RelatedChildLinks()
+                    {
+                        Events = _urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = id })
+                    }
+                };
+            }
 
-        //    if (id != null)
-        //    {
-        //        var _relationLinks = new RelationLinks()
-        //        {
-        //            Children = new RelatedChildLinks()
-        //            {
-        //                Events = _urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = id })
-        //            }
-        //        };
-        //    }
-        //}
+            return new LinksHeader(null, pagination, _urlHelper, routeName, _operationLinks, _relationLinks);
+        }
 
         public const string GetSingleRouteName = "GetIncident";
         [HttpGet("{id}", Name = GetSingleRouteName)]
-        public async Task<IActionResult> Get(long id, [FromQuery]EventFilters filter)
+        public async Task<IActionResult> Get(long id)
         {
             var result = await _mediator.Send(new GetIncidentRequest(id, _authContext));
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)} not found");
             }
-            //CreateLinks(id.ToString());
-            //Response.Headers.AddLinksHeader(new FilteredLinksHeader(filter, null, _urlHelper, "IncidentsController" + GetSingleRouteName, _operationLinks, _relationLinks));
-            Response.Headers.AddLinksHeader( new FilteredLinksHeader(
-                filter, null, _urlHelper, "IncidentsController" + GetSingleRouteName, new OperationLinks()
-                {
-                    Single = new SingleOperationLinks()
-                    {
-                        Get = _urlHelper.Link(GetSingleRouteName, new { id }),
-                        Post = _urlHelper.Link(PostSingleRouteName, new { })
-                    },
-                    Multiple = new MultipleOperationLinks()
-                    {
-                        Get = _urlHelper.Link(GetMultipleRouteName, new { })
-                    }
-
-                }, new RelationLinks()
-                {
-                    Children = new RelatedChildLinks()
-                    {
-                        Events = _urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = id })
-                    }
-                })
-            );
+            Response.Headers.AddLinksHeader(CreateLinks(id.ToString(), null, GetSingleRouteName));
+       
             return Ok(result);
         }
 
@@ -91,21 +72,7 @@ namespace Sia.Gateway.Controllers
             {
                 return NotFound($"{nameof(Incident)}s not found");
             }
-            //CreateLinks(null);
-            //Response.Headers.AddLinksHeader(new LinksHeader(pagination, _urlHelper, "IncidentsController" + GetSingleRouteName, _operationLinks, _relationLinks));
-            Response.Headers.AddLinksHeader( new LinksHeader(
-                pagination, _urlHelper, "IncidentsController" + GetSingleRouteName, new OperationLinks()
-            {
-                Single = new SingleOperationLinks()
-                {
-                    Post = _urlHelper.Link(PostSingleRouteName, new { })
-                },
-                Multiple = new MultipleOperationLinks()
-                {
-                    Get = _urlHelper.Link(GetMultipleRouteName, new { })
-                }
-
-            }, null));
+            Response.Headers.AddLinksHeader(CreateLinks(null, pagination, GetSingleRouteName));
             return Ok(result);
         }
 
@@ -119,29 +86,7 @@ namespace Sia.Gateway.Controllers
                 return NotFound($"{nameof(Incident)} not found");
             }
             var newUrl = _urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = result.Id });
-            //CreateLinks(result.Id.ToString());
-            //Response.Headers.AddLinksHeader(new LinksHeader(null, _urlHelper, PostSingleRouteName, _operationLinks, _relationLinks));
-            Response.Headers.AddLinksHeader(
-                new LinksHeader(null, _urlHelper, PostSingleRouteName, new OperationLinks()
-                {
-                    Single = new SingleOperationLinks()
-                    {
-                        Get = _urlHelper.Link(GetSingleRouteName, new { result.Id }),
-                        Post = _urlHelper.Link(PostSingleRouteName, new { })
-                    },
-                    Multiple = new MultipleOperationLinks()
-                    {
-                        Get = _urlHelper.Link(GetMultipleRouteName, new { })
-                    }
-
-                }, new RelationLinks()
-                {
-                    Children = new RelatedChildLinks()
-                    {
-                        Events = _urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = result.Id })
-                    }
-                }
-                ));
+            Response.Headers.AddLinksHeader(CreateLinks(result.Id.ToString(), null, PostSingleRouteName));
             return Created(newUrl, result);
         }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sia.Gateway.Controllers;
@@ -11,25 +12,25 @@ namespace Sia.Gateway.Tests.Requests.Incidents
     [TestClass]
     public class GenerateLinksHeaderTestsForIncidents
     {
-            private List<string> methods;
-            private List<object> ids;
-            private Mock<IUrlHelper> urlHelperMock;
-            public GenerateLinksHeaderTestsForIncidents()
-            {
-                // Arrange
-                methods = new List<string>();
-                ids = new List<object>();
-                urlHelperMock = new Mock<IUrlHelper>();
-                urlHelperMock.Setup(link => link.Link(It.IsAny<string>(), It.IsAny<object>()))
-                    .Callback<string, object>(
-                        (s, o) =>
-                        {
-                            methods.Add(s);
-                            ids.Add(o);
-                        }
-                    );
+        private List<string> methods;
+        private List<object> ids;
+        private Mock<IUrlHelper> urlHelperMock;
+        public GenerateLinksHeaderTestsForIncidents()
+        {
+            // Arrange
+            methods = new List<string>();
+            ids = new List<object>();
+            urlHelperMock = new Mock<IUrlHelper>();
+            urlHelperMock.Setup(link => link.Link(It.IsAny<string>(), It.IsAny<object>()))
+                .Callback<string, object>(
+                    (s, o) =>
+                    {
+                        methods.Add(s);
+                        ids.Add(o);
+                    }
+                );
 
-            }
+        }
         [TestMethod]
         public void CreateLinksWorksCorrectly_WhenCalledInIncidentsMethods()
         {
@@ -48,7 +49,7 @@ namespace Sia.Gateway.Tests.Requests.Incidents
             var incidentsController = new IncidentsController(null, null, urlHelperMock.Object);
 
             // Act
-            incidentsController.CreateLinks("1");
+            incidentsController.CreateLinks("1", null, "");
 
             // Assert
             urlHelperMock.Verify(foo => foo.Link(IncidentsController.GetSingleRouteName, It.IsAny<object>()), Times.Exactly(1));
@@ -78,9 +79,9 @@ namespace Sia.Gateway.Tests.Requests.Incidents
 
             };
 
-            var linksHeaderWithoutMetadata = new LinksHeader(null, urlHelperMock.Object, "IncidentsController", null,
+            var linksHeaderWithoutMetadata = new LinksHeader(null, null, urlHelperMock.Object, "IncidentsController", null,
                 null);
-            var linksHeaderWithMetadata = new LinksHeader(pagination, urlHelperMock.Object, "IncidentsController", null,
+            var linksHeaderWithMetadata = new LinksHeader(null, pagination, urlHelperMock.Object, "IncidentsController", null,
                 null);
 
             //Act
@@ -94,6 +95,7 @@ namespace Sia.Gateway.Tests.Requests.Incidents
             Assert.IsNotNull(linksWithMetadata.Metadata);
             Assert.IsNotNull(linksWithMetadata.Links.Pagination);
             urlHelperMock.Verify(foo => foo.Link("IncidentsController", It.IsAny<object>()), Times.Exactly(2));
+
             Assert.AreEqual(ids[0].ToString(), "{ }");
             Assert.AreEqual(ids[1].ToString(), "{ }");
         }
