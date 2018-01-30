@@ -31,6 +31,10 @@ namespace Sia.Gateway.Tests.Requests.Incidents
                 );
 
         }
+
+        string GetId(object values, string property) => values.GetType().GetProperty(property)?.GetValue(values).ToString() ?? "";
+
+
         [TestMethod]
         public void CreateLinksWorksCorrectly_WhenCalledInIncidentsMethods()
         {
@@ -57,10 +61,10 @@ namespace Sia.Gateway.Tests.Requests.Incidents
             urlHelperMock.Verify(foo => foo.Link(IncidentsController.GetMultipleRouteName, It.IsAny<object>()), Times.Exactly(1));
             urlHelperMock.Verify(foo => foo.Link(EventsController.GetMultipleRouteName, It.IsAny<object>()), Times.Exactly(1));
 
-            Assert.AreEqual(ids[0].ToString(), "{ id = 1 }");
-            Assert.AreEqual(ids[1].ToString(), "{ }");
-            Assert.AreEqual(ids[2].ToString(), "{ }");
-            Assert.AreEqual(ids[3].ToString(), "{ incidentId = 1 }");
+            Assert.AreEqual(GetId(ids[0], "id"), "1");
+            Assert.AreEqual(GetId(ids[1], "id"), "");
+            Assert.AreEqual(GetId(ids[2], "id"), "");
+            Assert.AreEqual(GetId(ids[3], "incidentId"), "1");
 
         }
 
@@ -96,8 +100,8 @@ namespace Sia.Gateway.Tests.Requests.Incidents
             Assert.IsNotNull(linksWithMetadata.Links.Pagination);
             urlHelperMock.Verify(foo => foo.Link("IncidentsController", It.IsAny<object>()), Times.Exactly(2));
 
-            Assert.AreEqual(ids[0].ToString(), "{ }");
-            Assert.AreEqual(ids[1].ToString(), "{ }");
+            Assert.AreEqual(GetId(ids[0], "id"), "");
+            Assert.AreEqual(GetId(ids[1], "id"), "");
         }
     }
 }
