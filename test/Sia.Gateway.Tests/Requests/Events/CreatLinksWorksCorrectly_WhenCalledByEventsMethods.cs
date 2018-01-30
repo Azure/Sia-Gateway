@@ -33,7 +33,7 @@ namespace Sia.Gateway.Tests.Requests.Events
         string GetProperty(object values, string property) => values.GetType().GetProperty(property)?.GetValue(values).ToString() ?? "";
 
         [TestMethod]
-        public void CreateLinksWorksCorrectly_WhenCalledInEventsMethods()
+        public void CreateLinksGeneratesFourLinksWithCorrectIds_WhenPassedAnIncidentIdAndAnEventId()
         {
             //Arrange
             methods.Clear();
@@ -55,7 +55,7 @@ namespace Sia.Gateway.Tests.Requests.Events
         }
 
         [TestMethod]
-        public void GetHeaderValuesWorksCorrectly_WhenCalledInEventsMethods()
+        public void GetHeaderValuesAssignsMetadataAndPaginationAsNull_WhenNoMetaDataPassedIn()
         {
             //Arrange
             methods.Clear();

@@ -35,7 +35,7 @@ namespace Sia.Gateway.Tests.Requests.Incidents
         string GetProperty(object values, string property) => values.GetType().GetProperty(property)?.GetValue(values).ToString() ?? "";
 
         [TestMethod]
-        public void CreateLinksWorksCorrectly_WhenCalledInIncidentsMethods()
+        public void CreateLinksGeneratesFourLinksWithCorrectIdsOrIncidentIds_WhenPassedAnIncidentId()
         {
             // Arrange
             var methods = new List<string>();
@@ -67,7 +67,7 @@ namespace Sia.Gateway.Tests.Requests.Incidents
         }
 
         [TestMethod]
-        public void GetHeaderValuesWorksCorrectly_WhenCalledInIncidentsMethods()
+        public void GetHeaderValuesAssignsMetadataAndPaginationAsNull_WhenNoMetaDataPassedIn()
         {
             //Arrange
             methods.Clear();
@@ -98,13 +98,8 @@ namespace Sia.Gateway.Tests.Requests.Incidents
             Assert.IsNotNull(linksWithMetadata.Links.Pagination);
             urlHelperMock.Verify(foo => foo.Link("IncidentsController", It.IsAny<object>()), Times.Exactly(2));
 
-<<<<<<< HEAD
             Assert.AreEqual(GetProperty(ids[0], "id"), "");
             Assert.AreEqual(GetProperty(ids[1], "id"), "");
-=======
-            Assert.AreEqual(GetId(ids[0], "id"), "");
-            Assert.AreEqual(GetId(ids[1], "id"), "");
->>>>>>> 3062a2333d115f474e0b8ea78a632945a80f576f
         }
     }
 }

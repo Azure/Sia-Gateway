@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sia.Connectors.Tickets;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Shared.Authentication;
 using Sia.Shared.Requests;
-using Sia.Shared.Protocol;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
