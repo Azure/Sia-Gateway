@@ -6,6 +6,8 @@ using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Shared.Authentication;
 using Sia.Shared.Requests;
+using Sia.Shared.Protocol;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,10 +16,12 @@ namespace Sia.Gateway.Requests
 {
     public class GetIncidentsRequest : AuthenticatedRequest<IEnumerable<Incident>>
     {
-        public GetIncidentsRequest(AuthenticatedUserContext userContext)
+        public GetIncidentsRequest(PaginationMetadata pagination, AuthenticatedUserContext userContext)
             : base(userContext)
         {
+            Pagination = pagination;
         }
+        public PaginationMetadata Pagination { get; }
     }
 
     public class GetIncidentsHandler
@@ -31,6 +35,7 @@ namespace Sia.Gateway.Requests
         {
             var incidentRecords = await _context.Incidents
                 .WithEagerLoading()
+                .WithPagination(request.Pagination)
                 .ProjectTo<Incident>()
                 .ToListAsync(cancellationToken);
             AttachTickets(incidentRecords);
