@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Sia.Domain.Playbook;
 using Sia.Gateway.Requests.Playbook;
 using Sia.Shared.Authentication;
@@ -13,6 +17,19 @@ namespace Sia.Gateway.Requests
         public GetGlobalActionsRequest(AuthenticatedUserContext userContext)
             : base(userContext)
         {
+        }
+    }
+
+    public class GetGlobalActionsShortCircuit : PlaybookShortCircuit<GetGlobalActionsRequest, IEnumerable<Action>>
+    {
+        public GetGlobalActionsShortCircuit(IConfigurationRoot config) : base(config)
+        {
+
+        }
+
+        public override Task<IEnumerable<Action>> GenerateMockAsync(GetGlobalActionsRequest request, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new List<Action>().AsEnumerable());
         }
     }
 

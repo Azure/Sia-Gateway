@@ -3,6 +3,7 @@ using Sia.Domain.Playbook;
 using Sia.Gateway.Requests.Playbook;
 using Sia.Shared.Authentication;
 using Sia.Shared.Authentication.Http;
+using Sia.Shared.Extensions.Mediatr;
 using Sia.Shared.Requests;
 
 namespace Sia.Gateway.Requests
@@ -16,6 +17,24 @@ namespace Sia.Gateway.Requests
         }
 
         public long EventTypeId { get; private set; }
+    }
+
+    public class GetEventTypeShortCircuit : PlaybookShortCircuit<GetEventTypeRequest, EventType>
+    {
+        public GetEventTypeShortCircuit(IConfigurationRoot config) : base(config)
+        {
+
+        }
+
+        public override Task<EventType> GenerateMockAsync(GetEventTypeRequest request, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new EventType()
+            {
+                Id = request.EventTypeId,
+                Name = "This is a mock",
+                Data = new MockEventTypeData()
+            });
+        }
     }
 
     public class GetEventTypeHandler : PlaybookProxyHandler<GetEventTypeRequest, EventType>
