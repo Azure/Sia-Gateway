@@ -21,10 +21,6 @@ namespace Sia.Gateway.Tests.Requests.Playbook
     [TestClass]
     public class PlaybookShortCircuitTests
     {
-        public Task<string> ReturnMockNext()
-        {
-            return Task.FromResult("Next result");
-        }
 
         [TestMethod]
         public void ShouldRequestContinue__Returns_True_If_Playbook_In_Config()
@@ -32,8 +28,9 @@ namespace Sia.Gateway.Tests.Requests.Playbook
             var configProps = new Dictionary<string, string>();
             configProps.Add("Microservices:0", "Playbook");
             var mockConfig = new MockConfig(configProps);
-            var getEventTypesShortCircuit = new GetEventTypeShortCircuit(mockConfig);
-            var result = getEventTypesShortCircuit.ShouldRequestContinue(mockConfig);
+            var mockShortCircuitImplementation = new GetEventTypeShortCircuit(mockConfig);
+
+            var result = mockShortCircuitImplementation.ShouldRequestContinue(mockConfig);
 
             Assert.AreEqual(result, true);
         }
@@ -43,32 +40,13 @@ namespace Sia.Gateway.Tests.Requests.Playbook
         {
             var configProps = new Dictionary<string, string>();
             var mockConfig = new MockConfig(configProps);
-            var getEventTypesShortCircuit = new GetEventTypeShortCircuit(mockConfig);
+            var mockShortCircuitImplementation = new GetGlobalActionsShortCircuit(mockConfig);
 
-            var result = getEventTypesShortCircuit.ShouldRequestContinue(mockConfig);
+            var result = mockShortCircuitImplementation.ShouldRequestContinue(mockConfig);
 
             Assert.AreEqual(result, false);
         }
 
-        [TestMethod]
-        public async Task Handle_Should_Return_Next_If_ShouldRequestContinue_Is_True()
-        {
-            var mockShortCircuit = new MockShortCircuit(shouldRequestContinue: true);
-            
-            var result = await mockShortCircuit.Handle(null, new CancellationToken(), ReturnMockNext);
-
-            Assert.AreEqual(result, "Next result");
-        }
-
-        [TestMethod]
-        public async Task Handle_Should_Return_Mock_If_ShouldRequestContinue_Is_False()
-        {
-            var mockShortCircuit = new MockShortCircuit(shouldRequestContinue: false);
-
-            var result = await mockShortCircuit.Handle(null, new CancellationToken(), null);
-
-            Assert.AreEqual(result, "Next was not called");
-        }
     }
 }
  
