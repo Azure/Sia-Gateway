@@ -22,10 +22,14 @@ namespace Sia.Gateway.Controllers
 
         [HttpGet(Name = nameof(GetAll) + nameof(EventType))]
         public async Task<IActionResult> GetAll()
-        => Ok(await _mediator.Send(new GetEventTypesRequest(_authContext)));
+        {
+            return OkIfFound(await _mediator.Send(new GetEventTypesRequest(_authContext)));
+        }
 
         [HttpGet("{id}", Name = nameof(Get) + nameof(EventType))]
         public async Task<IActionResult> Get(long id)
-            => Ok(await _mediator.Send(new GetEventTypeRequest(id, _authContext)));
+        {
+            return OkIfFound(await _mediator.Send(new GetEventTypeRequest(id, _authContext)));
+        }
     }
 }
