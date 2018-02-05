@@ -9,7 +9,8 @@ using Microsoft.Extensions.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
-using Sia.Shared.Extensions.Mediatr;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Sia.Gateway.Requests
 {
@@ -30,17 +31,12 @@ namespace Sia.Gateway.Requests
 
         public override Task<IEnumerable<EventType>> GenerateMockAsync(GetEventTypesRequest request, CancellationToken cancellationToken)
         {
-            var eventType = new EventType()
-            {
-                Id = 100000000,
-                Name = "This is a mock",
-                Data = new MockEventTypeData()
-            };
-            var result = new List<EventType>
-            {
-                eventType
-            };
-            return Task.FromResult(result.AsEnumerable());
+            return Task.FromResult(new List<EventType>().AsEnumerable());
+        }
+
+        public static void RegisterMe(IServiceCollection services)
+        {
+            services.AddTransient<IPipelineBehavior<GetEventTypesRequest, IEnumerable<EventType>>, GetEventTypesShortCircuit>();
         }
     }
 

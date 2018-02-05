@@ -1,4 +1,9 @@
 ﻿using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Sia.Domain.Playbook;
 using Sia.Gateway.Requests.Playbook;
 using Sia.Shared.Authentication;
@@ -34,6 +39,11 @@ namespace Sia.Gateway.Requests
                 Name = "This is a mock",
                 Data = new MockEventTypeData()
             });
+        }
+
+        public static void RegisterMe(IServiceCollection services)
+        {
+            services.AddTransient<IPipelineBehavior<GetEventTypeRequest, EventType>, GetEventTypeShortCircuit>();
         }
     }
 
