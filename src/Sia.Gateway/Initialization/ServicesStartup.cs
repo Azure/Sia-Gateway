@@ -100,7 +100,7 @@ namespace Sia.Gateway.Initialization
 
             //Adds every request type in the Sia.Gateway assembly
             services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
-            services.AddPipelineBehavior();
+            services.AddMediatRPipelineBehavior();
         }
 
         private static IServiceCollection AddSignalR(this IServiceCollection services, IConfigurationRoot config)
@@ -120,7 +120,7 @@ namespace Sia.Gateway.Initialization
             return services;
         }
 
-        private static void AddPipelineBehavior(this IServiceCollection services)
+        private static void AddMediatRPipelineBehavior(this IServiceCollection services)
         {
             GetEventTypesShortCircuit.RegisterMe(services);
             GetEventTypeShortCircuit.RegisterMe(services);

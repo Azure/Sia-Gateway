@@ -16,7 +16,7 @@ namespace Sia.Gateway.Tests.Controllers
 {
 
     [TestClass]
-    public class StubControllerTests
+    public class BaseControllerTests
     {
         [TestMethod]
         public async Task Return_OkResultObject_OkIfFound_Input_Is_Not_Null()
