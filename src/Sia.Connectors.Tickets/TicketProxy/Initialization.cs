@@ -39,31 +39,29 @@ namespace Sia.Gateway.Initialization
 
         public static void AddProxyConnector(
             this IServiceCollection services,
-            IConfigurationRoot config,
-            string proxyEndpoint)
+            ProxyConfig config)
         {
-            var proxyAuthType = config["Connector:Ticket:ProxyAuthType"];
-            switch (proxyAuthType)
+            switch (config.AuthType)
             {
-                case "Certificate":
+                case ProxyConfig.CertificateAuthType:
                     services.AddProxyWithCert(
-                        proxyEndpoint,
-                        config["Connector:Ticket:ProxyCertThumbprint"]
+                        config.Endpoint,
+                        config.Certificate.Thumbprint
                     );
                     return;
-                case "VaultCertificate":
+                case ProxyConfig.VaultCertificateAuthType:
                     services.AddProxyWithCertFromKeyVault(
-                        proxyEndpoint,
+                        config.Endpoint,
                         new KeyVaultConfiguration(
-                            config["ClientId"],
-                            config["ClientSecret"],
-                            config["Connector:Ticket:VaultName"]
+                            config.VaultCertificate.ClientId,
+                            config.VaultCertificate.ClientSecret,
+                            config.VaultCertificate.VaultName
                         ),
-                        config["Connector:Ticket:CertName"]
+                        config.VaultCertificate.CertName
                     );
                     return;
                 default:
-                    services.AddProxyWithoutAuth(proxyEndpoint);
+                    services.AddProxyWithoutAuth(config.Endpoint);
                     return;
             }
         }

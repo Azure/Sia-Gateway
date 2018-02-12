@@ -14,10 +14,12 @@ using Sia.Connectors.Tickets.TicketProxy;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Gateway.Hubs;
+using Sia.Gateway.Initialization.Configuration;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Playbook;
 using Sia.Shared.Authentication;
 using Sia.Shared.Authentication.Http;
+using Sia.Shared.Configuration;
 using Sia.Shared.Protocol;
 using Sia.Shared.Validation;
 using System;
@@ -34,42 +36,36 @@ namespace Sia.Gateway.Initialization
         public static void AddFirstPartyServices(
             this IServiceCollection services,
             IHostingEnvironment env,
-            IConfigurationRoot config)
+            IConfigurationRoot rawConfig,
+            GatewayConfiguration config)
         {
             ConfigureAuth(services, config);
 
 
             if (env.IsDevelopment()) services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
-            if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(config.GetConnectionString("incidentStaging")));
+            if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(rawConfig.GetConnectionString("incidentStaging")));
 
-            services.AddTicketingConnector(env, config);
+            services.AddTicketingConnector(env, rawConfig, config.Connector.Ticket);
 
-            services.AddSingleton<IConfigurationRoot>(i => config);
+            services.AddSingleton<IConfigurationRoot>(i => rawConfig);
 
             var httpClients = new HttpClientLookup();
 
-            if (TryGetConfigValue(config, "Services:Playbook", out string playbookBaseUrl))
+            if (!String.IsNullOrEmpty(config.Services.Playbook))
             {
-                httpClients.RegisterEndpoint("Playbook", playbookBaseUrl);
+                httpClients.RegisterEndpoint(nameof(config.Services.Playbook), config.Services.Playbook);
             }
 
             services.AddSingleton(httpClients);
         }
 
-        private static bool TryGetConfigValue(this IConfigurationRoot config, string configName, out string configValue)
+        public static void ConfigureAuth(IServiceCollection services, GatewayConfiguration config)
         {
-            ThrowIf.NullOrWhiteSpace(configName, nameof(configName));
-            configValue = config[configName];
-            return !string.IsNullOrEmpty(configValue);
-        }
-
-        private static void ConfigureAuth(IServiceCollection services, IConfigurationRoot config)
-        {
-            var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config["Playbook:ClientId"], config["ClientId"], config["ClientSecret"], config["AzureAd:Tenant"]);
+            var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config.Playbook.ClientId, config.ClientId, config.ClientSecret, config.AzureAd.Tenant);
             services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
         }
 
-        public static void AddThirdPartyServices(this IServiceCollection services, IConfigurationRoot config)
+        public static void AddThirdPartyServices(this IServiceCollection services, GatewayConfiguration config)
         {
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IUrlHelper, UrlHelper>(iFactory
@@ -90,8 +86,8 @@ namespace Sia.Gateway.Initialization
                 })
                 .AddJwtBearer(jwtOptions =>
                 {
-                    jwtOptions.Authority = String.Format(config["AzureAd:AadInstance"], config["AzureAd:Tenant"]);
-                    jwtOptions.Audience = config["Frontend:ClientId"];
+                    jwtOptions.Authority = config.AzureAd.Authority;
+                    jwtOptions.Audience = config.FrontEnd.ClientId;
                     jwtOptions.SaveToken = true;
                     jwtOptions.Events = new JwtBearerEvents
                     {
@@ -107,42 +103,41 @@ namespace Sia.Gateway.Initialization
                         }
                     };
                 });
-            services.AddDistributedMemoryCache();
-            services.AddSession();
-            services.AddCors();
-            services.AddSockets();
-            services.AddSignalR(config);
-            services.AddScoped<HubConnectionBuilder>();
+            services
+                .AddDistributedMemoryCache()
+                .AddSession()
+                .AddCors()
+                .AddSockets()
+                .AddSignalR(config.Redis)
+                .AddScoped<HubConnectionBuilder>();
 
             //Adds every request type in the Sia.Gateway assembly
             services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
             services.AddMediatRPipelineBehavior();
         }
 
-        private static IServiceCollection AddSignalR(this IServiceCollection services, IConfigurationRoot config)
+        public static IServiceCollection AddSignalR(this IServiceCollection services, RedisConfig config)
         {
             var signalRBuilder = services.AddSignalR();
-            if (config.TryGetConfigValue("Redis:CacheEndpoint", out string cacheEndpoint)
-                && config.TryGetConfigValue("Redis:Password", out string cachePassword))
+            if (config != null && config.IsValid)
             {
                 signalRBuilder.AddRedis(redisOptions =>
                 {
-                    redisOptions.Options.EndPoints.Add(cacheEndpoint);
+                    redisOptions.Options.EndPoints.Add(config.CacheEndpoint);
                     redisOptions.Options.Ssl = true;
-                    redisOptions.Options.Password = cachePassword;
+                    redisOptions.Options.Password = config.Password;
                 });
             }
 
             return services;
         }
 
-        private static void AddMediatRPipelineBehavior(this IServiceCollection services)
-        {
-            GetEventTypesShortCircuit.RegisterMe(services);
-            GetEventTypeShortCircuit.RegisterMe(services);
-            GetGlobalActionsShortCircuit.RegisterMe(services);
-        }
+        public static IServiceCollection AddMediatRPipelineBehavior(this IServiceCollection services)
+            => GetEventTypesShortCircuit.RegisterMe(
+            GetEventTypeShortCircuit.RegisterMe(
+            GetGlobalActionsShortCircuit.RegisterMe(services)));
 
-       
+
+
     }
 }

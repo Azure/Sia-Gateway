@@ -34,10 +34,8 @@ namespace Sia.Gateway.Requests
             return Task.FromResult(new List<Action>().AsEnumerable());
         }
 
-        public static void RegisterMe(IServiceCollection services)
-        {
-            services.AddTransient<IPipelineBehavior<GetGlobalActionsRequest, IEnumerable<Action>>, GetGlobalActionsShortCircuit>();
-        }
+        public static IServiceCollection RegisterMe(IServiceCollection services)
+            => services.AddTransient<IPipelineBehavior<GetGlobalActionsRequest, IEnumerable<Action>>, GetGlobalActionsShortCircuit>();
     }
 
     public class GetGlobalActionsHandler : PlaybookProxyHandler<GetGlobalActionsRequest, IEnumerable<Action>>

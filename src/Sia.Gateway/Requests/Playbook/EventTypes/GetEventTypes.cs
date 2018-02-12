@@ -34,10 +34,8 @@ namespace Sia.Gateway.Requests
             return Task.FromResult(new List<EventType>().AsEnumerable());
         }
 
-        public static void RegisterMe(IServiceCollection services)
-        {
-            services.AddTransient<IPipelineBehavior<GetEventTypesRequest, IEnumerable<EventType>>, GetEventTypesShortCircuit>();
-        }
+        public static IServiceCollection RegisterMe(IServiceCollection services)
+            => services.AddTransient<IPipelineBehavior<GetEventTypesRequest, IEnumerable<EventType>>, GetEventTypesShortCircuit>();
     }
 
     public class GetEventTypesHandler : PlaybookProxyHandler<GetEventTypesRequest, IEnumerable<EventType>>

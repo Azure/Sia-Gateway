@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sia.Data.Incidents;
 using Sia.Gateway.Initialization;
+using Sia.Gateway.Initialization.Configuration;
 using Sia.Shared.Authentication;
 using System;
 
@@ -24,7 +25,7 @@ namespace Sia.Gateway
                 builder.AddUserSecrets<Startup>();
             }
             _configuration = builder.Build();
-
+            _gatewayConfiguration = _configuration.Get<GatewayConfiguration>();
             env.InitializeApplicationInsights(_configuration);
             _env = env;
         }
@@ -32,12 +33,15 @@ namespace Sia.Gateway
         private IHostingEnvironment _env { get; }
         private IConfigurationRoot _configuration { get; }
 
+        private readonly GatewayConfiguration _gatewayConfiguration;
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddFirstPartyServices(_env, _configuration);
+           
+            services.AddFirstPartyServices(_env, _configuration, _gatewayConfiguration);
 
-            services.AddThirdPartyServices(_configuration);
+            services.AddThirdPartyServices(_gatewayConfiguration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,7 +53,7 @@ namespace Sia.Gateway
         {
             LoggingStartup.AddLogging(env, loggerFactory, serviceProvider, _configuration);
 
-            app.AddMiddleware(env, _configuration);
+            app.AddMiddleware(env, _gatewayConfiguration);
 
             AutoMapperStartup.InitializeAutomapper();
 

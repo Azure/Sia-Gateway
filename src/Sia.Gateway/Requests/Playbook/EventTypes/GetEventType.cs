@@ -41,10 +41,8 @@ namespace Sia.Gateway.Requests
             });
         }
 
-        public static void RegisterMe(IServiceCollection services)
-        {
-            services.AddTransient<IPipelineBehavior<GetEventTypeRequest, EventType>, GetEventTypeShortCircuit>();
-        }
+        public static IServiceCollection RegisterMe(IServiceCollection services)
+            => services.AddTransient<IPipelineBehavior<GetEventTypeRequest, EventType>, GetEventTypeShortCircuit>();
     }
 
     public class GetEventTypeHandler : PlaybookProxyHandler<GetEventTypeRequest, EventType>
