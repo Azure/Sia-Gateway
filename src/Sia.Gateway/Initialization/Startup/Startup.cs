@@ -26,7 +26,8 @@ namespace Sia.Gateway
             }
             _configuration = builder.Build();
             _gatewayConfiguration = _configuration.Get<GatewayConfiguration>();
-            env.InitializeApplicationInsights(_gatewayConfiguration);
+            var appInsightsTask = env.InitializeApplicationInsights(_gatewayConfiguration);
+            appInsightsTask.Wait();
             _env = env;
         }
 
