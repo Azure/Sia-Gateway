@@ -38,17 +38,28 @@ namespace Sia.Gateway.Initialization
             IHostingEnvironment env,
             IConfigurationRoot rawConfig,
             GatewayConfiguration config)
+            => services
+                .AddSingleton(i => config)
+                .AddAuth(config)
+                .AddDatabase(env, rawConfig)
+                .AddTicketingConnector(env, rawConfig, config.Connector.Ticket)
+                .AddMicroserviceProxies(config);
+
+        public static IServiceCollection AddAuth(this IServiceCollection services, GatewayConfiguration config)
         {
-            ConfigureAuth(services, config);
+            var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config.Playbook.ClientId, config.ClientId, config.ClientSecret, config.AzureAd.Tenant);
+            return services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
+        }
 
-
+        public static IServiceCollection AddDatabase(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot rawConfig)
+        {
             if (env.IsDevelopment()) services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
             if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(rawConfig.GetConnectionString("incidentStaging")));
+            return services;
+        }
 
-            services.AddTicketingConnector(env, rawConfig, config.Connector.Ticket);
-
-            services.AddSingleton<IConfigurationRoot>(i => rawConfig);
-
+        public static IServiceCollection AddMicroserviceProxies(this IServiceCollection services, GatewayConfiguration config)
+        {
             var httpClients = new HttpClientLookup();
 
             if (!String.IsNullOrEmpty(config.Services.Playbook))
@@ -56,65 +67,54 @@ namespace Sia.Gateway.Initialization
                 httpClients.RegisterEndpoint(nameof(config.Services.Playbook), config.Services.Playbook);
             }
 
-            services.AddSingleton(httpClients);
-        }
-
-        public static void ConfigureAuth(IServiceCollection services, GatewayConfiguration config)
-        {
-            var incidentAuthConfig = new AzureActiveDirectoryAuthenticationInfo(config.Playbook.ClientId, config.ClientId, config.ClientSecret, config.AzureAd.Tenant);
-            services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
+            return services.AddSingleton(httpClients);
         }
 
         public static void AddThirdPartyServices(this IServiceCollection services, GatewayConfiguration config)
-        {
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddScoped<IUrlHelper, UrlHelper>(iFactory
-                    => new UrlHelper(iFactory.GetService<IActionContextAccessor>().ActionContext)
-                );
-
-            services.AddMvc(options =>
-            {
-                options.OutputFormatters.Insert(0, new PartialSerializedJsonOutputFormatter(
-                        new MvcJsonOptions().SerializerSettings,
-                        ArrayPool<char>.Shared));
-            });
-            services
-                .AddAuthentication(authOptions =>
-                {
-                    authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(jwtOptions =>
-                {
-                    jwtOptions.Authority = config.AzureAd.Authority;
-                    jwtOptions.Audience = config.FrontEnd.ClientId;
-                    jwtOptions.SaveToken = true;
-                    jwtOptions.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            if (context.Request.Path.Value.StartsWith(string.Concat("/", EventsHub.HubPath))
-                                && context.Request.Query.TryGetValue("token", out StringValues token))
-                            {
-                                context.Token = token;
-                            }
-
-                            return Task.CompletedTask;
-                        }
-                    };
-                });
-            services
+            => services
+                .AddMvcServices(config)
                 .AddDistributedMemoryCache()
                 .AddSession()
                 .AddCors()
                 .AddSockets()
                 .AddSignalR(config.Redis)
-                .AddScoped<HubConnectionBuilder>();
+                .AddMediatRConfig();
 
-            //Adds every request type in the Sia.Gateway assembly
-            services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
-            services.AddMediatRPipelineBehavior();
-        }
+        public static IServiceCollection AddMvcServices(this IServiceCollection services, GatewayConfiguration config)
+            => services
+            .AddSingleton<IActionContextAccessor, ActionContextAccessor>()
+            .AddScoped<IUrlHelper, UrlHelper>(iFactory
+                    => new UrlHelper(iFactory.GetService<IActionContextAccessor>().ActionContext)
+            ).AddMvc(options =>
+            {
+                options.OutputFormatters.Insert(0, new PartialSerializedJsonOutputFormatter(
+                        new MvcJsonOptions().SerializerSettings,
+                        ArrayPool<char>.Shared));
+            }).Services
+            .AddAuthentication(authOptions =>
+            {
+                authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(jwtOptions =>
+            {
+                jwtOptions.Authority = config.AzureAd.Authority;
+                jwtOptions.Audience = config.FrontEnd.ClientId;
+                jwtOptions.SaveToken = true;
+                jwtOptions.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.Request.Path.Value.StartsWith(string.Concat("/", EventsHub.HubPath))
+                            && context.Request.Query.TryGetValue("token", out StringValues token))
+                        {
+                            context.Token = token;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+            }).Services;
 
         public static IServiceCollection AddSignalR(this IServiceCollection services, RedisConfig config)
         {
@@ -129,14 +129,21 @@ namespace Sia.Gateway.Initialization
                 });
             }
 
-            return services;
+            return services.AddScoped<HubConnectionBuilder>();
         }
 
-        public static IServiceCollection AddMediatRPipelineBehavior(this IServiceCollection services)
-            => GetEventTypesShortCircuit.RegisterMe(
+        public static IServiceCollection AddMediatRConfig(this IServiceCollection services)
+        {
+            //Adds every request type in the Sia.Gateway assembly
+            services.AddMediatR(typeof(GetIncidentRequest).GetTypeInfo().Assembly);
+
+            //Pipeline behavior
+            GetEventTypesShortCircuit.RegisterMe(
             GetEventTypeShortCircuit.RegisterMe(
             GetGlobalActionsShortCircuit.RegisterMe(services)));
-
+            return services;
+        }
+        
 
 
     }

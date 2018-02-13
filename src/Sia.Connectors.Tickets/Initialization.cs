@@ -9,7 +9,7 @@ namespace Sia.Gateway.Initialization
 {
     public static partial class Initialization
     {
-        public static void AddTicketingConnector(
+        public static IServiceCollection AddTicketingConnector(
             this IServiceCollection services,
             IHostingEnvironment env,
             IConfigurationRoot config,
@@ -17,22 +17,20 @@ namespace Sia.Gateway.Initialization
         {
             if (!String.IsNullOrWhiteSpace(connectorConfig.Path))
             {
-                services
+                return services
                     .LoadConnectorFromAssembly(
                         env,
                         config,
                         connectorConfig.Path
                     );
-                return;
             }
 
             if (connectorConfig.Proxy != null)
             {
-                services.AddProxyConnector(connectorConfig.Proxy);
-                return;
+                return services.AddProxyConnector(connectorConfig.Proxy);
             }
 
-            services.AddNoTicketingSystem();
+            return services.AddNoTicketingSystem();
         }
     }
 }

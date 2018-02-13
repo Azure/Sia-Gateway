@@ -15,6 +15,7 @@ using Sia.Gateway.Requests;
 using Sia.Gateway.Tests.TestDoubles;
 using Sia.Shared.Authentication;
 using Sia.Shared.Extensions.Mediatr;
+using Sia.Gateway.Initialization.Configuration;
 
 namespace Sia.Gateway.Tests.Requests.Playbook
 {
@@ -25,9 +26,10 @@ namespace Sia.Gateway.Tests.Requests.Playbook
         [TestMethod]
         public void ShouldRequestContinue__Returns_True_If_Playbook_In_Config()
         {
-            var configProps = new Dictionary<string, string>();
-            configProps.Add("Microservices:0", "Playbook");
-            var mockConfig = new MockConfig(configProps);
+            var mockConfig = new MicroservicesConfig()
+            {
+                Playbook = "Valid endpoint"
+            };
             var mockShortCircuitImplementation = new GetEventTypeShortCircuit(mockConfig);
 
             var result = mockShortCircuitImplementation.ShouldRequestContinue(mockConfig);
@@ -38,8 +40,7 @@ namespace Sia.Gateway.Tests.Requests.Playbook
         [TestMethod]
         public void ShouldRequestContinue__Returns_False_If_Playbook_Not_In_Config()
         {
-            var configProps = new Dictionary<string, string>();
-            var mockConfig = new MockConfig(configProps);
+            var mockConfig = new MicroservicesConfig();
             var mockShortCircuitImplementation = new GetGlobalActionsShortCircuit(mockConfig);
 
             var result = mockShortCircuitImplementation.ShouldRequestContinue(mockConfig);

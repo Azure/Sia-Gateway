@@ -8,30 +8,29 @@ namespace Sia.Gateway.Initialization
 {
     public static class ApplicationInsightsStartup
     {
-        public static void InitializeApplicationInsights(this IHostingEnvironment env, IConfigurationRoot configuration)
+        public static void InitializeApplicationInsights(this IHostingEnvironment env, GatewayConfiguration configuration)
         {
             //Needs to be done in the initial Startup.Startup() method because Application Insights registers itself prior
             //to ConfigureServices being run
-            var deserializedConfig = configuration.Get<GatewayConfiguration>();
 
             var secrets = new AzureSecretVault(
                 new KeyVaultConfiguration(
-                    deserializedConfig.ClientId,
-                    deserializedConfig.ClientSecret,
-                    deserializedConfig.KeyVault.VaultName
+                    configuration.ClientId,
+                    configuration.ClientSecret,
+                    configuration.KeyVault.VaultName
                 )
             );
 
-            var instrumentationKeyName = ThrowIf.NullOrWhiteSpace(deserializedConfig.KeyVault.InstrumentationKeyName, nameof(deserializedConfig.KeyVault.InstrumentationKeyName));
+            var instrumentationKeyName = ThrowIf.NullOrWhiteSpace(configuration.KeyVault.InstrumentationKeyName, nameof(configuration.KeyVault.InstrumentationKeyName));
 
             var vaultTask = secrets.Get(instrumentationKeyName);
             vaultTask.Wait();
 
-            if(deserializedConfig.ApplicationInsights == null)
+            if(configuration.ApplicationInsights == null)
             {
-                deserializedConfig.ApplicationInsights = new Shared.Configuration.ApplicationInsights.ApplicationInsightsConfig();
+                configuration.ApplicationInsights = new Shared.Configuration.ApplicationInsights.ApplicationInsightsConfig();
             }
-            deserializedConfig.ApplicationInsights.InstrumentationKey = vaultTask.Result;
+            configuration.ApplicationInsights.InstrumentationKey = vaultTask.Result;
         }
     }
 }
