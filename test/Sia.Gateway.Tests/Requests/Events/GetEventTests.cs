@@ -26,8 +26,8 @@ namespace Sia.Gateway.Tests.Requests
                 EventTypeId = expectedEventTypeId,
                 IncidentId = expectedIncidentId
             };
-            var serviceUnderTest = new GetEventHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEventClientReturnsSuccessful_ReturnCorrectEvent)));
-            var request = new GetEventRequest(expectedIncidentId, expectedEventId, new DummyAuthenticatedUserContext());
+            var serviceUnderTest = new GetChildEventHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEventClientReturnsSuccessful_ReturnCorrectEvent)));
+            var request = new GetChildEventRequest(expectedIncidentId, expectedEventId, new DummyAuthenticatedUserContext());
 
 
             var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());

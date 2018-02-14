@@ -58,7 +58,7 @@ namespace Sia.Gateway.Tests.Requests.Incidents
             urlHelperMock.Verify(foo => foo.Link(IncidentsController.GetSingleRouteName, It.IsAny<object>()), Times.Exactly(1));
             urlHelperMock.Verify(foo => foo.Link(IncidentsController.PostSingleRouteName, It.IsAny<object>()), Times.Exactly(1));
             urlHelperMock.Verify(foo => foo.Link(IncidentsController.GetMultipleRouteName, It.IsAny<object>()), Times.Exactly(1));
-            urlHelperMock.Verify(foo => foo.Link(EventsController.GetMultipleRouteName, It.IsAny<object>()), Times.Exactly(1));
+            urlHelperMock.Verify(foo => foo.Link(EventsController.GetChildrenRouteName, It.IsAny<object>()), Times.Exactly(1));
             
             Assert.AreEqual(GetProperty(ids[0], "id"), "1");
             Assert.AreEqual(GetProperty(ids[1], "id"), "");

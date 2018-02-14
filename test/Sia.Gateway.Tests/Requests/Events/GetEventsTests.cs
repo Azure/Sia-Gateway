@@ -28,8 +28,8 @@ namespace Sia.Gateway.Tests.Requests
             long[] expectedEventTypeIds = { 1, 111 };
 
             var filters = new EventFilters();
-            var serviceUnderTest = new GetEventsHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEFReturnsSuccessful_ReturnCorrectEvents)));
-            var request = new GetEventsRequest(1, new PaginationMetadata(), filters, new DummyAuthenticatedUserContext());
+            var serviceUnderTest = new GetChildEventsHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEFReturnsSuccessful_ReturnCorrectEvents)));
+            var request = new GetChildEventsRequest(1, new PaginationMetadata(), filters, new DummyAuthenticatedUserContext());
 
 
             var result = (await serviceUnderTest.Handle(request, new CancellationToken())).ToList();

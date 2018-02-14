@@ -41,7 +41,7 @@ namespace Sia.Gateway.Controllers
                 {
                     Children = new RelatedChildLinks()
                     {
-                        Events = _urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = id })
+                        Events = _urlHelper.Link(EventsController.GetChildrenRouteName, new { incidentId = id })
                     }
                 };
             }
@@ -85,7 +85,7 @@ namespace Sia.Gateway.Controllers
             {
                 return NotFound($"{nameof(Incident)} not found");
             }
-            var newUrl = _urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = result.Id });
+            var newUrl = _urlHelper.Link(EventsController.GetChildrenRouteName, new { incidentId = result.Id });
             Response.Headers.AddLinksHeader(CreateLinks(result.Id.ToString(), null, PostSingleRouteName));
             return Created(newUrl, result);
         }

@@ -10,23 +10,26 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Sia.Gateway.Requests.Events
+namespace Sia.Gateway.Requests
 {
-    public class GetEventRequest : AuthenticatedRequest<Event>
+
+    public class GetChildEventRequest : AuthenticatedRequest<Event>
     {
-        public GetEventRequest(long id, AuthenticatedUserContext userContext)
-            : base(userContext)
+        public GetChildEventRequest(long incidentId, long id, AuthenticatedUserContext userContext)
+            :base(userContext)
         {
+            IncidentId = incidentId;
             Id = id;
         }
         public long Id { get; }
+        public long IncidentId { get; }
     }
 
-    public class GetEventHandler
+    public class GetChildEventHandler 
         : IncidentContextHandler<GetChildEventRequest, Event>
     {
-        public GetEventHandler(IncidentContext context)
-            : base(context)
+        public GetChildEventHandler(IncidentContext context)
+            :base(context)
         {
 
         }
@@ -34,7 +37,10 @@ namespace Sia.Gateway.Requests.Events
         {
             var eventRecord = await _context
                                     .Events
-                                    .FirstOrDefaultAsync(ev => ev.Id == request.Id, cancellationToken);
+                                    .FirstOrDefaultAsync( ev 
+                                        => ev.IncidentId == request.IncidentId 
+                                        && ev.Id == request.Id,
+                                        cancellationToken);
             if (eventRecord == null) throw new NotFoundException($"Could not find event with id {request.Id} associated with incident {request.IncidentId}");
 
             return Mapper.Map<Event>(eventRecord);
