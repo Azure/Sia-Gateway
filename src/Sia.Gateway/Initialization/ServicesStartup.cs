@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using Sia.Connectors.Tickets.None;
 using Sia.Connectors.Tickets.TicketProxy;
 using Sia.Data.Incidents;
 using Sia.Domain;
+using Sia.Gateway.Hubs;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Playbook;
 using Sia.Shared.Authentication;
@@ -22,6 +24,7 @@ using System;
 using System.Buffers;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Threading.Tasks;
 
 namespace Sia.Gateway.Initialization
 {
@@ -90,6 +93,19 @@ namespace Sia.Gateway.Initialization
                     jwtOptions.Authority = String.Format(config["AzureAd:AadInstance"], config["AzureAd:Tenant"]);
                     jwtOptions.Audience = config["Frontend:ClientId"];
                     jwtOptions.SaveToken = true;
+                    jwtOptions.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            if (context.Request.Path.Value.StartsWith(string.Concat("/", EventsHub.HubPath))
+                                && context.Request.Query.TryGetValue("token", out StringValues token))
+                            {
+                                context.Token = token;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
             services.AddDistributedMemoryCache();
             services.AddSession();
