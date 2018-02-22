@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sia-dev-gw-svc
+  labels:
+    run: sia-dev-gw
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    name: http
+  selector:
+    run: sia-dev-gw
+    
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: sia-dev-gw 
+spec:
+  selector:
+    matchLabels:
+      run: sia-dev-gw
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: sia-dev-gw
+    spec:
+      containers:
+          - name: sia-gateway-dev
+            image: siacontainerregistry.azurecr.io/azure/sia-gateway-dev:latest
+            env:
+              - name: ASPNETCORE_ENVIRONMENT
+                value: Development
+            ports:
+              - containerPort: 80
+
