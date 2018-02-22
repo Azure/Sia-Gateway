@@ -1,16 +1,19 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
+using Sia.Data.Incidents.Filters;
 using Sia.Domain.ApiModels;
-using Sia.Shared.Authentication;
-using Sia.Shared.Protocol;
 using Sia.Gateway.Hubs;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Events;
-using System.Threading.Tasks;
+using Sia.Shared.Authentication;
 using Sia.Shared.Controllers;
-using Sia.Shared.Data;
-using Sia.Data.Incidents.Filters;
+using Sia.Shared.Protocol;
+using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Sia.Gateway.Controllers
 {
@@ -91,6 +94,7 @@ namespace Sia.Gateway.Controllers
             {
                 return NotFound(notFoundMessage);
             }
+
             await SendEventToSubscribers(result);
 
             var newUrl = _urlHelper.Link(GetSingleRouteName, new { id = result.Id });
@@ -101,14 +105,17 @@ namespace Sia.Gateway.Controllers
 
         private async Task SendEventToSubscribers(Domain.Event result)
         {
+            var token = await HttpContext.GetTokenAsync("Bearer", AccessTokenName);
             var eventHubConnection = _hubConnectionBuilder
-                    .WithUrl($"{Request.Scheme}://{Request.Host}/{EventsHub.HubPath}")
+                    .WithUrl($"{Request.Scheme}://{Request.Host}/{EventsHub.HubPath}/?token={token}")
                     .Build();
             await eventHubConnection.StartAsync();
             await eventHubConnection.SendAsync("Send", result);
             await eventHubConnection.DisposeAsync();
         }
 
-
+        // Found by reading source code at
+        // https://github.com/aspnet/Security/blob/dev/src/Microsoft.AspNetCore.Authentication.JwtBearer/JwtBearerHandler.cs
+        private const string AccessTokenName = "access_token";
     }
 }

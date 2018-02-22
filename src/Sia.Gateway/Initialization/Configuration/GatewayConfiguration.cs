@@ -1,4 +1,5 @@
-﻿using Sia.Shared.Configuration;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Sia.Shared.Configuration;
 using Sia.Shared.Configuration.ApplicationInsights;
 using Sia.Shared.Configuration.Protocol;
 using System;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Sia.Gateway.Initialization.Configuration
 {
-    public class GatewayConfiguration
+    public class GatewayConfiguration : IInjectableConfig
     {
         /// <summary>
         /// The client Id of the Gateway's AAD instance.
@@ -66,7 +67,10 @@ namespace Sia.Gateway.Initialization.Configuration
         /// Should be set in user secrets or environment variables.
         /// </summary>
         public RedisConfig Redis { get; set; }
-    }
 
-    
+        public IServiceCollection RegisterMe(IServiceCollection services)
+            => services
+                .AddSingleton(this)
+                .RegisterConfig(Services);
+    }
 }
