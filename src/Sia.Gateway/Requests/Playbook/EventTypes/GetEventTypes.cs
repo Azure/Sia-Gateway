@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Sia.Gateway.Initialization.Configuration;
 
 namespace Sia.Gateway.Requests
 {
@@ -24,7 +25,7 @@ namespace Sia.Gateway.Requests
 
     public class GetEventTypesShortCircuit : PlaybookShortCircuit<GetEventTypesRequest, IEnumerable<EventType>>
     {
-        public GetEventTypesShortCircuit(IConfigurationRoot config) : base(config)
+        public GetEventTypesShortCircuit(MicroservicesConfig config) : base(config)
         {
 
         }
@@ -34,10 +35,8 @@ namespace Sia.Gateway.Requests
             return Task.FromResult(new List<EventType>().AsEnumerable());
         }
 
-        public static void RegisterMe(IServiceCollection services)
-        {
-            services.AddTransient<IPipelineBehavior<GetEventTypesRequest, IEnumerable<EventType>>, GetEventTypesShortCircuit>();
-        }
+        public static IServiceCollection RegisterMe(IServiceCollection services)
+            => services.AddTransient<IPipelineBehavior<GetEventTypesRequest, IEnumerable<EventType>>, GetEventTypesShortCircuit>();
     }
 
     public class GetEventTypesHandler : PlaybookProxyHandler<GetEventTypesRequest, IEnumerable<EventType>>

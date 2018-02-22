@@ -1,51 +1,36 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sia.Connectors.Tickets;
 using Sia.Shared.Validation;
+using System;
 
 namespace Sia.Gateway.Initialization
 {
     public static partial class Initialization
     {
-        public static void AddTicketingConnector(
+        public static IServiceCollection AddTicketingConnector(
             this IServiceCollection services,
             IHostingEnvironment env,
-            IConfigurationRoot config)
+            IConfigurationRoot config,
+            TicketingConnectorConfig connectorConfig)
         {
-            if (TryGetConfigValue(
-                    config,
-                    "Connector:Ticket:Path",
-                    out var ticketConnectorAssemblyPath))
+            if (!String.IsNullOrWhiteSpace(connectorConfig.Path))
             {
-                services
+                return services
                     .LoadConnectorFromAssembly(
                         env,
                         config,
-                        ticketConnectorAssemblyPath
+                        connectorConfig.Path
                     );
-                return;
             }
 
-            if (TryGetConfigValue(
-                    config,
-                    "Connector:Ticket:ProxyEndpoint",
-                    out var proxyEndpoint))
+            if (connectorConfig.Proxy != null)
             {
-                services.AddProxyConnector(config, proxyEndpoint);
-                return;
+                return services.AddProxyConnector(connectorConfig.Proxy);
             }
 
-            services.AddNoTicketingSystem();
-        }
-
-        private static bool TryGetConfigValue(
-            this IConfigurationRoot config,
-            string configName,
-            out string configValue)
-        {
-            ThrowIf.NullOrWhiteSpace(configName, nameof(configName));
-            configValue = config[configName];
-            return !string.IsNullOrEmpty(configValue);
+            return services.AddNoTicketingSystem();
         }
     }
 }
