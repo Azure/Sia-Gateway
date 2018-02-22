@@ -39,7 +39,7 @@ namespace Sia.Gateway.Initialization
             IConfigurationRoot rawConfig,
             GatewayConfiguration config)
             => services
-                .AddSingleton(i => config)
+                .RegisterConfig(config)
                 .AddAuth(config)
                 .AddDatabase(env, rawConfig)
                 .AddTicketingConnector(env, rawConfig, config.Connector.Ticket)
