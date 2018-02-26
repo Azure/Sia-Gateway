@@ -32,7 +32,6 @@ namespace Sia.Data.Incidents.Filters
                     : String.Format(KeyValueComparison, new string[] { DataKey, DataValue });
                 working = working.Where(obj => obj.Data.Contains(workingCompare));
             }
-
             return working;
         }
 

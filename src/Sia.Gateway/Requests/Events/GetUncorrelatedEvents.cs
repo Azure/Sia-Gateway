@@ -11,7 +11,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 namespace Sia.Gateway.Requests.Events
 {
     public class GetUncorrelatedEventsRequest : AuthenticatedRequest<IEnumerable<Event>>
