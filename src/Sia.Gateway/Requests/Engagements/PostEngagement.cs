@@ -5,6 +5,7 @@ using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Shared.Authentication;
+using Sia.Shared.Exceptions;
 using Sia.Shared.Requests;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,6 @@ namespace Sia.Gateway.Requests
         {
             IncidentId = incidentId;
             NewEngagement = newEngagement;
-
         }
         public NewEngagement NewEngagement { get; }
         public long IncidentId { get; }
@@ -43,7 +43,7 @@ namespace Sia.Gateway.Requests
                .Include(cr => cr.Engagements)
                     .ThenInclude(en => en.Participant)
                .FirstOrDefaultAsync(x => x.Id == request.IncidentId, cancellationToken);
-            if (dataIncident == null) throw new KeyNotFoundException();
+            if (dataIncident == null) throw new NotFoundException($"Found no incident with id {request.IncidentId}");
 
             var dataEngagement = Mapper.Map<Data.Incidents.Models.Engagement>(request.NewEngagement);
             dataEngagement.TimeEngaged = DateTime.UtcNow;
