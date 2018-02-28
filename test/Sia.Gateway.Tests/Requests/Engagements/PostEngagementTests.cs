@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Sia.Shared.Exceptions;
 
 namespace Sia.Gateway.Tests.Requests
 {
@@ -56,7 +57,7 @@ namespace Sia.Gateway.Tests.Requests
 
 
         [TestMethod]
-        [ExpectedException(typeof(KeyNotFoundException))]
+        [ExpectedException(typeof(NotFoundException))]
         public async Task Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException()
         {
             var engagementTimeFloor = DateTime.UtcNow;

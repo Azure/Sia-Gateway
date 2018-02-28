@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Shared.Authentication;
+using Sia.Shared.Exceptions;
 using Sia.Shared.Requests;
 using System.Collections.Generic;
 using System.Threading;
@@ -40,7 +41,7 @@ namespace Sia.Gateway.Requests
                                         => ev.IncidentId == request.IncidentId 
                                         && ev.Id == request.Id,
                                         cancellationToken);
-            if (eventRecord == null) throw new KeyNotFoundException();
+            if (eventRecord == null) throw new NotFoundException($"Found no event with incidentId {request.IncidentId} and id {request.Id}");
 
             return Mapper.Map<Event>(eventRecord);
         }
