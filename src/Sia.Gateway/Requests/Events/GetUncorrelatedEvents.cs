@@ -38,8 +38,13 @@ namespace Sia.Gateway.Requests.Events
         }
         public override async Task<IEnumerable<Event>> Handle(GetUncorrelatedEventsRequest request, CancellationToken cancellationToken)
             => await _context.Events
+                .Include(ev => ev.Incident)
+                    .ThenInclude(inc => inc.Tickets)
                 .WithFilter(request.Filter)
+                .WithPagination(request.Pagination)
                 .ProjectTo<Event>()
                 .ToListAsync(cancellationToken);
     }
+
+
 }
