@@ -42,7 +42,7 @@ namespace Sia.Gateway.Initialization
                 .RegisterConfig(config)
                 .AddAuth(config)
                 .AddDatabase(env, rawConfig)
-                .AddTicketingConnector(env, rawConfig, config.Connector.Ticket)
+                .AddTicketingConnector(env, rawConfig, config?.Connector?.Ticket)
                 .AddMicroserviceProxies(config);
 
         public static IServiceCollection AddAuth(this IServiceCollection services, GatewayConfiguration config)

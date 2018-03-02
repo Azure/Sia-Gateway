@@ -9,6 +9,7 @@ namespace Sia.Gateway.Tests.TestDoubles
     public class SpyServiceCollection : IServiceCollection
     {
         public List<ServiceDescriptor> BackingList { get; set; }
+            = new List<ServiceDescriptor>();
         public ServiceDescriptor this[int index] { get => BackingList[index]; set => BackingList[index] = value; }
 
         public int Count => BackingList.Count;

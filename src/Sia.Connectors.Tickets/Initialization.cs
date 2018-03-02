@@ -15,6 +15,8 @@ namespace Sia.Gateway.Initialization
             IConfigurationRoot config,
             TicketingConnectorConfig connectorConfig)
         {
+            if (connectorConfig == null) { return services.AddNoTicketingSystem(); }
+
             if (!String.IsNullOrWhiteSpace(connectorConfig.Path))
             {
                 return services
