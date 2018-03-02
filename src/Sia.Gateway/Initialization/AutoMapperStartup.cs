@@ -2,6 +2,7 @@
 using AutoMapper.EquivalencyExpression;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
+using System.Linq;
 
 namespace Sia.Gateway.Initialization
 {
@@ -38,7 +39,9 @@ namespace Sia.Gateway.Initialization
                     .UseResolveJsonToString();
                 configuration.CreateMap<Event, Data.Incidents.Models.Event>().EqualityById()
                     .UseResolveJsonToString();
-                configuration.CreateMap<Data.Incidents.Models.Event, Event>().EqualityById()
+                configuration.CreateMap<Data.Incidents.Models.Event, Event>()
+                    .AfterMap((src, dest) => dest.PrimaryTicketId = src?.Incident?.Tickets?.FirstOrDefault(ticket => ticket.IsPrimary)?.OriginId)
+                    .EqualityById()
                     .UseResolveStringToJson();
             });
         }
