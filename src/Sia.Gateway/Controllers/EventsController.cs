@@ -14,7 +14,6 @@ using Sia.Data.Incidents.Filters;
 
 namespace Sia.Gateway.Controllers
 {
-    //[Route("incidents/{incidentId}/events", Name = "Events")]
     public class EventsController : BaseController
     {
         private const string notFoundMessage = "Incident or event not found";
