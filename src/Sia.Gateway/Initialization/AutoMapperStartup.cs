@@ -40,8 +40,18 @@ namespace Sia.Gateway.Initialization
                 configuration.CreateMap<Event, Data.Incidents.Models.Event>().EqualityById()
                     .UseResolveJsonToString();
                 configuration.CreateMap<Data.Incidents.Models.Event, Event>()
-                    .AfterMap((src, dest) => dest.PrimaryTicketId = src?.Incident?.Tickets?.FirstOrDefault(ticket => ticket.IsPrimary)?.OriginId)
-                    .EqualityById()
+                    .ForMember
+                    (
+                        nameof(Event.PrimaryTicketId),
+                        options => options.MapFrom(
+                            (src) => src.Incident == null
+                                ? null
+                                : src.Incident.Tickets == null
+                                    ? null
+                                    : src.Incident.Tickets.FirstOrDefault(ticket => ticket.IsPrimary) == null
+                                        ? null
+                                        : src.Incident.Tickets.FirstOrDefault(ticket => ticket.IsPrimary).OriginId)
+                    ).EqualityById()
                     .UseResolveStringToJson();
             });
         }
