@@ -4,6 +4,7 @@ using Sia.Connectors.Tickets;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Shared.Authentication;
+using Sia.Shared.Exceptions;
 using Sia.Shared.Requests;
 using System.Collections.Generic;
 using System.Threading;
@@ -33,7 +34,7 @@ namespace Sia.Gateway.Requests
             var incidentRecord = await _context.Incidents
                 .WithEagerLoading()
                 .SingleOrDefaultAsync(cr => cr.Id == getIncident.Id, cancellationToken);
-            if (incidentRecord == null) throw new KeyNotFoundException();
+            if (incidentRecord == null) throw new NotFoundException($"Found no incident with id {getIncident.Id}.");
 
             var incident = Mapper.Map<Incident>(incidentRecord);
 

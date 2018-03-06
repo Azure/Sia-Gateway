@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Sia.Domain;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Sia.Gateway.Hubs
 {
+    [Authorize()]
     public class EventsHub : Hub
     {
         public const string HubPath = "events/live";

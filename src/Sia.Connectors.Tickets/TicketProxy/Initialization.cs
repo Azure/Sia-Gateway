@@ -9,63 +9,35 @@ namespace Sia.Gateway.Initialization
 {
     public static partial class Initialization
     {
-        public static IServiceCollection AddProxyWithoutAuth(
+        public static IServiceCollection AddProxyConnector(
             this IServiceCollection services,
-            string endpoint
-        ) => services.AddProxy(new ProxyConnectionInfo(endpoint));
-        
-
-        public static IServiceCollection AddProxyWithCert(
-            this IServiceCollection services,
-            string endpoint,
-            string certThumbprint
-        ) => services.AddProxy(new ProxyConnectionInfo(endpoint, certThumbprint));
-
-
-        public static IServiceCollection AddProxyWithCertFromKeyVault(
-            this IServiceCollection services,
-            string endpoint,
-            KeyVaultConfiguration config,
-            string certName
-        ) => services.AddProxy(new ProxyConnectionInfo(endpoint, config, certName));
-
-        private static IServiceCollection AddProxy(
-            this IServiceCollection services,
-            ProxyConnectionInfo proxyConnection
-        ) => services
-                .AddScoped(serv => proxyConnection)
+            ProxyConfig config)
+        {
+            ProxyConnectionInfo connectionInfo;
+            switch (config.AuthType)
+            {
+                case ProxyConfig.CertificateAuthType:
+                    connectionInfo = new ProxyConnectionInfo(config.Endpoint, config.Certificate.Thumbprint);
+                    break;
+                case ProxyConfig.VaultCertificateAuthType:
+                    connectionInfo = new ProxyConnectionInfo(
+                        config.Endpoint,
+                        new KeyVaultConfiguration(
+                            config.VaultCertificate.ClientId,
+                            config.VaultCertificate.ClientSecret,
+                            config.VaultCertificate.VaultName
+                        ), 
+                        config.VaultCertificate.CertName
+                    );
+                    break;
+                default:
+                    connectionInfo = new ProxyConnectionInfo(config.Endpoint);
+                    break;
+            }
+            return services
+                .AddScoped(serv => connectionInfo)
                 .AddScoped<TicketingClient, ProxyClient>()
                 .AddScoped<Connector, ProxyConnector>();
-
-        public static void AddProxyConnector(
-            this IServiceCollection services,
-            IConfigurationRoot config,
-            string proxyEndpoint)
-        {
-            var proxyAuthType = config["Connector:Ticket:ProxyAuthType"];
-            switch (proxyAuthType)
-            {
-                case "Certificate":
-                    services.AddProxyWithCert(
-                        proxyEndpoint,
-                        config["Connector:Ticket:ProxyCertThumbprint"]
-                    );
-                    return;
-                case "VaultCertificate":
-                    services.AddProxyWithCertFromKeyVault(
-                        proxyEndpoint,
-                        new KeyVaultConfiguration(
-                            config["ClientId"],
-                            config["ClientSecret"],
-                            config["Connector:Ticket:VaultName"]
-                        ),
-                        config["Connector:Ticket:CertName"]
-                    );
-                    return;
-                default:
-                    services.AddProxyWithoutAuth(proxyEndpoint);
-                    return;
-            }
         }
     }
 }

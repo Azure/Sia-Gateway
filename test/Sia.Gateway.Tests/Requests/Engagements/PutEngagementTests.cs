@@ -3,6 +3,7 @@ using Sia.Domain.ApiModels;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Tests.TestDoubles;
+using Sia.Shared.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace Sia.Gateway.Tests.Requests
 
 
         [TestMethod]
-        [ExpectedException(typeof(KeyNotFoundException))]
+        [ExpectedException(typeof(NotFoundException))]
         public async Task Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException()
         {
             var inputEngagement = new UpdateEngagement()

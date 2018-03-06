@@ -8,7 +8,7 @@ namespace Sia.Gateway.Initialization
 {
     public static partial class Initialization
     {
-        public static void LoadConnectorFromAssembly(
+        public static IServiceCollection LoadConnectorFromAssembly(
             this IServiceCollection services,
             IHostingEnvironment env,
             IConfigurationRoot config,
@@ -35,6 +35,7 @@ namespace Sia.Gateway.Initialization
                 null, 
                 new object[] { services, config, env }
             );
+            return services;
         }
     }
 }

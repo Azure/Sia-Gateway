@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain.ApiModels;
 using Sia.Shared.Authentication;
+using Sia.Shared.Exceptions;
 using Sia.Shared.Requests;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace Sia.Gateway.Requests
             var existingRecord = await _context.Engagements
                 .Include(en => en.Participant)
                 .FirstOrDefaultAsync(engagement => engagement.IncidentId == request.IncidentId && engagement.Id == request.EngagementId, cancellationToken);
-            if (existingRecord is null) throw new KeyNotFoundException();
+            if (existingRecord is null) throw new NotFoundException($"Found no engagement with incidentId {request.IncidentId} and id {request.EngagementId}.");
 
             var updatedModel = Mapper.Map(request.UpdateEngagement, existingRecord);
 
