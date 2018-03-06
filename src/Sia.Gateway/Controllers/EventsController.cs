@@ -2,17 +2,15 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
-using Sia.Data.Incidents.Filters;
 using Sia.Domain.ApiModels;
+using Sia.Gateway.Filters;
 using Sia.Gateway.Hubs;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Events;
 using Sia.Shared.Authentication;
 using Sia.Shared.Controllers;
 using Sia.Shared.Protocol;
-using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Controllers

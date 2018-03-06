@@ -6,10 +6,14 @@ using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using Sia.Domain;
+using AutoMapper;
 
-namespace Sia.Data.Incidents.Filters
+namespace Sia.Gateway.Filters
 {
-    public class EventFilters: Filters<Event>
+    public class EventFilters 
+        : IFilters<Data.Incidents.Models.Event>,
+        IFilters<Domain.Event>
     {
         public long? IncidentId { get; set; }
         public long[] EventTypes { get; set; }
@@ -20,7 +24,32 @@ namespace Sia.Data.Incidents.Filters
         public const string KeyValueComparison = "\"{0}\":\"{1}\"";
         public const string KeyComparison = "\"{0}\":";
 
-        public override IQueryable<Event> Filter(IQueryable<Event> source)
+        public bool IsMatchFor(Data.Incidents.Models.Event toCompare)
+        {
+            if (IncidentId.HasValue && toCompare.IncidentId != IncidentId.Value) return false;
+            if (EventTypes != null && EventTypes.Length > 0 && !EventTypes.Contains(toCompare.EventTypeId)) return false;
+            if (Occurred.HasValue && toCompare.Occurred != Occurred.Value) return false;
+            if (EventFired.HasValue && toCompare.EventFired != EventFired.Value) return false;
+
+            if (!String.IsNullOrEmpty(DataKey))
+            {
+                if (String.IsNullOrEmpty(DataValue))
+                {
+                    if (!toCompare.Data.Contains(String.Format(KeyComparison, DataKey))) return false;
+                }
+                else
+                {
+                    if (!toCompare.Data.Contains(String.Format(KeyValueComparison, new string[] { DataKey, DataValue }))) return false;
+                }
+            }
+
+            return true;
+        }
+
+        bool IFilterByMatch<Domain.Event>.IsMatchFor(Domain.Event toCompare)
+            => IsMatchFor(Mapper.Map<Data.Incidents.Models.Event>(toCompare));
+
+        /*public override IQueryable<Event> Filter(IQueryable<Event> source)
         {
             var working = source;
 
@@ -38,9 +67,9 @@ namespace Sia.Data.Incidents.Filters
             }
 
             return working;
-        }
+        }*/
 
-        public override IEnumerable<KeyValuePair<string, string>> FilterValues()
+        public IEnumerable<KeyValuePair<string, string>> FilterValues()
         {
             if(IncidentId.HasValue) yield return new KeyValuePair<string, string>(nameof(IncidentId), IncidentId.Value.ToString());
             if(!(EventTypes is null) && EventTypes.Length != 0)
@@ -56,5 +85,7 @@ namespace Sia.Data.Incidents.Filters
             if (!string.IsNullOrWhiteSpace(DataKey)) yield return new KeyValuePair<string, string>(nameof(DataKey), DataKey);
             if (!string.IsNullOrWhiteSpace(DataValue)) yield return new KeyValuePair<string, string>(nameof(DataValue), DataValue);
         }
+
+        
     }
 }

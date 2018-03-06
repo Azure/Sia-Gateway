@@ -10,8 +10,8 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Sia.Shared.Requests;
 using Sia.Shared.Data;
-using Sia.Data.Incidents.Filters;
 using System.Threading;
+using Sia.Gateway.Filters;
 
 namespace Sia.Gateway.Requests.Events
 {
