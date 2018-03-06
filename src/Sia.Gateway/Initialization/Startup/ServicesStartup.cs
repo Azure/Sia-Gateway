@@ -20,10 +20,12 @@ using Sia.Gateway.Requests.Playbook;
 using Sia.Shared.Authentication;
 using Sia.Shared.Authentication.Http;
 using Sia.Shared.Configuration;
+using Sia.Shared.Data;
 using Sia.Shared.Protocol;
 using Sia.Shared.Validation;
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
@@ -129,7 +131,11 @@ namespace Sia.Gateway.Initialization
                 });
             }
 
-            return services.AddScoped<HubConnectionBuilder>();
+            var eventFilterRegistry = new ConcurrentDictionary<string, IFilterByMatch<Event>>();
+
+            return services
+                .AddScoped<HubConnectionBuilder>()
+                .AddSingleton(eventFilterRegistry);
         }
 
         public static IServiceCollection AddMediatRConfig(this IServiceCollection services)

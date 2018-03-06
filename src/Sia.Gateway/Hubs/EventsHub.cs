@@ -42,7 +42,8 @@ namespace Sia.Gateway.Hubs
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            await base.OnDisconnectedAsync(exception);
+            await ClearFilter();
+            
             if(exception == null)
             {
                 _logger.LogInformation(
@@ -58,6 +59,8 @@ namespace Sia.Gateway.Hubs
                     new object[] { Context.User.Identity.Name, Context.ConnectionId }
                 );
             }
+
+            await base.OnDisconnectedAsync(exception);
         }
 
         public Task Send(Event ev)
@@ -65,12 +68,17 @@ namespace Sia.Gateway.Hubs
                     _filterLookup
                         .Where((kvp) => !kvp.Value.IsMatchFor(ev))
                         .Select((kvp) => kvp.Key)
+                        .Append(Context.ConnectionId) // Prevent loops (if those are even possible)
                         .ToList()
                 ).InvokeAsync("Send", Json(ev));
 
         public Task UpdateFilter(EventFilters filters)
         {
+            _logger.LogInformation(
+                "UpdateFilter called from connection with Id {0}.",
+                new object[] { Context.ConnectionId });
             _filterLookup.Upsert(Context.ConnectionId, filters);
+            //No need to propagate to other Gateways as connectionIds are not shared.
             return Task.CompletedTask;
         }
 
