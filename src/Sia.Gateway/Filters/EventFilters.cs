@@ -49,26 +49,6 @@ namespace Sia.Gateway.Filters
         bool IFilterByMatch<Domain.Event>.IsMatchFor(Domain.Event toCompare)
             => IsMatchFor(Mapper.Map<Data.Incidents.Models.Event>(toCompare));
 
-        /*public override IQueryable<Event> Filter(IQueryable<Event> source)
-        {
-            var working = source;
-
-            if (IncidentId.HasValue) working = working.Where(ev => ev.IncidentId == IncidentId);
-            if (EventTypes != null && EventTypes.Length > 0) working = working.Where(ev => EventTypes.Contains(ev.EventTypeId));
-            if (Occurred.HasValue) working = working.Where(ev => ev.Occurred == Occurred);
-            if (EventFired.HasValue) working = working.Where(ev => ev.EventFired == EventFired);
-
-            if (!String.IsNullOrEmpty(DataKey))
-            {
-                var workingCompare = String.IsNullOrEmpty(DataValue)
-                    ? String.Format(KeyComparison, DataKey)
-                    : String.Format(KeyValueComparison, new string[] { DataKey, DataValue });
-                working = working.Where(obj => obj.Data.Contains(workingCompare));
-            }
-
-            return working;
-        }*/
-
         public IEnumerable<KeyValuePair<string, string>> FilterValues()
         {
             if(IncidentId.HasValue) yield return new KeyValuePair<string, string>(nameof(IncidentId), IncidentId.Value.ToString());
@@ -85,7 +65,5 @@ namespace Sia.Gateway.Filters
             if (!string.IsNullOrWhiteSpace(DataKey)) yield return new KeyValuePair<string, string>(nameof(DataKey), DataKey);
             if (!string.IsNullOrWhiteSpace(DataValue)) yield return new KeyValuePair<string, string>(nameof(DataValue), DataValue);
         }
-
-        
     }
 }
