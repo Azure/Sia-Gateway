@@ -107,7 +107,5 @@ namespace Sia.Gateway.Hubs
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         });
-
-        private IClientProxy Caller => Clients.Client(Context.ConnectionId);
     }
 }
