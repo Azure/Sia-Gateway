@@ -105,7 +105,7 @@ namespace Sia.Gateway.Controllers
         public const string GetMultipleUncorrelatedRouteName = "GetUncorrelatedEvent";
         [HttpGet("events", Name = GetMultipleUncorrelatedRouteName)]
         public async Task<IActionResult> GetUncorrelatedEvents([FromQuery]PaginationMetadata pagination,
-            [FromQuery]UncorrelatedEventFilters filter)
+            [FromQuery]EventFilters filter)
         {
             var result = await _mediator.Send(new GetUncorrelatedEventsRequest(pagination, filter, _authContext));
             //Response.Headers.AddLinksHeader(CreateLinks(null, filter, pagination, GetMultipleRouteName));

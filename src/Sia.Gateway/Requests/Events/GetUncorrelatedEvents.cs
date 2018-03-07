@@ -16,7 +16,7 @@ namespace Sia.Gateway.Requests.Events
     public class GetUncorrelatedEventsRequest : AuthenticatedRequest<IEnumerable<Event>>
     {
         public GetUncorrelatedEventsRequest(PaginationMetadata pagination,
-            UncorrelatedEventFilters filter,
+            EventFilters filter,
             AuthenticatedUserContext userContext)
             : base(userContext)
         {
@@ -25,7 +25,7 @@ namespace Sia.Gateway.Requests.Events
         }
         
         public PaginationMetadata Pagination { get; }
-        public UncorrelatedEventFilters Filter { get; }
+        public EventFilters Filter { get; }
     }
 
     public class GetUncorrelatedEventsHandler
