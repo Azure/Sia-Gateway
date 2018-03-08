@@ -2,6 +2,7 @@
 using Sia.Shared.Data;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Sia.Data.Incidents.Models
 {
@@ -9,6 +10,7 @@ namespace Sia.Data.Incidents.Models
     {
         public long Id { get; set; }
         public long? IncidentId { get; set; }
+        public Incident Incident { get; set; }
         public long EventTypeId { get; set; }
         public DateTime Occurred { get; set; }
         public DateTime EventFired { get; set; }

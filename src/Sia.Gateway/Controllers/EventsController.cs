@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 
 namespace Sia.Gateway.Controllers
 {
-    [Route("incidents/{incidentId}/events", Name = "Events")]
     public class EventsController : BaseController
     {
         private const string notFoundMessage = "Incident or event not found";
@@ -58,7 +57,7 @@ namespace Sia.Gateway.Controllers
         }
 
         public const string GetMultipleRouteName = "GetEvents";
-        [HttpGet(Name = GetMultipleRouteName)]
+        [HttpGet("incidents/{incidentId}/events", Name = GetMultipleRouteName)]
         public async Task<IActionResult> GetEvents([FromRoute]long incidentId,
             [FromQuery]PaginationMetadata pagination,
             [FromQuery]EventFilters filter)
@@ -71,7 +70,7 @@ namespace Sia.Gateway.Controllers
         }
 
         public const string GetSingleRouteName = "GetEvent";
-        [HttpGet("{id}", Name = GetSingleRouteName)]
+        [HttpGet("incidents/{incidentId}/events/{id}", Name = GetSingleRouteName)]
         public async Task<IActionResult> Get([FromRoute]long incidentId, [FromRoute]long id)
         {
             var result = await _mediator.Send(new GetEventRequest(incidentId, id, _authContext));
@@ -86,7 +85,7 @@ namespace Sia.Gateway.Controllers
         }
 
         public const string PostSingleRouteName = "PostEvent";
-        [HttpPost(Name = PostSingleRouteName)]
+        [HttpPost("incidents/{incidentId}/events", Name = PostSingleRouteName)]
         public async Task<IActionResult> Post([FromRoute]long incidentId, [FromBody]NewEvent newEvent)
         {
             var result = await _mediator.Send(new PostEventRequest(incidentId, newEvent, _authContext));
@@ -101,6 +100,15 @@ namespace Sia.Gateway.Controllers
 
             Response.Headers.AddLinksHeader(CreateLinks(result.Id.ToString(), incidentId.ToString(),null, null, PostSingleRouteName));
             return Created(newUrl, result);
+        }
+
+        public const string GetMultipleUncorrelatedRouteName = "GetUncorrelatedEvent";
+        [HttpGet("events", Name = GetMultipleUncorrelatedRouteName)]
+        public async Task<IActionResult> GetUncorrelatedEvents([FromQuery]PaginationMetadata pagination,
+            [FromQuery]EventFilters filter)
+        {
+            var result = await _mediator.Send(new GetUncorrelatedEventsRequest(pagination, filter, _authContext));
+            return Ok(result);
         }
 
         private async Task SendEventToSubscribers(Domain.Event result)
