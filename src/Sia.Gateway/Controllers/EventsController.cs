@@ -108,7 +108,6 @@ namespace Sia.Gateway.Controllers
             [FromQuery]EventFilters filter)
         {
             var result = await _mediator.Send(new GetUncorrelatedEventsRequest(pagination, filter, _authContext));
-            //Response.Headers.AddLinksHeader(CreateLinks(null, filter, pagination, GetMultipleRouteName));
             return Ok(result);
         }
 

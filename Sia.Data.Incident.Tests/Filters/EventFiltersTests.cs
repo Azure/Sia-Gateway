@@ -64,8 +64,8 @@ namespace Sia.Data.Incident.Tests.Filters
             {
                 IncidentId = 1,
                 EventTypes = new long[] { 1 },
-                Occurred = new DateTime(1970, 1, 1),
-                EventFired = new DateTime(1970, 1, 1)
+                StartTime = new DateTime(1970, 1, 1),
+                EndTime = new DateTime(1980, 3, 2)
             };
             var testInput = new List<Event>()
             {
@@ -74,44 +74,43 @@ namespace Sia.Data.Incident.Tests.Filters
                     IncidentId = 1,
                     EventTypeId = 1,
                     Occurred = new DateTime(1970, 1, 1),
-                    EventFired = new DateTime(1970, 1, 1),
-                    Data = "firstExpectedEvent"
+                    EventFired = new DateTime(1970, 1, 1)
                 },
                 new Event()
                 {
                     IncidentId = 1,
                     EventTypeId = 1,
-                    Occurred = new DateTime(1970, 1, 1),
-                    EventFired = new DateTime(1970, 1, 1),
-                    Data = "secondExpectedEvent"
+                    Occurred = new DateTime(1975, 1, 1),
+                    EventFired = new DateTime(1975, 1, 1),
+                    Data = "firstExpectedEvent"
                 },
                 new Event()
                 {
                     IncidentId = 2,
                     EventTypeId = 1,
-                    Occurred = new DateTime(1970, 1, 1),
-                    EventFired = new DateTime(1970, 1, 1)
+                    Occurred = new DateTime(1981, 1, 1),
+                    EventFired = new DateTime(1981, 1, 1)
                 },
                 new Event()
                 {
                     IncidentId = 1,
                     EventTypeId = 2,
-                    Occurred = new DateTime(1970, 1, 1),
+                    Occurred = new DateTime(1976, 1, 1),
+                    EventFired = new DateTime(1976, 1, 1)
+                },
+                new Event()
+                {
+                    IncidentId = 1,
+                    EventTypeId = 1,
+                    Occurred = new DateTime(1986, 2, 2),
                     EventFired = new DateTime(1970, 1, 1)
                 },
                 new Event()
                 {
                     IncidentId = 1,
                     EventTypeId = 1,
-                    Occurred = new DateTime(1972, 2, 2),
-                    EventFired = new DateTime(1970, 1, 1)
-                },
-                new Event()
-                {
-                    IncidentId = 1,
-                    EventTypeId = 1,
-                    Occurred = new DateTime(1970, 1, 1),
-                    EventFired = new DateTime(1972, 2, 2)
+                    Occurred = new DateTime(1986, 1, 1),
+                    EventFired = new DateTime(1986, 2, 2)
                 },
             }.AsQueryable();
 
@@ -119,9 +118,8 @@ namespace Sia.Data.Incident.Tests.Filters
             var result = serviceUnderTest.Filter(testInput);
 
 
-            Assert.AreEqual(2, result.Count());
+            Assert.AreEqual(1, result.Count());
             Assert.IsTrue(result.Select(ev => ev.Data).Contains("firstExpectedEvent"));
-            Assert.IsTrue(result.Select(ev => ev.Data).Contains("secondExpectedEvent"));
         }
 
         [TestMethod]

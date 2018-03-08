@@ -39,6 +39,7 @@ namespace Sia.Gateway.Initialization
                     .UseResolveJsonToString();
                 configuration.CreateMap<Event, Data.Incidents.Models.Event>().EqualityById()
                     .UseResolveJsonToString();
+                // null coalesce operator disallowed in mapping statements, ternary used as alternative
                 configuration.CreateMap<Data.Incidents.Models.Event, Event>()
                     .ForMember
                     (
