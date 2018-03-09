@@ -57,6 +57,28 @@ In order to test functionality of the gateway on your local machine:
 			* This secret can be found in the azure portal in the AAD App Registration for your Gateway instance
 3. Launch the Gateway (in Visual Studio: ensure that the startup project is set to `Sia.Gateway` and the profile is set to `IIS Express`)
 
+# Setting up the database
+
+Note: More comprehensive documentation of Entity Framework Database Migrations is available [here](https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/migrations).
+
+1. Set up an empty SQL server database (this can be baremetal, Azure SQL, or any service that will provide a connection string)
+2. Add the connection string from the empty database to user secrets or environment variables as `ConnectionStrings:MigrationTarget`
+	![Example of MigrationTarget config](docs/images/MigrationConnectionConfig.PNG)
+3. Ensure the user in your connection string has ownership of the database you're updating.
+4. If you have not already done so, restore nuget packages for the solution
+5. Set the Default project to the project containing the DbContext class for the database you want to initialize or update
+6 From the Visual Studio Package Manager Console, navigate to the directory containing the .csproj file for the project you set in the previous step
+	`cd ./src/Sia.Gateway/`
+7. Ensure that the latest versions of Microsoft.EntityFrameworkCore.Tools and Microsoft.EntityFrameworkCore.Tools.DotNet are added as DotNetCliToolReferences in the .csproj file.
+	* See Sia.Data.Incidents.csproj as an example
+8. Enter the command:
+	`dotnet ef database update`
+	Success looks like: ![Successful output](docs/images/EfMigrationSuccess.PNG)
+9. Troubleshoot any errors using these resources (and add any new resources that solve a problem you encounter):
+	* [Microsoft.NETCore.App version X was not found](http://www.hanselman.com/blog/TheMysteryOfDotnetWatchAndMicrosoftNETCoreAppVersion110preview100110000WasNotFound.aspx)
+	* [Specified Framework Version 'X.X' could not be parsed](https://developercommunity.visualstudio.com/content/problem/150697/the-specified-framework-version-20-could-not-be-pa.html)
+10. Use SQL Server Object Explorer, Visual Studio, or another SQL client to validate that tables have correctly added.
+	![Tables exist in database](docs/images/EfMigrationValidation.PNG)
 
 # Ticketing System Connectors
 
