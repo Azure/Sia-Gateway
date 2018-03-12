@@ -41,7 +41,7 @@ namespace Sia.Gateway.Initialization
             => services
                 .RegisterConfig(config)
                 .AddAuth(config)
-                .AddDatabase(env, rawConfig)
+                .AddDatabase(env, config)
                 .AddTicketingConnector(env, rawConfig, config?.Connector?.Ticket)
                 .AddMicroserviceProxies(config);
 
@@ -51,10 +51,17 @@ namespace Sia.Gateway.Initialization
             return services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
         }
 
-        public static IServiceCollection AddDatabase(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot rawConfig)
+        public static IServiceCollection AddDatabase(this IServiceCollection services, IHostingEnvironment env, GatewayConfiguration config)
         {
-            if (env.IsDevelopment()) services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
-            if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(rawConfig.GetConnectionString("incidentStaging")));
+            if (env.IsDevelopment())
+            {
+                services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
+            }
+            else
+            {
+                services.AddDbContext<IncidentContext>(options => options.UseSqlServer(config.GatewayDatabaseConnectionString));
+            }
+      
             return services;
         }
 
