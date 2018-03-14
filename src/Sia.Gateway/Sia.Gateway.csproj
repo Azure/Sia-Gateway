@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <UserSecretsId>75a727f4-7c4d-4e48-9f77-2d00b67b27e4</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/a83b1dd0-478c-4fe4-af6e-e71d94058e4a/resourcegroups/Sia-Dev/providers/microsoft.insights/components/Sia-Dev-Gateway</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/a83b1dd0-478c-4fe4-af6e-e71d94058e4a/resourcegroups/Sia-Dev/providers/microsoft.insights/components/Sia-Dev-Gateway</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.0.0" />
@@ -32,6 +34,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Validation\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
