@@ -17,9 +17,9 @@ namespace Sia.Gateway.Tests.TestDoubles
         /// </summary>
         /// <param name="instance">Name of the particular in-memory store to use. Re-use is not suggested when modifying data during test (nameof() the test method is preferred)</param>
         /// <returns></returns>
-        public static async Task<IncidentContext> IncidentContext(string instance)
+        public static Task<IncidentContext> IncidentContext(string instance)
         {
-            if (_contexts.TryGetValue(instance, out var context)) return context;
+            if (_contexts.TryGetValue(instance, out var context)) return Task.FromResult(context);
             while(_contextBeingGenerated.TryGetValue(instance, out var beingGenerated)
                 && beingGenerated)
             {
@@ -32,11 +32,11 @@ namespace Sia.Gateway.Tests.TestDoubles
                 context = new IncidentContext(options);
                 SeedData.Add(context);
                 _contextBeingGenerated.TryAdd(instance, false);
-                if (_contexts.TryAdd(instance, context)) return context;
-                if (_contexts.TryGetValue(instance, out var otherContext)) return otherContext;
+                if (_contexts.TryAdd(instance, context)) return Task.FromResult(context);
+                if (_contexts.TryGetValue(instance, out var otherContext)) return Task.FromResult(otherContext);
             }
 
-            return context;
+            return Task.FromResult(context);
         }
 
         private static ConcurrentDictionary<string, bool> _contextBeingGenerated { get; set; } = new ConcurrentDictionary<string, bool>();

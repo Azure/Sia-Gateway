@@ -1,14 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using Sia.Data.Incidents.Filters;
 using Sia.Data.Incidents.Models;
+using Sia.Gateway.Filters;
 using Sia.Shared.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Sia.Data.Incident.Tests.Filters
+namespace Sia.Gateway.Tests.Filters
 {
     [TestClass]
     public class EventFiltersTests
@@ -20,7 +20,7 @@ namespace Sia.Data.Incident.Tests.Filters
             var testInput = new List<Event>().AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.IsFalse(result.Any());
@@ -51,7 +51,7 @@ namespace Sia.Data.Incident.Tests.Filters
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.AreEqual(2, result.Count());
@@ -116,7 +116,7 @@ namespace Sia.Data.Incident.Tests.Filters
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.AreEqual(2, result.Count());
@@ -159,7 +159,7 @@ namespace Sia.Data.Incident.Tests.Filters
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.AreEqual(1, result.Count());
@@ -201,7 +201,7 @@ namespace Sia.Data.Incident.Tests.Filters
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.AreEqual(0, result.Count());
@@ -243,7 +243,7 @@ namespace Sia.Data.Incident.Tests.Filters
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.AreEqual(1, result.Count());
@@ -286,7 +286,7 @@ namespace Sia.Data.Incident.Tests.Filters
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.AreEqual(0, result.Count());
