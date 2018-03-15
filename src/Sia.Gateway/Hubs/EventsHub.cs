@@ -37,14 +37,14 @@ namespace Sia.Gateway.Hubs
                 "User {0} connected to EventsHub on connectionId {1}",
                 new object[] { Context.User.Identity.Name, Context.ConnectionId }
             );
-            await ClearFilter();
+            ClearFilter();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            await ClearFilter();
+            ClearFilter();
             
-            if(exception == null)
+            if (exception == null)
             {
                 _logger.LogInformation(
                     "User {0} disconnected from EventsHub on connectionId {1} without exception",
@@ -72,20 +72,19 @@ namespace Sia.Gateway.Hubs
                         .ToList()
                 ).InvokeAsync("Send", Json(ev));
 
-        public Task UpdateFilter(EventFilters filters)
+        public void UpdateFilter(EventFilters filters)
         {
             _logger.LogInformation(
                 "UpdateFilter called from connection with Id {0}.",
                 new object[] { Context.ConnectionId });
             _filterLookup.Upsert(Context.ConnectionId, filters);
             //No need to propagate to other Gateways as connectionIds are not shared.
-            return Task.CompletedTask;
         }
 
-        public Task<bool> ClearFilter()
+        public bool ClearFilter()
         {
             var filterRemoved = _filterLookup.TryRemove(Context.ConnectionId, out var unused);
-            if(filterRemoved)
+            if (filterRemoved)
             {
                 _logger.LogInformation(
                     "Successfully cleared filter for connection with id {0}",
@@ -99,7 +98,7 @@ namespace Sia.Gateway.Hubs
                     new object[] { Context.ConnectionId }
                 );
             }
-            return Task.FromResult(filterRemoved);
+            return filterRemoved;
         }
  
 
