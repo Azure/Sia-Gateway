@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sia.Data.Incidents;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Initialization.Configuration;
-using Sia.Shared.Authentication;
-using System;
+using Sia.Shared.Validation;
 
 namespace Sia.Gateway
 {
@@ -15,6 +16,9 @@ namespace Sia.Gateway
     {
         public Startup(IHostingEnvironment env)
         {
+            const string KUBERNETES_STACK = "K8SSTACK";
+            const string STAGING_DB_CONNECTION_STRING_KEY = "incidentStaging";
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -26,6 +30,34 @@ namespace Sia.Gateway
             }
             _configuration = builder.Build();
             _gatewayConfiguration = _configuration.Get<GatewayConfiguration>();
+
+            if (env.IsStaging())
+            {
+                _gatewayConfiguration.GatewayDatabaseConnectionString = _configuration.GetConnectionString(STAGING_DB_CONNECTION_STRING_KEY);
+            }
+            else if (env.IsEnvironment(KUBERNETES_STACK))
+            {
+                ThrowIf.NullOrWhiteSpace(_gatewayConfiguration.ClientSecret, nameof(_gatewayConfiguration.ClientSecret));
+                ThrowIf.NullOrWhiteSpace(_gatewayConfiguration.KeyVaultAccessor.VaultName,
+                    nameof(_gatewayConfiguration.KeyVaultAccessor.VaultName));
+                ThrowIf.NullOrWhiteSpace(_gatewayConfiguration.KeyVaultAccessor.GatewayDatabaseConnectionStringName,
+                    nameof(_gatewayConfiguration.KeyVaultAccessor.GatewayDatabaseConnectionStringName));
+                ThrowIf.NullOrWhiteSpace(_gatewayConfiguration.KeyVaultAccessor.GatewayRedisPasswordName,
+                    nameof(_gatewayConfiguration.KeyVaultAccessor.GatewayRedisPasswordName));
+
+                var keyVaultUrl = String.Format("https://{0}.vault.azure.net/", _gatewayConfiguration.KeyVaultAccessor.VaultName);
+                builder.AddAzureKeyVault(keyVaultUrl, _gatewayConfiguration.ClientId, _gatewayConfiguration.ClientSecret);
+                _configuration = builder.Build();
+
+                var accessor = _gatewayConfiguration.KeyVaultAccessor;
+                var connectionString = _configuration[accessor.GatewayDatabaseConnectionStringName];
+                ThrowIf.NullOrWhiteSpace(connectionString, accessor.GatewayDatabaseConnectionStringName);
+                _gatewayConfiguration.GatewayDatabaseConnectionString = connectionString;
+
+                var redisPassword = _configuration[accessor.GatewayRedisPasswordName];
+                ThrowIf.NullOrWhiteSpace(redisPassword, accessor.GatewayRedisPasswordName);
+                _gatewayConfiguration.Redis.Password = redisPassword;
+            }
             var appInsightsTask = env.InitializeApplicationInsights(_gatewayConfiguration);
             appInsightsTask.Wait();
             _env = env;
