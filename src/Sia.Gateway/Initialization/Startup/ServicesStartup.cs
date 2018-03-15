@@ -72,9 +72,9 @@ namespace Sia.Gateway.Initialization
             return services.AddSingleton(httpClients);
         }
 
-        public static void AddThirdPartyServices(this IServiceCollection services, GatewayConfiguration config)
+        public static void AddThirdPartyServices(this IServiceCollection services, IHostingEnvironment env, GatewayConfiguration config)
             => services
-                .AddMvcServices(config)
+                .AddMvcServices(env, config)
                 .AddDistributedMemoryCache()
                 .AddSession()
                 .AddCors()
@@ -82,7 +82,7 @@ namespace Sia.Gateway.Initialization
                 .AddSignalR(config.Redis)
                 .AddMediatRConfig();
 
-        public static IServiceCollection AddMvcServices(this IServiceCollection services, GatewayConfiguration config)
+        public static IServiceCollection AddMvcServices(this IServiceCollection services, IHostingEnvironment env, GatewayConfiguration config)
             => services
             .AddSingleton<IActionContextAccessor, ActionContextAccessor>()
             .AddScoped<IUrlHelper, UrlHelper>(iFactory
@@ -95,20 +95,21 @@ namespace Sia.Gateway.Initialization
             }).Services
             .AddAuthentication(authOptions =>
             {
-                authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                authOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(jwtOptions =>
             {
                 jwtOptions.Authority = config.AzureAd.Authority;
                 jwtOptions.Audience = config.FrontEnd.ClientId;
                 jwtOptions.SaveToken = true;
+                jwtOptions.RequireHttpsMetadata = !env.IsDevelopment();
+                
                 jwtOptions.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
                     {
-                        if (context.Request.Path.Value.StartsWith(string.Concat("/", EventsHub.HubPath))
-                            && context.Request.Query.TryGetValue("token", out StringValues token))
+                        if (context.Request.Path.Value.StartsWith(EventsHub.HubPath)
+                            && context.Request.Query.TryGetValue("access_token", out StringValues token))
                         {
                             context.Token = token;
                         }
@@ -116,6 +117,8 @@ namespace Sia.Gateway.Initialization
                         return Task.CompletedTask;
                     }
                 };
+
+                jwtOptions.Validate();
             }).Services;
 
         public static IServiceCollection AddSignalR(this IServiceCollection services, RedisConfig config)

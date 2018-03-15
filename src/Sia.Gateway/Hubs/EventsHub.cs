@@ -17,7 +17,7 @@ namespace Sia.Gateway.Hubs
     [Authorize()]
     public class EventsHub : Hub
     {
-        public const string HubPath = "events/live";
+        public const string HubPath = "/events/live";
         private readonly ConcurrentDictionary<string, IFilterByMatch<Event>> _filterLookup;
         private readonly ILogger<EventsHub> _logger;
 
@@ -66,11 +66,11 @@ namespace Sia.Gateway.Hubs
         public Task Send(Event ev)
             => Clients.AllExcept(
                     _filterLookup
-                        .Where((kvp) => !kvp.Value.IsMatchFor(ev))
+                        .Where((kvp) => kvp.Value != null && !kvp.Value.IsMatchFor(ev))
                         .Select((kvp) => kvp.Key)
                         .Append(Context.ConnectionId) // Prevent loops (if those are even possible)
                         .ToList()
-                ).InvokeAsync("Send", Json(ev));
+                ).SendAsync("Send", Json(ev));
 
         public void UpdateFilter(EventFilters filters)
         {
