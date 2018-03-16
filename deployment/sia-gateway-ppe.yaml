@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
           - name: sia-gateway-ppe
-            image: siacontainerregistry.azurecr.io/azure/sia-gateway-ppe:11011
+            image: siacontainerregistry.azurecr.io/azure/sia-gateway-ppe:latest
             env:
               - name: ASPNETCORE_ENVIRONMENT
                 value: K8SSTACK
