@@ -5,7 +5,6 @@ COPY . .
 
 WORKDIR /build/Gateway/src/Sia.Gateway
 RUN dotnet publish -c Release -o out
-RUN dotnet nuget locals -l all
 
 WORKDIR /build/TicketSystemConnector
 RUN dotnet add reference /build/Gateway/src/Sia.Connectors.Tickets/Sia.Connectors.Tickets.csproj
