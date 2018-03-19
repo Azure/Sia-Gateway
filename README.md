@@ -1,3 +1,6 @@
+[![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Azure/Sia-Gateway/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/Azure/Sia-Gateway.svg?branch=master)](https://travis-ci.org/Azure/Sia-Gateway)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Azure/Sia-Root/blob/master/HOWTOCONTRIBUTE.md)
 
 # Contributing
 
