@@ -1,8 +1,8 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
-using Sia.Data.Incidents.Filters;
 using Sia.Domain;
+using Sia.Gateway.Filters;
 using Sia.Shared.Authentication;
 using Sia.Shared.Protocol;
 using Sia.Shared.Requests;
