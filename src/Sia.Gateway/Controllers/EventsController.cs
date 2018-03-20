@@ -115,12 +115,13 @@ namespace Sia.Gateway.Controllers
 
         private async Task SendEventToSubscribers(Domain.Event result)
         {
+            var url = $"http://localhost:{Request.Host.Port}{EventsHub.HubPath}";
             try
             {
                 string token = GetTokenFromHeaders();
                 var eventHubConnection = _hubConnectionBuilder
                     .WithAccessToken(() => token)
-                    .WithUrl($"{Request.Scheme}://{Request.Host}{EventsHub.HubPath}")
+                    .WithUrl(url)
                     .Build();
                 await eventHubConnection.StartAsync();
                 await eventHubConnection.SendAsync("Send", result);
@@ -128,7 +129,7 @@ namespace Sia.Gateway.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Encountered exception when attempting to send posted event to SignalR subscribers.", new object[] { });
+                _logger.LogError(ex, $"Encountered exception when attempting to send posted event to SignalR subscribers, url: {url}");
             }
         }
 
