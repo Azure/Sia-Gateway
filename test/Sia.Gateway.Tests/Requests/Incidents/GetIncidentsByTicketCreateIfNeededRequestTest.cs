@@ -17,15 +17,16 @@ namespace Sia.Gateway.Tests.Requests
     {
         [TestInitialize]
         public void ConfigureAutomapper()
-    => AutoMapperStartup.InitializeAutomapper();
+            => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
         public async Task Handle_WhenIncidentNotExist_ReturnNewIncident()
         {
             var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(
-                await MockFactory.IncidentContext("Get"),
+                await MockFactory.IncidentContext(nameof(Handle_WhenIncidentNotExist_ReturnNewIncident)),
                 new NoConnector(new NoClient(), new StubLoggerFactory())
             );
+
             var request = new GetIncidentsByTicketCreateIfNeededRequest("100", new DummyAuthenticatedUserContext());
 
 

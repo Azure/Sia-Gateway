@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sia-ppe-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/tls-acme: 'true'
+    ingress.kubernetes.io/rewrite-target: /
+    
+spec:
+  rules:
+    - host: sia-gateway-ppe.eastus.cloudapp.azure.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: sia-gateway-ppe-service 
+              servicePort: 80
+  tls:
+    - hosts:
+        - sia-gateway-ppe.eastus.cloudapp.azure.com
+      secretName: sia-gateway-ppe-tls

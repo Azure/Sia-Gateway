@@ -2,6 +2,7 @@
 using AutoMapper.EquivalencyExpression;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
+using System.Linq;
 
 namespace Sia.Gateway.Initialization
 {
@@ -38,7 +39,20 @@ namespace Sia.Gateway.Initialization
                     .UseResolveJsonToString();
                 configuration.CreateMap<Event, Data.Incidents.Models.Event>().EqualityById()
                     .UseResolveJsonToString();
-                configuration.CreateMap<Data.Incidents.Models.Event, Event>().EqualityById()
+                // null coalesce operator disallowed in mapping statements, ternary used as alternative
+                configuration.CreateMap<Data.Incidents.Models.Event, Event>()
+                    .ForMember
+                    (
+                        nameof(Event.PrimaryTicketId),
+                        options => options.MapFrom(
+                            (src) => src.Incident == null
+                                ? null
+                                : src.Incident.Tickets == null
+                                    ? null
+                                    : src.Incident.Tickets.FirstOrDefault(ticket => ticket.IsPrimary) == null
+                                        ? null
+                                        : src.Incident.Tickets.FirstOrDefault(ticket => ticket.IsPrimary).OriginId)
+                    ).EqualityById()
                     .UseResolveStringToJson();
             });
         }

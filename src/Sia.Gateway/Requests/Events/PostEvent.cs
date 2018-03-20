@@ -5,6 +5,7 @@ using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Shared.Authentication;
+using Sia.Shared.Exceptions;
 using Sia.Shared.Requests;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace Sia.Gateway.Requests
                                    .Incidents
                                    .Include(cr => cr.Events)
                                    .FirstOrDefaultAsync(x => x.Id == request.IncidentId, cancellationToken);
-            if (dataIncident == null) throw new KeyNotFoundException();
+            if (dataIncident == null) throw new NotFoundException($"Found no incident with id {request.IncidentId}.");
 
             var dataEvent = Mapper.Map<Data.Incidents.Models.Event>(request.NewEvent);
 

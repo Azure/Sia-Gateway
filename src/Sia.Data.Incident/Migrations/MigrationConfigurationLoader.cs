@@ -15,12 +15,11 @@ namespace Sia.Data.Incidents.Migrations
 
         public IncidentContext CreateDbContext(string[] args)
         {
-            IConfigurationRoot configuration = new ConfigurationBuilder().AddUserSecrets<MigrationConfigurationLoader>().Build();
-            var builder = new DbContextOptionsBuilder<IncidentContext>();
-
-            var connectionString = configuration.GetConnectionString("ppe");
-
-            builder.UseSqlServer(connectionString);
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .AddUserSecrets<MigrationConfigurationLoader>()
+                .Build();
+            var builder = new DbContextOptionsBuilder<IncidentContext>()
+                .UseSqlServer(configuration.GetConnectionString("MigrationTarget"));
 
             return new IncidentContext(builder.Options);
         }

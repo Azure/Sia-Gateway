@@ -1,8 +1,6 @@
 language: csharp
-solution: Sia.Gateway.sln
 mono: none
-dotnet: 2.0.3
+dotnet: 2.1.4
 script:
  - dotnet restore
- - dotnet build .\Sia.Data.Incident.Tests\Sia.Data.Incident.Tests.csproj --configuration release
- - dotnet test .\Sia.Data.Incident.Tests\Sia.Data.Incident.Tests.csproj --configuration release --logger trx --results-directory .\_temp
+ - dotnet build

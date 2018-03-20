@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sia.Domain.Playbook;
+using Sia.Gateway.Initialization.Configuration;
 using Sia.Gateway.Requests.Playbook;
 using Sia.Shared.Authentication;
 using Sia.Shared.Authentication.Http;
@@ -26,7 +27,7 @@ namespace Sia.Gateway.Requests
 
     public class GetEventTypeShortCircuit : PlaybookShortCircuit<GetEventTypeRequest, EventType>
     {
-        public GetEventTypeShortCircuit(IConfigurationRoot config) : base(config)
+        public GetEventTypeShortCircuit(MicroservicesConfig config) : base(config)
         {
 
         }
@@ -41,10 +42,8 @@ namespace Sia.Gateway.Requests
             });
         }
 
-        public static void RegisterMe(IServiceCollection services)
-        {
-            services.AddTransient<IPipelineBehavior<GetEventTypeRequest, EventType>, GetEventTypeShortCircuit>();
-        }
+        public static IServiceCollection RegisterMe(IServiceCollection services)
+            => services.AddTransient<IPipelineBehavior<GetEventTypeRequest, EventType>, GetEventTypeShortCircuit>();
     }
 
     public class GetEventTypeHandler : PlaybookProxyHandler<GetEventTypeRequest, EventType>

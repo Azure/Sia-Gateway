@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Sia.Gateway.Hubs;
+using Sia.Gateway.Initialization.Configuration;
 using Sia.Shared.Middleware;
 using System;
 using System.Collections.Generic;
@@ -11,16 +12,14 @@ namespace Sia.Gateway.Initialization
 {
     public static class MiddlewareStartup
     {
-             
-
-        public static void AddMiddleware(this IApplicationBuilder app, IHostingEnvironment env, IConfigurationRoot configuration)
+        public static void AddMiddleware(this IApplicationBuilder app, IHostingEnvironment env, GatewayConfiguration configuration)
         {
             app.UseAuthentication();
             app.UseSession();
 
             app.UseCors(builder =>
                 builder
-                .WithOrigins(LoadAcceptableOriginsFromConfig(configuration))
+                .WithOrigins(configuration.Cors.AcceptableOrigins.ToArray())
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials()
@@ -35,20 +34,6 @@ namespace Sia.Gateway.Initialization
             app.UseMiddleware<ExceptionHandler>();
 
             app.UseMvc();
-        }
-
-        private static string[] LoadAcceptableOriginsFromConfig(IConfigurationRoot configuration)
-        {
-            List<string> corsOrigins = new List<string>();
-
-            int i = 0;
-            while (!string.IsNullOrWhiteSpace(configuration[$"CORS:AcceptableOrigins:{i}"]))
-            {
-                corsOrigins.Add(configuration[$"CORS:AcceptableOrigins:{i}"]);
-                i++;
-            }
-
-            return corsOrigins.ToArray();
         }
     }
 }

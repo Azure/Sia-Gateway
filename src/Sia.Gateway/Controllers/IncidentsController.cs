@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
-using Sia.Shared.Authentication;
 using Sia.Gateway.Requests;
-using System.Threading.Tasks;
-using Sia.Data.Incidents.Filters;
+using Sia.Shared.Authentication;
 using Sia.Shared.Controllers;
 using Sia.Shared.Protocol;
+using System.Threading.Tasks;
 
 namespace Sia.Gateway.Controllers
 {

@@ -7,14 +7,16 @@
   <ItemGroup>
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.0-alpha1-final" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="1.0.0-alpha1-final" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Redis" Version="1.0.0-alpha1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.0-preview1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="1.0.0-preview1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Redis" Version="1.0.0-preview1-final" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="2.3.2" />
     <PackageReference Include="Microsoft.Azure.KeyVault.Core" Version="2.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
     <PackageReference Include="System.Globalization.Extensions" Version="4.3.0" />

@@ -1,71 +1,39 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using Sia.Data.Incidents.Filters;
 using Sia.Data.Incidents.Models;
-using Sia.Shared.Data;
+using Sia.Gateway.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Sia.Data.Incident.Tests.Filters
+namespace Sia.Gateway.Tests.Filters
 {
     [TestClass]
-    public class EventFiltersTests
+    public class FilterExtensionsTests
     {
         [TestMethod]
-        public void Filter_WhenPassedEmptyQueryable_ReturnsEmptyQueryable()
+        public void WithFilter_WhenPassedEmptyQueryable_ReturnsEmptyQueryable()
         {
             var serviceUnderTest = new EventFilters();
             var testInput = new List<Event>().AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.IsFalse(result.Any());
         }
 
         [TestMethod]
-        public void Filter_WhenFilterIsEmpty_ReturnsInputQueryable()
-        {
-            var serviceUnderTest = new EventFilters();
-            var testInput = new List<Event>()
-            {
-                new Event()
-                {
-                    IncidentId = 1,
-                    EventTypeId = 1,
-                    Occurred = new DateTime(1970, 1, 1),
-                    EventFired = new DateTime(1970, 1, 1),
-                    Data = "firstExpectedEvent"
-                },
-                new Event()
-                {
-                    IncidentId = 1,
-                    EventTypeId = 1,
-                    Occurred = new DateTime(1970, 1, 1),
-                    EventFired = new DateTime(1970, 1, 1),
-                    Data = "secondExpectedEvent"
-                }
-            }.AsQueryable();
-
-
-            var result = serviceUnderTest.Filter(testInput);
-
-
-            Assert.AreEqual(2, result.Count());
-        }
-
-        [TestMethod]
-        public void Filter_WhenPassedQueryable_ReturnsOnlyMatchingResultsAsQueryable()
+        public void WithFilter_WhenPassedQueryable_ReturnsOnlyMatchingResultsAsQueryable()
         {
             var serviceUnderTest = new EventFilters()
             {
                 IncidentId = 1,
                 EventTypes = new long[] { 1 },
-                Occurred = new DateTime(1970, 1, 1),
-                EventFired = new DateTime(1970, 1, 1)
+                StartTime = new DateTime(1970, 1, 1),
+                EndTime = new DateTime(1980, 3, 2)
             };
             var testInput = new List<Event>()
             {
@@ -74,58 +42,56 @@ namespace Sia.Data.Incident.Tests.Filters
                     IncidentId = 1,
                     EventTypeId = 1,
                     Occurred = new DateTime(1970, 1, 1),
-                    EventFired = new DateTime(1970, 1, 1),
-                    Data = "firstExpectedEvent"
+                    EventFired = new DateTime(1970, 1, 1)
                 },
                 new Event()
                 {
                     IncidentId = 1,
                     EventTypeId = 1,
-                    Occurred = new DateTime(1970, 1, 1),
-                    EventFired = new DateTime(1970, 1, 1),
-                    Data = "secondExpectedEvent"
+                    Occurred = new DateTime(1975, 1, 1),
+                    EventFired = new DateTime(1975, 1, 1),
+                    Data = "firstExpectedEvent"
                 },
                 new Event()
                 {
                     IncidentId = 2,
                     EventTypeId = 1,
-                    Occurred = new DateTime(1970, 1, 1),
-                    EventFired = new DateTime(1970, 1, 1)
+                    Occurred = new DateTime(1981, 1, 1),
+                    EventFired = new DateTime(1981, 1, 1)
                 },
                 new Event()
                 {
                     IncidentId = 1,
                     EventTypeId = 2,
-                    Occurred = new DateTime(1970, 1, 1),
+                    Occurred = new DateTime(1976, 1, 1),
+                    EventFired = new DateTime(1976, 1, 1)
+                },
+                new Event()
+                {
+                    IncidentId = 1,
+                    EventTypeId = 1,
+                    Occurred = new DateTime(1986, 2, 2),
                     EventFired = new DateTime(1970, 1, 1)
                 },
                 new Event()
                 {
                     IncidentId = 1,
                     EventTypeId = 1,
-                    Occurred = new DateTime(1972, 2, 2),
-                    EventFired = new DateTime(1970, 1, 1)
-                },
-                new Event()
-                {
-                    IncidentId = 1,
-                    EventTypeId = 1,
-                    Occurred = new DateTime(1970, 1, 1),
-                    EventFired = new DateTime(1972, 2, 2)
+                    Occurred = new DateTime(1986, 1, 1),
+                    EventFired = new DateTime(1986, 2, 2)
                 },
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
-            Assert.AreEqual(2, result.Count());
+            Assert.AreEqual(1, result.Count());
             Assert.IsTrue(result.Select(ev => ev.Data).Contains("firstExpectedEvent"));
-            Assert.IsTrue(result.Select(ev => ev.Data).Contains("secondExpectedEvent"));
         }
 
         [TestMethod]
-        public void Filter_WhenPassedQueryable_MatchesByDataKeyWhenEventsHaveEquivalentKeyInData()
+        public void WithFilter_WhenPassedQueryable_MatchesByDataKeyWhenEventsHaveEquivalentKeyInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -159,7 +125,7 @@ namespace Sia.Data.Incident.Tests.Filters
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.AreEqual(1, result.Count());
@@ -167,7 +133,7 @@ namespace Sia.Data.Incident.Tests.Filters
         }
 
         [TestMethod]
-        public void Filter_WhenPassedQueryable_ReturnsEmptyQueryableWhenNoEventsHaveEquivalentKeyInData()
+        public void WithFilter_WhenPassedQueryable_ReturnsEmptyQueryableWhenNoEventsHaveEquivalentKeyInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -201,14 +167,14 @@ namespace Sia.Data.Incident.Tests.Filters
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.AreEqual(0, result.Count());
         }
 
         [TestMethod]
-        public void Filter_WhenPassedQueryable_MatchesByDataKeyAndValueWhenEventsHaveEquivalentKeyAndValueInData()
+        public void WithFilter_WhenPassedQueryable_MatchesByDataKeyAndValueWhenEventsHaveEquivalentKeyAndValueInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -243,7 +209,7 @@ namespace Sia.Data.Incident.Tests.Filters
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.AreEqual(1, result.Count());
@@ -251,7 +217,7 @@ namespace Sia.Data.Incident.Tests.Filters
         }
 
         [TestMethod]
-        public void Filter_WhenPassedQueryable_ReturnsEmptyQueryableWhenNoEventsHaveEquivalentKeyAndValueInData()
+        public void WithFilter_WhenPassedQueryable_ReturnsEmptyQueryableWhenNoEventsHaveEquivalentKeyAndValueInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -286,7 +252,7 @@ namespace Sia.Data.Incident.Tests.Filters
             }.AsQueryable();
 
 
-            var result = serviceUnderTest.Filter(testInput);
+            var result = testInput.WithFilter(serviceUnderTest);
 
 
             Assert.AreEqual(0, result.Count());
