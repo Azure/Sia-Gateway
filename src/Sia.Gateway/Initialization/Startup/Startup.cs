@@ -74,7 +74,7 @@ namespace Sia.Gateway
            
             services.AddFirstPartyServices(_env, _configuration, _gatewayConfiguration);
 
-            services.AddThirdPartyServices(_gatewayConfiguration);
+            services.AddThirdPartyServices(_env, _gatewayConfiguration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
