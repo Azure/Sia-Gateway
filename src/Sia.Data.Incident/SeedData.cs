@@ -81,14 +81,22 @@ namespace Sia.Data.Incidents
                     new Event
                     {
                         EventTypeId = 1,
-                        Occurred = new DateTime(1975, 5, 5),
-                        EventFired = new DateTime(1976, 6, 6)
+                        Occurred = new DateTime(2018, 3, 5),
+                        EventFired = new DateTime(2018, 3, 6),
+                        Data = JsonConvert.SerializeObject(new
+                        {
+                            DisplayText = "Search for matches"
+                        })
                     },
                     new Event
                     {
                         EventTypeId = 111,
-                        Occurred = new DateTime(1975, 5, 5),
-                        EventFired = new DateTime(1976, 6, 7)
+                        Occurred = new DateTime(2018, 3, 5),
+                        EventFired = new DateTime(2018, 3, 6),
+                        Data = JsonConvert.SerializeObject(new
+                        {
+                            DisplayText = "test textFilter"
+                        })
                     }
                 },
                 Title = "Customers are unable to access [REDACTED] from [REDACTED]"
@@ -105,11 +113,31 @@ namespace Sia.Data.Incidents
                     new Event
                     {
                         EventTypeId = 1,
-                        Occurred = new DateTime(1975, 5, 5),
-                        EventFired = new DateTime(1976, 6, 6),
+                        Occurred = new DateTime(2018, 3, 5),
+                        EventFired = new DateTime(2018, 3, 6),
                         Data = JsonConvert.SerializeObject(new
                         {
                             Alias = "aliasValue"
+                        })
+                    },
+                     new Event
+                    {
+                        EventTypeId = 11,
+                        Occurred = new DateTime(2018, 3, 5),
+                        EventFired = new DateTime(2018, 3, 6),
+                        Data = JsonConvert.SerializeObject(new
+                        {
+                            DisplayText = "test textFilter"
+                        })
+                    },
+                      new Event
+                    {
+                        EventTypeId = 1,
+                        Occurred = new DateTime(2018, 3, 5),
+                        EventFired = new DateTime(2018, 3, 6),
+                        Data = JsonConvert.SerializeObject(new
+                        {
+                            DisplayText = "Search for matches"
                         })
                     }
                 },

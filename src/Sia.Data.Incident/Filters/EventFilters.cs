@@ -17,6 +17,8 @@ namespace Sia.Data.Incidents.Filters
         public DateTime? EndTime { get; set; }
         public string DataKey { get; set; }
         public string DataValue { get; set; }
+        public string DataSearch { get; set; }
+
         public const string KeyValueComparison = "\"{0}\":\"{1}\"";
         public const string KeyComparison = "\"{0}\":";
 
@@ -34,7 +36,12 @@ namespace Sia.Data.Incidents.Filters
                 var workingCompare = String.IsNullOrEmpty(DataValue)
                     ? String.Format(KeyComparison, DataKey)
                     : String.Format(KeyValueComparison, new string[] { DataKey, DataValue });
-                working = working.Where(obj => obj.Data.Contains(workingCompare));
+                working = working.Where(obj => ((obj.Data == null) || obj.Data.Contains(workingCompare)));
+            }
+
+            if (!String.IsNullOrEmpty(DataSearch))
+            {
+                working = working.Where(obj => ((obj.Data == null) || obj.Data.Contains(DataSearch)));
             }
 
             return working;
