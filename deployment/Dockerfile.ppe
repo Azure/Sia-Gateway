@@ -1,0 +1,19 @@
+FROM microsoft/aspnetcore-build:2.0 AS build-env
+WORKDIR /build
+
+COPY . . 
+
+WORKDIR /build/Gateway/src/Sia.Gateway
+RUN dotnet publish -c Release -o out
+
+WORKDIR /build/TicketSystemConnector
+RUN dotnet add reference /build/Gateway/src/Sia.Connectors.Tickets/Sia.Connectors.Tickets.csproj
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM microsoft/aspnetcore:2.0
+WORKDIR /app
+COPY --from=build-env /build/Gateway/src/Sia.Gateway/out .
+COPY --from=build-env /build/TicketSystemConnector/out ./TicketSystemConnector
+EXPOSE 80
+ENTRYPOINT ["dotnet", "Sia.Gateway.dll"]

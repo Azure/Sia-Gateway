@@ -20,10 +20,12 @@ using Sia.Gateway.Requests.Playbook;
 using Sia.Shared.Authentication;
 using Sia.Shared.Authentication.Http;
 using Sia.Shared.Configuration;
+using Sia.Shared.Data;
 using Sia.Shared.Protocol;
 using Sia.Shared.Validation;
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
@@ -41,7 +43,7 @@ namespace Sia.Gateway.Initialization
             => services
                 .RegisterConfig(config)
                 .AddAuth(config)
-                .AddDatabase(env, rawConfig)
+                .AddDatabase(env, config)
                 .AddTicketingConnector(env, rawConfig, config?.Connector?.Ticket)
                 .AddMicroserviceProxies(config);
 
@@ -51,10 +53,17 @@ namespace Sia.Gateway.Initialization
             return services.AddSingleton<AzureActiveDirectoryAuthenticationInfo>(i => incidentAuthConfig);
         }
 
-        public static IServiceCollection AddDatabase(this IServiceCollection services, IHostingEnvironment env, IConfigurationRoot rawConfig)
+        public static IServiceCollection AddDatabase(this IServiceCollection services, IHostingEnvironment env, GatewayConfiguration config)
         {
-            if (env.IsDevelopment()) services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
-            if (env.IsStaging()) services.AddDbContext<IncidentContext>(options => options.UseSqlServer(rawConfig.GetConnectionString("incidentStaging")));
+            if (env.IsDevelopment())
+            {
+                services.AddDbContext<IncidentContext>(options => options.UseInMemoryDatabase("Live"));
+            }
+            else
+            {
+                services.AddDbContext<IncidentContext>(options => options.UseSqlServer(config.GatewayDatabaseConnectionString));
+            }
+      
             return services;
         }
 
@@ -70,9 +79,9 @@ namespace Sia.Gateway.Initialization
             return services.AddSingleton(httpClients);
         }
 
-        public static void AddThirdPartyServices(this IServiceCollection services, GatewayConfiguration config)
+        public static void AddThirdPartyServices(this IServiceCollection services, IHostingEnvironment env, GatewayConfiguration config)
             => services
-                .AddMvcServices(config)
+                .AddMvcServices(env, config)
                 .AddDistributedMemoryCache()
                 .AddSession()
                 .AddCors()
@@ -80,7 +89,7 @@ namespace Sia.Gateway.Initialization
                 .AddSignalR(config.Redis)
                 .AddMediatRConfig();
 
-        public static IServiceCollection AddMvcServices(this IServiceCollection services, GatewayConfiguration config)
+        public static IServiceCollection AddMvcServices(this IServiceCollection services, IHostingEnvironment env, GatewayConfiguration config)
             => services
             .AddSingleton<IActionContextAccessor, ActionContextAccessor>()
             .AddScoped<IUrlHelper, UrlHelper>(iFactory
@@ -93,20 +102,21 @@ namespace Sia.Gateway.Initialization
             }).Services
             .AddAuthentication(authOptions =>
             {
-                authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                authOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(jwtOptions =>
             {
                 jwtOptions.Authority = config.AzureAd.Authority;
                 jwtOptions.Audience = config.FrontEnd.ClientId;
                 jwtOptions.SaveToken = true;
+                jwtOptions.RequireHttpsMetadata = !env.IsDevelopment();
+                
                 jwtOptions.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
                     {
-                        if (context.Request.Path.Value.StartsWith(string.Concat("/", EventsHub.HubPath))
-                            && context.Request.Query.TryGetValue("token", out StringValues token))
+                        if (context.Request.Path.Value.StartsWith(EventsHub.HubPath)
+                            && context.Request.Query.TryGetValue("access_token", out StringValues token))
                         {
                             context.Token = token;
                         }
@@ -114,6 +124,8 @@ namespace Sia.Gateway.Initialization
                         return Task.CompletedTask;
                     }
                 };
+
+                jwtOptions.Validate();
             }).Services;
 
         public static IServiceCollection AddSignalR(this IServiceCollection services, RedisConfig config)
@@ -129,7 +141,11 @@ namespace Sia.Gateway.Initialization
                 });
             }
 
-            return services.AddScoped<HubConnectionBuilder>();
+            var eventFilterRegistry = new ConcurrentDictionary<string, IFilterByMatch<Event>>();
+
+            return services
+                .AddScoped<HubConnectionBuilder>()
+                .AddSingleton(eventFilterRegistry);
         }
 
         public static IServiceCollection AddMediatRConfig(this IServiceCollection services)

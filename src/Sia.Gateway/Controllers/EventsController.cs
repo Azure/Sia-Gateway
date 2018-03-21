@@ -1,18 +1,17 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
-using Sia.Data.Incidents.Filters;
+using Microsoft.Extensions.Logging;
 using Sia.Domain.ApiModels;
+using Sia.Gateway.Filters;
 using Sia.Gateway.Hubs;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Events;
 using Sia.Shared.Authentication;
 using Sia.Shared.Controllers;
 using Sia.Shared.Protocol;
-using System.Linq;
+using System;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Controllers
@@ -21,14 +20,17 @@ namespace Sia.Gateway.Controllers
     {
         private const string notFoundMessage = "Incident or event not found";
         private readonly HubConnectionBuilder _hubConnectionBuilder;
+        private readonly ILogger<EventsController> _logger;
 
         public EventsController(IMediator mediator,
             AzureActiveDirectoryAuthenticationInfo authConfig,
             HubConnectionBuilder hubConnectionBuilder,
-            IUrlHelper urlHelper)
+            IUrlHelper urlHelper,
+            ILoggerFactory loggerFactory)
             : base(mediator, authConfig, urlHelper)
         {
             _hubConnectionBuilder = hubConnectionBuilder;
+            _logger = loggerFactory.CreateLogger<EventsController>();
         }
 
         public LinksHeader CreateLinks(string id, string incidentId, EventFilters filter, PaginationMetadata pagination, string routeName)
@@ -113,15 +115,26 @@ namespace Sia.Gateway.Controllers
 
         private async Task SendEventToSubscribers(Domain.Event result)
         {
-            var token = await HttpContext.GetTokenAsync("Bearer", AccessTokenName);
-            var eventHubConnection = _hubConnectionBuilder
-                    .WithUrl($"{Request.Scheme}://{Request.Host}/{EventsHub.HubPath}/?token={token}")
+            var url = $"http://localhost:{Request.Host.Port}{EventsHub.HubPath}";
+            try
+            {
+                string token = GetTokenFromHeaders();
+                var eventHubConnection = _hubConnectionBuilder
+                    .WithAccessToken(() => token)
+                    .WithUrl(url)
                     .Build();
-            await eventHubConnection.StartAsync();
-            await eventHubConnection.SendAsync("Send", result);
-            await eventHubConnection.DisposeAsync();
+                await eventHubConnection.StartAsync();
+                await eventHubConnection.SendAsync("Send", result);
+                await eventHubConnection.DisposeAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Encountered exception when attempting to send posted event to SignalR subscribers, url: {url}");
+            }
         }
 
+        private string GetTokenFromHeaders()
+            => HttpContext.Request.Headers["Authorization"].ToString().Split(' ')[1];
         // Found by reading source code at
         // https://github.com/aspnet/Security/blob/dev/src/Microsoft.AspNetCore.Authentication.JwtBearer/JwtBearerHandler.cs
         private const string AccessTokenName = "access_token";

@@ -2,10 +2,6 @@
 using Sia.Shared.Configuration;
 using Sia.Shared.Configuration.ApplicationInsights;
 using Sia.Shared.Configuration.Protocol;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Sia.Gateway.Initialization.Configuration
 {
@@ -67,6 +63,16 @@ namespace Sia.Gateway.Initialization.Configuration
         /// Should be set in user secrets or environment variables.
         /// </summary>
         public RedisConfig Redis { get; set; }
+        /// <summary>
+        /// Configuration for accessing secretes stored in Azure KeyVault.
+        /// Should be set in appsettings.{environment}.json
+        /// </summary>
+        public KeyVaultAccessorConfiguration KeyVaultAccessor { get; set; }
+        /// <summary>
+        /// Gateway database connection string
+        /// Should be set in either environement variables or from secret value in Azure KeyVault
+        /// </summary>
+        public string GatewayDatabaseConnectionString { get; set; }
 
         public IServiceCollection RegisterMe(IServiceCollection services)
             => services

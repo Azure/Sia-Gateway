@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sia.Domain;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Sia.Gateway.Filters;
 using Sia.Gateway.Initialization;
-using Sia.Shared.Protocol;
-using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Events;
 using Sia.Gateway.Tests.TestDoubles;
+using Sia.Shared.Protocol;
 using System.Linq;
-using System.Threading.Tasks;
-using Sia.Shared.Data;
-using Sia.Data.Incidents.Filters;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Sia.Gateway.Tests.Requests.Events
 {

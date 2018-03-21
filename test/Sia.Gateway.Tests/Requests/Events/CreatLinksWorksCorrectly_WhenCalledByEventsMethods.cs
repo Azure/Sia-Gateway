@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sia.Gateway.Controllers;
+using Sia.Gateway.Tests.TestDoubles;
 using Sia.Shared.Protocol;
 using System.Collections.Generic;
 
@@ -38,7 +39,7 @@ namespace Sia.Gateway.Tests.Requests.Events
             //Arrange
             methods.Clear();
             ids.Clear();
-            var eventsController = new EventsController(null, null, null, urlHelperMock.Object);
+            var eventsController = new EventsController(null, null, null, urlHelperMock.Object, new StubLoggerFactory());
             // Act
             eventsController.CreateLinks("1", "2", null,null,"");
 
