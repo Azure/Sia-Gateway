@@ -17,6 +17,8 @@ namespace Sia.Gateway.Filters
         public DateTime? EndTime { get; set; }
         public string DataKey { get; set; }
         public string DataValue { get; set; }
+        public string DataSearch { get; set; }
+
         public const string KeyValueComparison = "\"{0}\":\"{1}\"";
         public const string KeyComparison = "\"{0}\":";
 
@@ -38,6 +40,8 @@ namespace Sia.Gateway.Filters
                     if (!toCompare.Data.Contains(String.Format(KeyValueComparison, new string[] { DataKey, DataValue }))) { return false; }
                 }
             }
+
+            if (!string.IsNullOrEmpty(DataSearch) && (toCompare.Data == null || !toCompare.Data.Contains(DataSearch))) { return false; }
 
             return true;
         }
