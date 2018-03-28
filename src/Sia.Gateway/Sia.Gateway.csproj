@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
     <PackageReference Include="System.Globalization.Extensions" Version="4.3.0" />
+    <PackageReference Include="System.Net.Security" Version="4.*" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
