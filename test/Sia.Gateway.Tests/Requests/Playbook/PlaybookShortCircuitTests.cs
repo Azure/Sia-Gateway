@@ -24,7 +24,7 @@ namespace Sia.Gateway.Tests.Requests.Playbook
     {
 
         [TestMethod]
-        public void ShouldRequestContinue__Returns_True_If_Playbook_In_Config()
+        public void ShouldRequestContinueReturnsTrueIfPlaybookInConfig()
         {
             var mockConfig = new MicroservicesConfig()
             {
@@ -38,7 +38,7 @@ namespace Sia.Gateway.Tests.Requests.Playbook
         }
 
         [TestMethod]
-        public void ShouldRequestContinue__Returns_False_If_Playbook_Not_In_Config()
+        public void ShouldRequestContinueReturnsFalseIfPlaybookNotInConfig()
         {
             var mockConfig = new MicroservicesConfig();
             var mockShortCircuitImplementation = new GetGlobalActionsShortCircuit(mockConfig);

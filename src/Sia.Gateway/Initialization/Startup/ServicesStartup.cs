@@ -29,6 +29,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Sia.Gateway.Initialization
 {
@@ -115,7 +116,7 @@ namespace Sia.Gateway.Initialization
                 {
                     OnMessageReceived = context =>
                     {
-                        if (context.Request.Path.Value.StartsWith(EventsHub.HubPath)
+                        if (context.Request.Path.Value.StartsWith(EventsHub.HubPath, ignoreCase: true, culture: CultureInfo.InvariantCulture)
                             && context.Request.Query.TryGetValue("access_token", out StringValues token))
                         {
                             context.Token = token;

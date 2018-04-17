@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Sia.Core.Validation;
 
 namespace Sia.Gateway.Requests
 {
@@ -20,7 +21,7 @@ namespace Sia.Gateway.Requests
             : base(userContext)
         {
             IncidentId = incidentId;
-            NewEngagement = newEngagement;
+            NewEngagement = ThrowIf.Null(newEngagement, nameof(newEngagement));
         }
         public NewEngagement NewEngagement { get; }
         public long IncidentId { get; }
@@ -37,19 +38,19 @@ namespace Sia.Gateway.Requests
         }
         public override async Task<Engagement> Handle(PostEngagementRequest request, CancellationToken cancellationToken)
         {
-            if (request.NewEngagement == null) throw new ArgumentNullException(nameof(request.NewEngagement));
-
             var dataIncident = await _context.Incidents
                .Include(cr => cr.Engagements)
                     .ThenInclude(en => en.Participant)
-               .FirstOrDefaultAsync(x => x.Id == request.IncidentId, cancellationToken);
+               .FirstOrDefaultAsync(x => x.Id == request.IncidentId, cancellationToken)
+               .ConfigureAwait(continueOnCapturedContext: false);
             if (dataIncident == null) throw new NotFoundException($"Found no incident with id {request.IncidentId}");
 
             var dataEngagement = Mapper.Map<Data.Incidents.Models.Engagement>(request.NewEngagement);
             dataEngagement.TimeEngaged = DateTime.UtcNow;
 
             dataIncident.Engagements.Add(dataEngagement);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false);
 
             return Mapper.Map<Engagement>(dataEngagement);
         }

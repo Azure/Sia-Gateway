@@ -37,7 +37,8 @@ namespace Sia.Gateway.Requests
                 .WithEagerLoading()
                 .WithPagination(request.Pagination)
                 .ProjectTo<Incident>()
-                .ToListAsync(cancellationToken);
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false);
             AttachTickets(incidentRecords);
             return incidentRecords;
         }

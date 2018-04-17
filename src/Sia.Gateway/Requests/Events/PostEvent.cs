@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Sia.Core.Validation;
 
 namespace Sia.Gateway.Requests
 {
@@ -20,8 +21,7 @@ namespace Sia.Gateway.Requests
             :base(userContext)
         {
             IncidentId = incidentId;
-            NewEvent = newEvent;
-
+            NewEvent = ThrowIf.Null(newEvent, nameof(newEvent));
         }
         public NewEvent NewEvent { get; }
         public long IncidentId { get; }
@@ -36,18 +36,17 @@ namespace Sia.Gateway.Requests
         }
         public override async Task<Event> Handle(PostEventRequest request, CancellationToken cancellationToken)
         {
-            if (request.NewEvent == null) throw new ArgumentNullException(nameof(request.NewEvent));
-
             var dataIncident = await _context
                                    .Incidents
                                    .Include(cr => cr.Events)
-                                   .FirstOrDefaultAsync(x => x.Id == request.IncidentId, cancellationToken);
+                                   .FirstOrDefaultAsync(x => x.Id == request.IncidentId, cancellationToken)
+                                   .ConfigureAwait(continueOnCapturedContext: false);
             if (dataIncident == null) throw new NotFoundException($"Found no incident with id {request.IncidentId}.");
 
             var dataEvent = Mapper.Map<Data.Incidents.Models.Event>(request.NewEvent);
 
             dataIncident.Events.Add(dataEvent);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
 
             return Mapper.Map<Event>(dataEvent);
         }

@@ -18,7 +18,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents()
+        public async Task HandleWhenIncidentClientReturnsSuccessfulReturnCorrectIncidents()
         {
             string expectedIncidentTitle = "The thing we were looking for";
             var expectedIncident = new NewIncident
@@ -30,11 +30,16 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new PostIncidentHandler(await MockFactory.IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents)));
+            var serviceUnderTest = new PostIncidentHandler(
+                await MockFactory
+                .IncidentContext(nameof(HandleWhenIncidentClientReturnsSuccessfulReturnCorrectIncidents))
+                .ConfigureAwait(continueOnCapturedContext: false));
             var request = new PostIncidentRequest(expectedIncident, new DummyAuthenticatedUserContext());
 
 
-            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            var result = await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
 
             Assert.AreEqual(expectedIncidentTitle, result.Title);
