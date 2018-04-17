@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Sia.Shared.Authentication.Http;
-using Sia.Shared.Extensions.Mediatr;
-using Sia.Shared.Requests;
+using Sia.Core.Authentication.Http;
+using Sia.Core.Extensions.Mediatr;
+using Sia.Core.Requests;
 
 namespace Sia.Gateway.Requests.Playbook
 {

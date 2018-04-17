@@ -2,11 +2,7 @@
 using Newtonsoft.Json;
 using Sia.Data.Incidents.Models;
 using Sia.Gateway.Filters;
-using Sia.Shared.Data;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Sia.Gateway.Tests.Filters
 {

@@ -2,9 +2,9 @@
 using System.Net.Http;
 using Sia.Domain.Playbook;
 using Sia.Gateway.Requests.Playbook;
-using Sia.Shared.Authentication;
-using Sia.Shared.Authentication.Http;
-using Sia.Shared.Requests;
+using Sia.Core.Authentication;
+using Sia.Core.Authentication.Http;
+using Sia.Core.Requests;
 using Microsoft.Extensions.Configuration;
 using System.Threading;
 using System.Threading.Tasks;

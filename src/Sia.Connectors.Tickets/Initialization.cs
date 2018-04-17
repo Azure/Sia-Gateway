@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sia.Connectors.Tickets;
-using Sia.Shared.Validation;
+using Sia.Core.Validation;
 using System;
 
 namespace Sia.Gateway.Initialization

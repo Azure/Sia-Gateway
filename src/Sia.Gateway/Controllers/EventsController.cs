@@ -7,9 +7,9 @@ using Sia.Gateway.Filters;
 using Sia.Gateway.Hubs;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Events;
-using Sia.Shared.Authentication;
-using Sia.Shared.Controllers;
-using Sia.Shared.Protocol;
+using Sia.Core.Authentication;
+using Sia.Core.Controllers;
+using Sia.Core.Protocol;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -64,7 +64,9 @@ namespace Sia.Gateway.Controllers
             [FromQuery]PaginationMetadata pagination,
             [FromQuery]EventFilters filter)
         {
-            var result = await _mediator.Send(new GetEventsRequest(incidentId, pagination, filter, _authContext));
+            var result = await _mediator
+                .Send(new GetEventsRequest(incidentId, pagination, filter, authContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
             
             Response.Headers.AddLinksHeader(CreateLinks(null, incidentId.ToString(), filter, pagination, GetMultipleRouteName));
 
@@ -75,7 +77,9 @@ namespace Sia.Gateway.Controllers
         [HttpGet("incidents/{incidentId}/events/{id}", Name = GetSingleRouteName)]
         public async Task<IActionResult> Get([FromRoute]long incidentId, [FromRoute]long id)
         {
-            var result = await _mediator.Send(new GetEventRequest(incidentId, id, _authContext));
+            var result = await _mediator
+                .Send(new GetEventRequest(incidentId, id, authContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
 
             Response.Headers.AddLinksHeader(CreateLinks(id.ToString(), incidentId.ToString(), null, null, GetSingleRouteName));
             if (result == null)
@@ -90,7 +94,7 @@ namespace Sia.Gateway.Controllers
         [HttpPost("incidents/{incidentId}/events", Name = PostSingleRouteName)]
         public async Task<IActionResult> Post([FromRoute]long incidentId, [FromBody]NewEvent newEvent)
         {
-            var result = await _mediator.Send(new PostEventRequest(incidentId, newEvent, _authContext));
+            var result = await _mediator.Send(new PostEventRequest(incidentId, newEvent, authContext));
             if (result == null)
             {
                 return NotFound(notFoundMessage);
@@ -109,7 +113,7 @@ namespace Sia.Gateway.Controllers
         public async Task<IActionResult> GetUncorrelatedEvents([FromQuery]PaginationMetadata pagination,
             [FromQuery]EventFilters filter)
         {
-            var result = await _mediator.Send(new GetUncorrelatedEventsRequest(pagination, filter, _authContext));
+            var result = await _mediator.Send(new GetUncorrelatedEventsRequest(pagination, filter, authContext));
             return Ok(result);
         }
 

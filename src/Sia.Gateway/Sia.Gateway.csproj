@@ -26,14 +26,14 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\domain\Domain\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj" />
-    <ProjectReference Include="..\..\domain\Domain\Sia.Domain\Sia.Domain.csproj" />
-    <ProjectReference Include="..\..\domain\Domain\Sia.Shared\Sia.Shared.csproj" />
-    <ProjectReference Include="..\Sia.Connectors.Tickets\Sia.Connectors.Tickets.csproj" />
-    <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
+    <Folder Include="Validation\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Validation\" />
+    <ProjectReference Include="..\..\domain\Domain\Sia.Core\Sia.Core.csproj" />
+    <ProjectReference Include="..\..\domain\Domain\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj" />
+    <ProjectReference Include="..\..\domain\Domain\Sia.Domain\Sia.Domain.csproj" />
+    <ProjectReference Include="..\Sia.Connectors.Tickets\Sia.Connectors.Tickets.csproj" />
+    <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
   </ItemGroup>
 
 </Project>

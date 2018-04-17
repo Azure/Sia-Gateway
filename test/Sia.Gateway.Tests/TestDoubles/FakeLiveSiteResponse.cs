@@ -1,4 +1,4 @@
-﻿using Sia.Shared.Protocol;
+﻿using Sia.Core.Protocol;
 using System;
 using System.Net;
 

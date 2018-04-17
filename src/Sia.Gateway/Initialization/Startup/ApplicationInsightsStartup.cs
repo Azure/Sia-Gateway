@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Sia.Gateway.Initialization.Configuration;
-using Sia.Shared.Authentication;
-using Sia.Shared.Validation;
+using Sia.Core.Authentication;
+using Sia.Core.Validation;
 using System.Threading.Tasks;
+using Sia.Core.Configuration.ApplicationInsights;
 
 namespace Sia.Gateway.Initialization
 {
@@ -17,7 +18,7 @@ namespace Sia.Gateway.Initialization
 
             if (configuration.ApplicationInsights == null)
             {
-                configuration.ApplicationInsights = new Shared.Configuration.ApplicationInsights.ApplicationInsightsConfig();
+                configuration.ApplicationInsights = new ApplicationInsightsConfig();
             }
 
             var secrets = new AzureSecretVault(

@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Sia.Domain.ApiModels;
-using Sia.Shared.Authentication;
+using Sia.Core.Authentication;
 using Sia.Gateway.Requests;
 using System.Threading.Tasks;
-using Sia.Shared.Controllers;
+using Sia.Core.Controllers;
+using System;
 
 namespace Sia.Gateway.Controllers
 {
@@ -21,7 +22,9 @@ namespace Sia.Gateway.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute]long incidentId, [FromRoute]long id)
         {
-            var result = await _mediator.Send(new GetEngagementRequest(incidentId, id, _authContext));
+            var result = await _mediator
+                .Send(new GetEngagementRequest(incidentId, id, authContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
             if (result == null)
             {
                 return NotFound(notFoundMessage);
@@ -32,18 +35,22 @@ namespace Sia.Gateway.Controllers
         [HttpPost()]
         public async Task<IActionResult> Post([FromRoute]long incidentId, [FromBody]NewEngagement newEngagement)
         {
-            var result = await _mediator.Send(new PostEngagementRequest(incidentId, newEngagement, _authContext));
+            var result = await _mediator
+                .Send(new PostEngagementRequest(incidentId, newEngagement, authContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
             if (result == null)
             {
                 return NotFound(notFoundMessage);
             }
-            return Created($"incidents/{result.IncidentId}/engagements/{result.Id}", result);
+            return Created(new Uri($"incidents/{result.IncidentId}/engagements/{result.Id}"), result);
         }
 
         [HttpPut("{engagementId}")]
         public async Task<IActionResult> Put([FromRoute]long incidentId, [FromRoute]long engagementId, [FromBody]UpdateEngagement updatedEngagement)
         {
-            await _mediator.Send(new PutEngagementRequest(incidentId, engagementId, updatedEngagement, _authContext));
+            await _mediator
+                .Send(new PutEngagementRequest(incidentId, engagementId, updatedEngagement, authContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
             return Ok();
         }
     }

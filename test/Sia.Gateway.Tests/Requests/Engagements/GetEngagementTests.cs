@@ -1,11 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Sia.Core.Exceptions;
 using Sia.Domain;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Tests.TestDoubles;
-using Sia.Shared.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Tests.Requests

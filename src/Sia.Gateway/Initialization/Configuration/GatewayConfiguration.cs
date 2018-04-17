@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Sia.Shared.Configuration;
-using Sia.Shared.Configuration.ApplicationInsights;
-using Sia.Shared.Configuration.Protocol;
+using Sia.Core.Configuration;
+using Sia.Core.Configuration.ApplicationInsights;
+using Sia.Core.Configuration.Protocol;
 
 namespace Sia.Gateway.Initialization.Configuration
 {

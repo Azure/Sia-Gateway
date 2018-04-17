@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Sia.Domain;
 using Sia.Gateway.Filters;
-using Sia.Shared.Data;
+using Sia.Core.Data;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -100,7 +100,6 @@ namespace Sia.Gateway.Hubs
             }
             return filterRemoved;
         }
- 
 
         private string Json<T>(T toSerialize) => JsonConvert.SerializeObject(toSerialize, new JsonSerializerSettings
         {
