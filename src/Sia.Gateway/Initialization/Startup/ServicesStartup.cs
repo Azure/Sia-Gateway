@@ -30,6 +30,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 using System.Globalization;
+using Sia.Gateway.Links;
 
 namespace Sia.Gateway.Initialization
 {
@@ -46,7 +47,8 @@ namespace Sia.Gateway.Initialization
                 .AddAuth(config)
                 .AddDatabase(env, config)
                 .AddTicketingConnector(env, rawConfig, config?.Connector?.Ticket)
-                .AddMicroserviceProxies(config);
+                .AddMicroserviceProxies(config)
+                .AddRouteHelpers();
 
         public static IServiceCollection AddAuth(this IServiceCollection services, GatewayConfiguration config)
         {
@@ -160,8 +162,11 @@ namespace Sia.Gateway.Initialization
             GetGlobalActionsShortCircuit.RegisterMe(services)));
             return services;
         }
-        
 
+        public static IServiceCollection AddRouteHelpers(this IServiceCollection services)
+            => services
+                .AddScoped<IncidentLinksProvider>()
+                .AddScoped<EventLinksProvider>();
 
     }
 }
