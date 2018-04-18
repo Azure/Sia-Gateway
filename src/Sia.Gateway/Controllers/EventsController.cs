@@ -97,6 +97,7 @@ namespace Sia.Gateway.Controllers
             var result = await _mediator
                 .Send(new PostEventRequest(incidentId, newEvent, authContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
+
             if (result == null)
             {
                 return NotFound(notFoundMessage);
@@ -118,6 +119,7 @@ namespace Sia.Gateway.Controllers
             var result = await _mediator
                 .Send(new GetUncorrelatedEventsRequest(pagination, filter, authContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
+
             return Ok(result);
         }
 

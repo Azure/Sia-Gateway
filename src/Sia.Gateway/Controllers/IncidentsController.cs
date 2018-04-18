@@ -56,6 +56,7 @@ namespace Sia.Gateway.Controllers
             var result = await _mediator
                 .Send(new GetIncidentRequest(id, authContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
+
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)} not found");
@@ -72,6 +73,7 @@ namespace Sia.Gateway.Controllers
             var result = await _mediator
                 .Send(new GetIncidentsRequest(pagination, authContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
+
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)}s not found");
@@ -87,6 +89,7 @@ namespace Sia.Gateway.Controllers
             var result = await _mediator
                 .Send(new PostIncidentRequest(incident, authContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
+
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)} not found");

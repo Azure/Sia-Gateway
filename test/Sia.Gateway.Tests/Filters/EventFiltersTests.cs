@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using Sia.Data.Incidents.Models;
 using Sia.Gateway.Filters;
 using System;
-using System.Collections.Generic;
 
 namespace Sia.Gateway.Tests.Filters
 {
