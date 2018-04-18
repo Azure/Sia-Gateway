@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sia.Shared.Exceptions;
+using Sia.Core.Exceptions;
 using System;
 using System.Net;
 
@@ -9,7 +9,7 @@ namespace Sia.Gateway.Tests.Exceptions
     public class ConvertStatusToExceptionTests
     {
         [TestMethod]
-        public void ThrowExceptionOnUnsuccessfulStatus_WhenResponseIsSuccessful_DoesNotThrowException()
+        public void ThrowExceptionOnUnsuccessfulStatusWhenResponseIsSuccessfulDoesNotThrowException()
         {
             var testInput = new FakeLiveSiteResponse(HttpStatusCode.Accepted, true);
 
@@ -20,7 +20,7 @@ namespace Sia.Gateway.Tests.Exceptions
 
         [TestMethod]
         [ExpectedException(typeof(BadRequestException))]
-        public void ThrowExceptionOnUnsuccessfulStatus_WhenUnsuccessfulAndBadRequest_ThrowBadRequestException()
+        public void ThrowExceptionOnUnsuccessfulStatusWhenUnsuccessfulAndBadRequestThrowBadRequestException()
         {
             var testInput = new FakeLiveSiteResponse(HttpStatusCode.BadRequest);
 
@@ -31,7 +31,7 @@ namespace Sia.Gateway.Tests.Exceptions
 
         [TestMethod]
         [ExpectedException(typeof(ConflictException))]
-        public void ThrowExceptionOnUnsuccessfulStatus_WhenUnsuccessfulAndConflict_ThrowConflictException()
+        public void ThrowExceptionOnUnsuccessfulStatusWhenUnsuccessfulAndConflictThrowConflictException()
         {
             var testInput = new FakeLiveSiteResponse(HttpStatusCode.Conflict);
 
@@ -42,7 +42,7 @@ namespace Sia.Gateway.Tests.Exceptions
 
         [TestMethod]
         [ExpectedException(typeof(UnauthorizedException))]
-        public void ThrowExceptionOnUnsuccessfulStatus_WhenUnsuccessfulAndForbidden_ThrowUnauthorizedException()
+        public void ThrowExceptionOnUnsuccessfulStatusWhenUnsuccessfulAndForbiddenThrowUnauthorizedException()
         {
             var testInput = new FakeLiveSiteResponse(HttpStatusCode.Forbidden);
 
@@ -53,7 +53,7 @@ namespace Sia.Gateway.Tests.Exceptions
 
         [TestMethod]
         [ExpectedException(typeof(UnauthorizedException))]
-        public void ThrowExceptionOnUnsuccessfulStatus_WhenUnsuccessfulAndUnauthorized_ThrowUnauthorizedException()
+        public void ThrowExceptionOnUnsuccessfulStatusWhenUnsuccessfulAndUnauthorizedThrowUnauthorizedException()
         {
             var testInput = new FakeLiveSiteResponse(HttpStatusCode.Unauthorized);
 
@@ -64,7 +64,7 @@ namespace Sia.Gateway.Tests.Exceptions
 
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public void ThrowExceptionOnUnsuccessfulStatus_WhenUnsuccessfulAndNotFound_ThrowNotFoundException()
+        public void ThrowExceptionOnUnsuccessfulStatusWhenUnsuccessfulAndNotFoundThrowNotFoundException()
         {
             var testInput = new FakeLiveSiteResponse(HttpStatusCode.NotFound);
 
@@ -75,7 +75,7 @@ namespace Sia.Gateway.Tests.Exceptions
 
         [TestMethod]
         [ExpectedException(typeof(Exception))]
-        public void ThrowExceptionOnUnsuccessfulStatus_WhenUnsuccessfulAndUnsupportedStatusCode_ThrowException()
+        public void ThrowExceptionOnUnsuccessfulStatusWhenUnsuccessfulAndUnsupportedStatusCodeThrowException()
         {
             var testInput = new FakeLiveSiteResponse(HttpStatusCode.NotAcceptable);
 

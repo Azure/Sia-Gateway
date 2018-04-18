@@ -13,8 +13,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sia.Domain.Playbook;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Tests.TestDoubles;
-using Sia.Shared.Authentication;
-using Sia.Shared.Extensions.Mediatr;
+using Sia.Core.Authentication;
+using Sia.Core.Extensions.Mediatr;
 using Sia.Gateway.Initialization.Configuration;
 
 namespace Sia.Gateway.Tests.Requests.Playbook
@@ -24,7 +24,7 @@ namespace Sia.Gateway.Tests.Requests.Playbook
     {
 
         [TestMethod]
-        public void ShouldRequestContinue__Returns_True_If_Playbook_In_Config()
+        public void ShouldRequestContinueReturnsTrueIfPlaybookInConfig()
         {
             var mockConfig = new MicroservicesConfig()
             {
@@ -38,7 +38,7 @@ namespace Sia.Gateway.Tests.Requests.Playbook
         }
 
         [TestMethod]
-        public void ShouldRequestContinue__Returns_False_If_Playbook_Not_In_Config()
+        public void ShouldRequestContinueReturnsFalseIfPlaybookNotInConfig()
         {
             var mockConfig = new MicroservicesConfig();
             var mockShortCircuitImplementation = new GetGlobalActionsShortCircuit(mockConfig);

@@ -17,18 +17,20 @@ using Sia.Gateway.Hubs;
 using Sia.Gateway.Initialization.Configuration;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Playbook;
-using Sia.Shared.Authentication;
-using Sia.Shared.Authentication.Http;
-using Sia.Shared.Configuration;
-using Sia.Shared.Data;
-using Sia.Shared.Protocol;
-using Sia.Shared.Validation;
+using Sia.Core.Authentication;
+using Sia.Core.Authentication.Http;
+using Sia.Core.Configuration;
+using Sia.Core.Data;
+using Sia.Core.Protocol;
+using Sia.Core.Validation;
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
+using System.Globalization;
+using Sia.Gateway.Links;
 
 namespace Sia.Gateway.Initialization
 {
@@ -45,7 +47,8 @@ namespace Sia.Gateway.Initialization
                 .AddAuth(config)
                 .AddDatabase(env, config)
                 .AddTicketingConnector(env, rawConfig, config?.Connector?.Ticket)
-                .AddMicroserviceProxies(config);
+                .AddMicroserviceProxies(config)
+                .AddRouteHelpers();
 
         public static IServiceCollection AddAuth(this IServiceCollection services, GatewayConfiguration config)
         {
@@ -115,7 +118,7 @@ namespace Sia.Gateway.Initialization
                 {
                     OnMessageReceived = context =>
                     {
-                        if (context.Request.Path.Value.StartsWith(EventsHub.HubPath)
+                        if (context.Request.Path.Value.StartsWith(EventsHub.HubPath, ignoreCase: true, culture: CultureInfo.InvariantCulture)
                             && context.Request.Query.TryGetValue("access_token", out StringValues token))
                         {
                             context.Token = token;
@@ -159,8 +162,11 @@ namespace Sia.Gateway.Initialization
             GetGlobalActionsShortCircuit.RegisterMe(services)));
             return services;
         }
-        
 
+        public static IServiceCollection AddRouteHelpers(this IServiceCollection services)
+            => services
+                .AddScoped<IncidentLinksProvider>()
+                .AddScoped<EventLinksProvider>();
 
     }
 }

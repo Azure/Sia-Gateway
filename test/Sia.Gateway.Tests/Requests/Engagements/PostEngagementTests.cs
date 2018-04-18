@@ -1,15 +1,13 @@
-﻿using AutoMapper;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Sia.Core.Exceptions;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Tests.TestDoubles;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using Sia.Shared.Exceptions;
+using System.Threading.Tasks;
 
 namespace Sia.Gateway.Tests.Requests
 {
@@ -21,7 +19,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task Handle_WhenContextSavesEngagement_ReturnCorrectEngagementWithUpdateTime()
+        public async Task HandleWhenContextSavesEngagementReturnCorrectEngagementWithUpdateTime()
         {
             var engagementTimeFloor = DateTime.UtcNow;
             var inputEngagement = new NewEngagement()
@@ -37,7 +35,7 @@ namespace Sia.Gateway.Tests.Requests
             var context = await MockFactory.IncidentContext(
                     nameof(PostEngagementTests)
                     + "one"
-                );
+                ).ConfigureAwait(continueOnCapturedContext: false);
             var incident = context.Incidents.FirstOrDefault();
             var serviceUnderTest = new PostEngagementHandler(
                context
@@ -45,7 +43,9 @@ namespace Sia.Gateway.Tests.Requests
 
             var request = new PostEngagementRequest(incident.Id, inputEngagement, new DummyAuthenticatedUserContext());
 
-            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            var result = await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
             Assert.AreEqual("test", result.Participant.Alias);
             Assert.AreEqual("alsoTest", result.Participant.Team);
@@ -58,7 +58,7 @@ namespace Sia.Gateway.Tests.Requests
 
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException()
+        public async Task HandleWhenAssociatedIncidentDoesNotExistThrowKeyNotFoundException()
         {
             var engagementTimeFloor = DateTime.UtcNow;
             var inputEngagement = new NewEngagement()
@@ -71,10 +71,12 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new PostEngagementHandler(await MockFactory.IncidentContext(nameof(PostEngagementTests) /*+ nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException)*/));
+            var serviceUnderTest = new PostEngagementHandler(await MockFactory.IncidentContext(nameof(PostEngagementTests) /*+ nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException)*/).ConfigureAwait(continueOnCapturedContext: false));
             var request = new PostEngagementRequest(100_000, inputEngagement, new DummyAuthenticatedUserContext());
 
-            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            var result = await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
             //Expect exception
         }

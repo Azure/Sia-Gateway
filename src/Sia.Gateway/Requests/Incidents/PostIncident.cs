@@ -3,12 +3,13 @@ using MediatR;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
-using Sia.Shared.Authentication;
-using Sia.Shared.Exceptions;
-using Sia.Shared.Requests;
+using Sia.Core.Authentication;
+using Sia.Core.Exceptions;
+using Sia.Core.Requests;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Sia.Core.Validation;
 
 namespace Sia.Gateway.Requests
 {
@@ -17,7 +18,7 @@ namespace Sia.Gateway.Requests
         public PostIncidentRequest(NewIncident incident, AuthenticatedUserContext userContext)
             :base(userContext)
         {
-            Incident = incident;
+            Incident = ThrowIf.Null(incident, nameof(incident));
         }
 
         public NewIncident Incident { get; private set; }
@@ -33,13 +34,12 @@ namespace Sia.Gateway.Requests
         }
         public override async Task<Incident> Handle(PostIncidentRequest request, CancellationToken cancellationToken)
         {
-            if (request.Incident == null) throw new ArgumentNullException(nameof(request.Incident));
             if (request.Incident?.PrimaryTicket?.OriginId == null) throw new ConflictException("Please provide a primary incident with a valid originId");
 
             var dataIncident = Mapper.Map<Data.Incidents.Models.Incident>(request.Incident);
 
             var result = _context.Incidents.Add(dataIncident);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
 
             return Mapper.Map<Incident>(dataIncident);
         }

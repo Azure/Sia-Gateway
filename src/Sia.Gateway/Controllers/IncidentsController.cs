@@ -3,92 +3,69 @@ using Microsoft.AspNetCore.Mvc;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Requests;
-using Sia.Shared.Authentication;
-using Sia.Shared.Controllers;
-using Sia.Shared.Protocol;
+using Sia.Core.Authentication;
+using Sia.Core.Controllers;
+using Sia.Core.Protocol;
 using System.Threading.Tasks;
+using System;
+using Sia.Core.Validation;
+using Sia.Gateway.Links;
 
 namespace Sia.Gateway.Controllers
 {
     [Route("[controller]")]
     public class IncidentsController : BaseController
     {
-        public IncidentsController(IMediator mediator, AzureActiveDirectoryAuthenticationInfo authConfig, IUrlHelper urlHelper) 
+        public IncidentsController(
+            IMediator mediator,
+            AzureActiveDirectoryAuthenticationInfo authConfig,
+            IUrlHelper urlHelper,
+            IncidentLinksProvider links) 
             : base(mediator, authConfig, urlHelper)
         {
+            Links = links;
         }
 
-        public LinksHeader CreateLinks(string id, PaginationMetadata pagination, string routeName)
+        protected IncidentLinksProvider Links { get; }
+
+        [HttpGet("{incidentId}", Name = IncidentRoutes.GetSingle)]
+        public async Task<IActionResult> Get(long incidentId)
         {
-            var _operationLinks = new OperationLinks()
-            {
-                Single = new SingleOperationLinks()
-                {
-                    Get = _urlHelper.Link(GetSingleRouteName, new { id }),
-                    Post = _urlHelper.Link(PostSingleRouteName, new { })
-                },
-                Multiple = new MultipleOperationLinks()
-                {
-                    Get = _urlHelper.Link(GetMultipleRouteName, new { })
-                }
+            var result = await _mediator
+                .Send(new GetIncidentRequest(incidentId, AuthContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
 
-            };
-            RelationLinks _relationLinks = null;
-            if (id != null)
-            {
-                 _relationLinks = new RelationLinks()
-                {
-                    Children = new RelatedChildLinks()
-                    {
-                        Events = _urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = id })
-                    }
-                };
-            }
+            var links = Links.CreateLinks(incidentId);
 
-            return new LinksHeader(null, pagination, _urlHelper, routeName, _operationLinks, _relationLinks);
+            return OkIfFound(result, links);
         }
 
-        public const string GetSingleRouteName = "GetIncident";
-        [HttpGet("{id}", Name = GetSingleRouteName)]
-        public async Task<IActionResult> Get(long id)
-        {
-            var result = await _mediator.Send(new GetIncidentRequest(id, _authContext));
-            if (result == null)
-            {
-                return NotFound($"{nameof(Incident)} not found");
-            }
-            Response.Headers.AddLinksHeader(CreateLinks(id.ToString(), null, GetSingleRouteName));
-       
-            return Ok(result);
-        }
-
-        public const string GetMultipleRouteName = "GetIncidents";
-        [HttpGet(Name = GetMultipleRouteName)]
+        [HttpGet(Name = IncidentRoutes.GetMultiple)]
         public async Task<IActionResult> Get([FromQuery] PaginationMetadata pagination)
         {
-            var result = await _mediator.Send(new GetIncidentsRequest(pagination, _authContext));
-            if (result == null)
-            {
-                return NotFound($"{nameof(Incident)}s not found");
-            }
-            Response.Headers.AddLinksHeader(CreateLinks(null, pagination, GetSingleRouteName));
-            return Ok(result);
+            var result = await _mediator
+                .Send(new GetIncidentsRequest(pagination, AuthContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
+
+            var links = Links.CreatePaginatedLinks(IncidentRoutes.GetSingle, pagination);
+
+            return OkIfFound(result, links);
         }
 
-        public const string PostSingleRouteName = "PostIncident";
-        [HttpPost(Name = PostSingleRouteName)]
+        [HttpPost(Name = IncidentRoutes.PostSingle)]
         public async Task<IActionResult> Post([FromBody]NewIncident incident)
         {
-            var result = await _mediator.Send(new PostIncidentRequest(incident, _authContext));
-            if (result == null)
-            {
-                return NotFound($"{nameof(Incident)} not found");
-            }
-            var newUrl = _urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = result.Id });
-            Response.Headers.AddLinksHeader(CreateLinks(result.Id.ToString(), null, PostSingleRouteName));
-            return Created(newUrl, result);
+            var result = await _mediator
+                .Send(new PostIncidentRequest(incident, AuthContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
+
+            ILinksHeader getLinks(Incident res) =>
+                Links.CreateLinks(res.Id);
+
+            Uri getRetrievalRoute(Incident res) =>
+                new Uri(_urlHelper.Link(IncidentRoutes.GetSingle, new { incidentId = res.Id }));
+
+            return CreatedIfExists(result, getRetrievalRoute, getLinks);
         }
-
-
     }
 }

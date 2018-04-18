@@ -3,7 +3,7 @@ using Sia.Gateway.Filters;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests.Events;
 using Sia.Gateway.Tests.TestDoubles;
-using Sia.Shared.Protocol;
+using Sia.Core.Protocol;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace Sia.Gateway.Tests.Requests.Events
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task Handle_WhenEFReturnsSuccessful_ReturnCorrectEvents()
+        public async Task HandleWhenEFReturnsSuccessfulReturnCorrectEvents()
         {
             long[] expectedEventIds = { 1, 2 };
             long[] expectedEventTypeIds = { 1, 111 };
@@ -27,10 +27,14 @@ namespace Sia.Gateway.Tests.Requests.Events
                 IncidentId = 1
             };
             
-            var serviceUnderTest = new GetUncorrelatedEventsHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEFReturnsSuccessful_ReturnCorrectEvents)));
+            var serviceUnderTest = new GetUncorrelatedEventsHandler(await MockFactory
+                .IncidentContext(nameof(HandleWhenEFReturnsSuccessfulReturnCorrectEvents))
+                .ConfigureAwait(continueOnCapturedContext: false));
             var request = new GetUncorrelatedEventsRequest(new PaginationMetadata(), filters, new DummyAuthenticatedUserContext());
 
-            var result = (await serviceUnderTest.Handle(request, new CancellationToken())).ToList();
+            var result = (await serviceUnderTest
+                .Handle(request, new CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false)).ToList();
 
 
             for (int i = 0; i < expectedEventTypeIds.Length; i++)

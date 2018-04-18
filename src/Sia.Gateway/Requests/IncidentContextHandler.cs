@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Sia.Data.Incidents;
 using Sia.Gateway.Requests;
-using Sia.Shared.Requests;
+using Sia.Core.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;

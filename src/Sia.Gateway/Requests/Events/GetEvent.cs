@@ -3,9 +3,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
-using Sia.Shared.Authentication;
-using Sia.Shared.Exceptions;
-using Sia.Shared.Requests;
+using Sia.Core.Authentication;
+using Sia.Core.Exceptions;
+using Sia.Core.Requests;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +40,8 @@ namespace Sia.Gateway.Requests
                                     .FirstOrDefaultAsync( ev 
                                         => ev.IncidentId == request.IncidentId 
                                         && ev.Id == request.Id,
-                                        cancellationToken);
+                                        cancellationToken)
+                                    .ConfigureAwait(continueOnCapturedContext: false);
             if (eventRecord == null) throw new NotFoundException($"Found no event with incidentId {request.IncidentId} and id {request.Id}");
 
             return Mapper.Map<Event>(eventRecord);

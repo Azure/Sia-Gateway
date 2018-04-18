@@ -6,7 +6,7 @@ using Sia.Gateway.Requests;
 using Sia.Gateway.Tests.TestDoubles;
 using System.Linq;
 using System.Threading.Tasks;
-using Sia.Shared.Protocol;
+using Sia.Core.Protocol;
 
 namespace Sia.Gateway.Tests.Requests
 {
@@ -19,7 +19,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents()
+        public async Task HandleWhenIncidentClientReturnsSuccessfulReturnCorrectIncidents()
         {
             long[] expectedIncidentIds = { 1, 2, 3 };
             string[] expectedIncidentTitles = {
@@ -37,13 +37,17 @@ namespace Sia.Gateway.Tests.Requests
                 };
             }
             var serviceUnderTest = new GetIncidentsHandler(
-                await MockFactory.IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents)),
+                await MockFactory
+                    .IncidentContext(nameof(HandleWhenIncidentClientReturnsSuccessfulReturnCorrectIncidents))
+                    .ConfigureAwait(continueOnCapturedContext: false),
                 new NoConnector(new NoClient(), new StubLoggerFactory())
             );
             var request = new GetIncidentsRequest(new PaginationMetadata(), new DummyAuthenticatedUserContext());
 
 
-            var result = (await serviceUnderTest.Handle(request, new System.Threading.CancellationToken())).ToList();
+            var result = (await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false)).ToList();
 
 
             for (int i = 0; i < expectedIncidents.Length; i++)

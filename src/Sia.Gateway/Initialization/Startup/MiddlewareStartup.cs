@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Sia.Gateway.Hubs;
 using Sia.Gateway.Initialization.Configuration;
-using Sia.Shared.Middleware;
+using Sia.Core.Middleware;
 using System;
 using System.Collections.Generic;
 

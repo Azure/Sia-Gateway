@@ -3,14 +3,14 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain.ApiModels;
-using Sia.Shared.Authentication;
-using Sia.Shared.Exceptions;
-using Sia.Shared.Requests;
+using Sia.Core.Authentication;
+using Sia.Core.Exceptions;
+using Sia.Core.Requests;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Sia.Core.Validation;
 
 namespace Sia.Gateway.Requests
 {
@@ -20,7 +20,7 @@ namespace Sia.Gateway.Requests
             : base(userContext)
         {
             IncidentId = incidentId;
-            UpdateEngagement = updateEngagement;
+            UpdateEngagement = ThrowIf.Null(updateEngagement, nameof(updateEngagement));
             EngagementId = engagementId;
         }
         public UpdateEngagement UpdateEngagement { get; }
@@ -39,15 +39,16 @@ namespace Sia.Gateway.Requests
         }
         public override async Task Handle(PutEngagementRequest request, CancellationToken cancellationToken)
         {
-            if (request.UpdateEngagement is null) throw new ArgumentNullException(nameof(UpdateEngagement));
             var existingRecord = await _context.Engagements
                 .Include(en => en.Participant)
-                .FirstOrDefaultAsync(engagement => engagement.IncidentId == request.IncidentId && engagement.Id == request.EngagementId, cancellationToken);
+                .FirstOrDefaultAsync(engagement => engagement.IncidentId == request.IncidentId && engagement.Id == request.EngagementId, cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false);
             if (existingRecord is null) throw new NotFoundException($"Found no engagement with incidentId {request.IncidentId} and id {request.EngagementId}.");
 
             var updatedModel = Mapper.Map(request.UpdateEngagement, existingRecord);
 
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false);
         }
     }
 }

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
 using Sia.Gateway.Filters;
-using Sia.Shared.Authentication;
-using Sia.Shared.Protocol;
-using Sia.Shared.Requests;
+using Sia.Core.Authentication;
+using Sia.Core.Protocol;
+using Sia.Core.Requests;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -43,7 +43,8 @@ namespace Sia.Gateway.Requests.Events
                 .WithFilter(request.Filter)
                 .WithPagination(request.Pagination)
                 .ProjectTo<Event>()
-                .ToListAsync(cancellationToken);
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false);
     }
 
 

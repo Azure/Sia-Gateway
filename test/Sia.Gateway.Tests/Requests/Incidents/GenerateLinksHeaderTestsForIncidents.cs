@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sia.Gateway.Controllers;
-using Sia.Shared.Protocol;
+using Sia.Core.Protocol;
 using System.Collections.Generic;
-
+using Sia.Gateway.Links;
 
 namespace Sia.Gateway.Tests.Requests.Incidents
 {
@@ -32,10 +32,10 @@ namespace Sia.Gateway.Tests.Requests.Incidents
 
         }
 
-        string GetProperty(object values, string property) => values.GetType().GetProperty(property)?.GetValue(values).ToString() ?? "";
+        static string GetProperty(object values, string property) => values.GetType().GetProperty(property)?.GetValue(values).ToString() ?? "";
 
         [TestMethod]
-        public void CreateLinksGeneratesFourLinksWithCorrectIdsOrIncidentIds_WhenPassedAnIncidentId()
+        public void CreateLinksGeneratesFourLinksWithCorrectIdsOrIncidentIdsWhenPassedAnIncidentId()
         {
             // Arrange
             var methods = new List<string>();
@@ -49,57 +49,21 @@ namespace Sia.Gateway.Tests.Requests.Incidents
                         ids.Add(o);
                     }
                 );
-            var incidentsController = new IncidentsController(null, null, urlHelperMock.Object);
+            var incidentLinksProvider = new IncidentLinksProvider(urlHelperMock.Object);
 
             // Act
-            incidentsController.CreateLinks("1", null, "");
+            incidentLinksProvider.CreateLinks(1);
 
             // Assert
-            urlHelperMock.Verify(foo => foo.Link(IncidentsController.GetSingleRouteName, It.IsAny<object>()), Times.Exactly(1));
-            urlHelperMock.Verify(foo => foo.Link(IncidentsController.PostSingleRouteName, It.IsAny<object>()), Times.Exactly(1));
-            urlHelperMock.Verify(foo => foo.Link(IncidentsController.GetMultipleRouteName, It.IsAny<object>()), Times.Exactly(1));
-            urlHelperMock.Verify(foo => foo.Link(EventsController.GetMultipleRouteName, It.IsAny<object>()), Times.Exactly(1));
+            urlHelperMock.Verify(foo => foo.Link(IncidentRoutes.GetSingle, It.IsAny<object>()), Times.Exactly(1));
+            urlHelperMock.Verify(foo => foo.Link(IncidentRoutes.PostSingle, It.IsAny<object>()), Times.Exactly(1));
+            urlHelperMock.Verify(foo => foo.Link(IncidentRoutes.GetMultiple, It.IsAny<object>()), Times.Exactly(1));
+            urlHelperMock.Verify(foo => foo.Link(EventRoutesByIncident.GetMultiple, It.IsAny<object>()), Times.Exactly(1));
             
-            Assert.AreEqual(GetProperty(ids[0], "id"), "1");
-            Assert.AreEqual(GetProperty(ids[1], "id"), "");
-            Assert.AreEqual(GetProperty(ids[2], "id"), "");
+            Assert.AreEqual(GetProperty(ids[0], "incidentId"), "1");
+            Assert.AreEqual(GetProperty(ids[1], "incidentId"), "1");
+            Assert.AreEqual(GetProperty(ids[2], "incidentId"), "1");
             Assert.AreEqual(GetProperty(ids[3], "incidentId"), "1");
-        }
-
-        [TestMethod]
-        public void GetHeaderValuesAssignsMetadataAndPaginationAsNull_WhenNoMetaDataPassedIn()
-        {
-            //Arrange
-            methods.Clear();
-            ids.Clear();
-
-            var pagination = new PaginationMetadata()
-            {
-                PageNumber = 2,
-                PageSize = 2,
-                TotalRecords = 10
-
-            };
-
-            var linksHeaderWithoutMetadata = new LinksHeader(null, null, urlHelperMock.Object, "IncidentsController", null,
-                null);
-            var linksHeaderWithMetadata = new LinksHeader(null, pagination, urlHelperMock.Object, "IncidentsController", null,
-                null);
-
-            //Act
-            var linksWithoutMetadata = linksHeaderWithoutMetadata.GetHeaderValues();
-            var linksWithMetadata = linksHeaderWithMetadata.GetHeaderValues();
-
-            //Assert
-            Assert.IsNull(linksWithoutMetadata.Metadata);
-            Assert.IsNull(linksWithoutMetadata.Links.Pagination);
-
-            Assert.IsNotNull(linksWithMetadata.Metadata);
-            Assert.IsNotNull(linksWithMetadata.Links.Pagination);
-            urlHelperMock.Verify(foo => foo.Link("IncidentsController", It.IsAny<object>()), Times.Exactly(2));
-
-            Assert.AreEqual(GetProperty(ids[0], "id"), "");
-            Assert.AreEqual(GetProperty(ids[1], "id"), "");
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Sia.Gateway.Tests.TestDoubles
 {
     public class SpyServiceCollection : IServiceCollection
     {
-        public List<ServiceDescriptor> BackingList { get; set; }
+        public List<ServiceDescriptor> BackingList { get; }
             = new List<ServiceDescriptor>();
         public ServiceDescriptor this[int index] { get => BackingList[index]; set => BackingList[index] = value; }
 
@@ -17,7 +17,7 @@ namespace Sia.Gateway.Tests.TestDoubles
         public bool IsReadOnly => false;
 
         public void Add(ServiceDescriptor item) => BackingList.Add(item);
-        public void Clear() => BackingList = new List<ServiceDescriptor>();
+        public void Clear() => BackingList.Clear();
         public bool Contains(ServiceDescriptor item) => BackingList.Contains(item);
         public void CopyTo(ServiceDescriptor[] array, int arrayIndex) => BackingList.CopyTo(array, arrayIndex);
         public IEnumerator<ServiceDescriptor> GetEnumerator() => BackingList.GetEnumerator();

@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Sia.Gateway.Initialization.Configuration;
-using Sia.Shared.Authentication;
-using Sia.Shared.Validation;
+using Sia.Core.Authentication;
+using Sia.Core.Validation;
 using System.Threading.Tasks;
+using Sia.Core.Configuration.ApplicationInsights;
 
 namespace Sia.Gateway.Initialization
 {
     public static class ApplicationInsightsStartup
     {
-        public static async Task InitializeApplicationInsights(this IHostingEnvironment env, GatewayConfiguration configuration)
+        public static async Task InitializeApplicationInsights(this GatewayConfiguration configuration)
         {
             //Needs to be done in the initial Startup.Startup() method because Application Insights registers itself prior
             //to ConfigureServices being run
@@ -17,7 +18,7 @@ namespace Sia.Gateway.Initialization
 
             if (configuration.ApplicationInsights == null)
             {
-                configuration.ApplicationInsights = new Shared.Configuration.ApplicationInsights.ApplicationInsightsConfig();
+                configuration.ApplicationInsights = new ApplicationInsightsConfig();
             }
 
             var secrets = new AzureSecretVault(

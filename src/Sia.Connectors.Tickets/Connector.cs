@@ -21,7 +21,7 @@ namespace Sia.Connectors.Tickets
         {
             try
             {
-                persistedTicket.Data = await Client.GetAsync(persistedTicket.OriginId);
+                persistedTicket.Data = await Client.GetAsync(persistedTicket.OriginId).ConfigureAwait(continueOnCapturedContext: false);
             }
             catch (Exception ex)
             {

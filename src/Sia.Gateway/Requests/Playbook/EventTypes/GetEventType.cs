@@ -7,10 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Sia.Domain.Playbook;
 using Sia.Gateway.Initialization.Configuration;
 using Sia.Gateway.Requests.Playbook;
-using Sia.Shared.Authentication;
-using Sia.Shared.Authentication.Http;
-using Sia.Shared.Extensions.Mediatr;
-using Sia.Shared.Requests;
+using Sia.Core.Authentication;
+using Sia.Core.Authentication.Http;
+using Sia.Core.Extensions.Mediatr;
+using Sia.Core.Requests;
 
 namespace Sia.Gateway.Requests
 {

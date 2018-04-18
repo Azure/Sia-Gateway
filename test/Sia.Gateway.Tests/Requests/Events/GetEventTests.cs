@@ -15,7 +15,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task Handle_WhenEventClientReturnsSuccessful_ReturnCorrectEvent()
+        public async Task HandleWhenEventClientReturnsSuccessfulReturnCorrectEvent()
         {
             long expectedEventId = 1;
             long expectedEventTypeId = 1;
@@ -26,11 +26,15 @@ namespace Sia.Gateway.Tests.Requests
                 EventTypeId = expectedEventTypeId,
                 IncidentId = expectedIncidentId
             };
-            var serviceUnderTest = new GetEventHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEventClientReturnsSuccessful_ReturnCorrectEvent)));
+            var serviceUnderTest = new GetEventHandler(await MockFactory
+                .IncidentContext(nameof(HandleWhenEventClientReturnsSuccessfulReturnCorrectEvent))
+                .ConfigureAwait(continueOnCapturedContext: false));
             var request = new GetEventRequest(expectedIncidentId, expectedEventId, new DummyAuthenticatedUserContext());
 
 
-            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            var result = await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
 
             Assert.AreEqual(expectedEventId, result.Id);

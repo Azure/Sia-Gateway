@@ -14,9 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\domain\Domain\Sia.Core\Sia.Core.csproj" />
     <ProjectReference Include="..\..\domain\Domain\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj" />
     <ProjectReference Include="..\..\domain\Domain\Sia.Domain\Sia.Domain.csproj" />
-    <ProjectReference Include="..\..\domain\Domain\Sia.Shared\Sia.Shared.csproj" />
     <ProjectReference Include="..\..\src\Sia.Gateway\Sia.Gateway.csproj" />
   </ItemGroup>
 

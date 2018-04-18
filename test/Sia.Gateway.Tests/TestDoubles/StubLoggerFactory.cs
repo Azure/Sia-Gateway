@@ -10,6 +10,18 @@ namespace Sia.Gateway.Tests.TestDoubles
     {
         public void AddProvider(ILoggerProvider provider) => throw new NotImplementedException();
         public ILogger CreateLogger(string categoryName) => null;
-        public void Dispose() => throw new NotImplementedException();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposing)
+            {
+                // Nothing to dispose
+            }
+        }
     }
 }
