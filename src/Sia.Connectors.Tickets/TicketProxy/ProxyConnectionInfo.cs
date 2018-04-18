@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Sia.Shared.Authentication;
-using Sia.Shared.Validation;
+using Sia.Core.Authentication;
+using Sia.Core.Validation;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -71,7 +71,7 @@ namespace Sia.Connectors.Tickets.TicketProxy
         {
             if(_client is null)
             {
-                _client = await ClientFactory(loggerFactory).GetClientAsync();
+                _client = await ClientFactory(loggerFactory).GetClientAsync().ConfigureAwait(continueOnCapturedContext: false);
             }
             return _client;
         }
@@ -79,7 +79,7 @@ namespace Sia.Connectors.Tickets.TicketProxy
         private HttpClient _client;
         private readonly AzureSecretVault Vault;
         public AuthenticationType AuthenticationType { get; protected set; }
-        public readonly string Endpoint;
+        public string Endpoint { get; }
         private readonly string CertIdentifier;
 
         protected IHttpClientFactory ClientFactory(ILoggerFactory loggerFactory)

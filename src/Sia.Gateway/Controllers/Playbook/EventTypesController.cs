@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
-using Sia.Shared.Authentication;
+using Sia.Core.Authentication;
 using Sia.Gateway.Requests;
 using Sia.Domain.ApiModels.Playbooks;
-using Sia.Shared.Controllers;
+using Sia.Core.Controllers;
 using Sia.Domain.Playbook;
 
 namespace Sia.Gateway.Controllers
@@ -22,11 +22,11 @@ namespace Sia.Gateway.Controllers
 
         [HttpGet(Name = nameof(GetAll) + nameof(EventType))]
         public async Task<IActionResult> GetAll() 
-            => OkIfFound(await _mediator.Send(new GetEventTypesRequest(_authContext)));
+            => OkIfFound(await _mediator.Send(new GetEventTypesRequest(authContext)));
 
 
         [HttpGet("{id}", Name = nameof(Get) + nameof(EventType))]
         public async Task<IActionResult> Get(long id)
-            => OkIfFound(await _mediator.Send(new GetEventTypeRequest(id, _authContext)));
+            => OkIfFound(await _mediator.Send(new GetEventTypeRequest(id, authContext)));
     }
 }

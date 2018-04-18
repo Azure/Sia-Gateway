@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sia.Gateway.Controllers;
-using Sia.Shared.Protocol;
+using Sia.Core.Protocol;
 using System.Collections.Generic;
 
 

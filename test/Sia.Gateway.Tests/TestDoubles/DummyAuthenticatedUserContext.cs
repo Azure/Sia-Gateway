@@ -1,4 +1,4 @@
-﻿using Sia.Shared.Authentication;
+﻿using Sia.Core.Authentication;
 
 namespace Sia.Gateway.Tests.TestDoubles
 {

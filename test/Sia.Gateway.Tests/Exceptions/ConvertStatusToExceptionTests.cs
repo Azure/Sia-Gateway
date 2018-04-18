@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sia.Shared.Exceptions;
+using Sia.Core.Exceptions;
 using System;
 using System.Net;
 

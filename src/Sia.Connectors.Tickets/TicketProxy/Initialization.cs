@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sia.Connectors.Tickets;
 using Sia.Connectors.Tickets.TicketProxy;
-using Sia.Shared.Authentication;
+using Sia.Core.Authentication;
 
 namespace Sia.Gateway.Initialization
 {

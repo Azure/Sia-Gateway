@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Sia.Shared.Authentication;
+using Sia.Core.Authentication;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -27,11 +27,11 @@ namespace Sia.Connectors.Tickets.TicketProxy
         {
             if(_client is null)
             {
-                _client = await _connectionInfo.GetClientAsync(_loggerFactory);
+                _client = await _connectionInfo.GetClientAsync(_loggerFactory).ConfigureAwait(continueOnCapturedContext: false);
             }
-            string incidentUrl = $"{_connectionInfo.Endpoint}/{originId}";
-            var response = await _client.GetAsync(incidentUrl);
-            var content = await response.Content.ReadAsStringAsync();
+            var incidentUrl = new Uri($"{_connectionInfo.Endpoint}/{originId}");
+            var response = await _client.GetAsync(incidentUrl).ConfigureAwait(continueOnCapturedContext: false);
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(continueOnCapturedContext: false);
             return JsonConvert.DeserializeObject<ProxyData>(content);
         }
 

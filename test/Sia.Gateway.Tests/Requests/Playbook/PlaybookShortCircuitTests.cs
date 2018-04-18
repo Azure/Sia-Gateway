@@ -13,8 +13,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sia.Domain.Playbook;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Tests.TestDoubles;
-using Sia.Shared.Authentication;
-using Sia.Shared.Extensions.Mediatr;
+using Sia.Core.Authentication;
+using Sia.Core.Extensions.Mediatr;
 using Sia.Gateway.Initialization.Configuration;
 
 namespace Sia.Gateway.Tests.Requests.Playbook

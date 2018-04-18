@@ -1,4 +1,4 @@
-﻿using Sia.Shared.Exceptions;
+﻿using Sia.Core.Exceptions;
 
 namespace Sia.Gateway.Tests.Middleware
 {

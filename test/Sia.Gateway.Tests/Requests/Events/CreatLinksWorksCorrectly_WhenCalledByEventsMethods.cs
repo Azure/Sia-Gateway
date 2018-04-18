@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Sia.Gateway.Controllers;
 using Sia.Gateway.Tests.TestDoubles;
-using Sia.Shared.Protocol;
+using Sia.Core.Protocol;
 using System.Collections.Generic;
 
 namespace Sia.Gateway.Tests.Requests.Events

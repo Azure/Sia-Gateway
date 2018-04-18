@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Sia.Domain;
 using Sia.Domain.ApiModels;
 using Sia.Gateway.Requests;
-using Sia.Shared.Authentication;
-using Sia.Shared.Controllers;
-using Sia.Shared.Protocol;
+using Sia.Core.Authentication;
+using Sia.Core.Controllers;
+using Sia.Core.Protocol;
 using System.Threading.Tasks;
 
 namespace Sia.Gateway.Controllers
@@ -52,7 +52,7 @@ namespace Sia.Gateway.Controllers
         [HttpGet("{id}", Name = GetSingleRouteName)]
         public async Task<IActionResult> Get(long id)
         {
-            var result = await _mediator.Send(new GetIncidentRequest(id, _authContext));
+            var result = await _mediator.Send(new GetIncidentRequest(id, authContext));
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)} not found");
@@ -66,7 +66,7 @@ namespace Sia.Gateway.Controllers
         [HttpGet(Name = GetMultipleRouteName)]
         public async Task<IActionResult> Get([FromQuery] PaginationMetadata pagination)
         {
-            var result = await _mediator.Send(new GetIncidentsRequest(pagination, _authContext));
+            var result = await _mediator.Send(new GetIncidentsRequest(pagination, authContext));
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)}s not found");
@@ -79,7 +79,7 @@ namespace Sia.Gateway.Controllers
         [HttpPost(Name = PostSingleRouteName)]
         public async Task<IActionResult> Post([FromBody]NewIncident incident)
         {
-            var result = await _mediator.Send(new PostIncidentRequest(incident, _authContext));
+            var result = await _mediator.Send(new PostIncidentRequest(incident, authContext));
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)} not found");

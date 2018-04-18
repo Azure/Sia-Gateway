@@ -3,13 +3,13 @@ using Sia.Domain;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Sia.Shared.Authentication;
-using Sia.Shared.Protocol;
+using Sia.Core.Authentication;
+using Sia.Core.Protocol;
 using Sia.Data.Incidents;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using Sia.Shared.Requests;
-using Sia.Shared.Data;
+using Sia.Core.Requests;
+using Sia.Core.Data;
 using System.Threading;
 using Sia.Gateway.Filters;
 

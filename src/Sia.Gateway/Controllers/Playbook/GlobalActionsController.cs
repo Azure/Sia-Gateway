@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
-using Sia.Shared.Authentication;
+using Sia.Core.Authentication;
 using Sia.Gateway.Requests;
 using Sia.Domain.ApiModels.Playbooks;
-using Sia.Shared.Controllers;
+using Sia.Core.Controllers;
 using Sia.Domain.Playbook;
 
 namespace Sia.Gateway.Controllers
@@ -22,6 +22,6 @@ namespace Sia.Gateway.Controllers
 
         [HttpGet(Name = nameof(GetAll) + "Global" + nameof(Domain.Playbook.Action))]
         public async Task<IActionResult> GetAll()
-            => OkIfFound(await _mediator.Send(new GetGlobalActionsRequest(_authContext)));
+            => OkIfFound(await _mediator.Send(new GetGlobalActionsRequest(authContext)));
     }
 }

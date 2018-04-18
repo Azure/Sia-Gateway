@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Sia.Data.Incidents;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Initialization.Configuration;
-using Sia.Shared.Validation;
+using Sia.Core.Validation;
 
 namespace Sia.Gateway
 {

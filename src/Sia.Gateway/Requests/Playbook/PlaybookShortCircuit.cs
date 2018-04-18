@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Sia.Gateway.Initialization.Configuration;
-using Sia.Shared.Extensions.Mediatr;
-using Sia.Shared.Requests;
-using Sia.Shared.Validation;
+using Sia.Core.Extensions.Mediatr;
+using Sia.Core.Requests;
+using Sia.Core.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -6,7 +6,7 @@ using Sia.Gateway.Requests;
 using Sia.Gateway.Tests.TestDoubles;
 using System.Linq;
 using System.Threading.Tasks;
-using Sia.Shared.Protocol;
+using Sia.Core.Protocol;
 
 namespace Sia.Gateway.Tests.Requests
 {

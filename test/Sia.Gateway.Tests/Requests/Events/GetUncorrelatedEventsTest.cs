@@ -3,7 +3,7 @@ using Sia.Gateway.Filters;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests.Events;
 using Sia.Gateway.Tests.TestDoubles;
-using Sia.Shared.Protocol;
+using Sia.Core.Protocol;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Sia.Shared.Data;
+using Sia.Core.Data;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
