@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Sia.State.Models.Configuration.Validation;
+using System.Collections.Generic;
 
-namespace Sia.State.Models
+namespace Sia.State.Models.Configuration
 {
-    public class Reducer
+    public class ReducerConfiguration
     {
         public object InitialState { get; set; }
         public IList<ReducerCase> Cases { get; set; }

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sia.State.Models
+namespace Sia.State.Models.Configuration
 {
     public class EventShape
     {
         public long EventTypeId { get; set; }
-        public IList<string> RequiredKeys { get; set; }
+        public IList<string> RequiredDataKeys { get; set; }
             = new List<string>();
-        public ICollection<EventDataTransform> Transforms { get; set; }
+        public IList<EventDataTransform> Transforms { get; set; }
             = new List<EventDataTransform>();
     }
 }

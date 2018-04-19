@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sia.State.Models
+namespace Sia.State.Models.Configuration
 {
     public class EventDataTransform
     {

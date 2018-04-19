@@ -6,12 +6,10 @@ using System.Text;
 
 namespace Sia.State.Models
 {
-    public class StateTransform
+    public class StateTransformConfiguration
     {
-        public string DestinationFinalKey { get; set; }
         public string TransformType { get; set; }
         public object TransformMetadata { get; set; }
-
 
         public static Dictionary<string, Type> ValidTransformTypes() 
             => new Dictionary<string, Type>

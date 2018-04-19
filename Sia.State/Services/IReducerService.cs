@@ -1,4 +1,5 @@
 ﻿using Sia.State.Models;
+using Sia.State.Models.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Sia.State.Services
 {
     public interface IReducerService
     {
-        Task<CombinedReducers> GetReducersAsync();
+        Task<CombinedReducerConfiguration> GetReducersAsync();
     }
 }

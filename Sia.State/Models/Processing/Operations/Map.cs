@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sia.State.Models.MetadataTypes.Transform
+namespace Sia.State.Models.Processing.Operations
 {
-    public class SourceMetadata
+    class Map
     {
     }
 }

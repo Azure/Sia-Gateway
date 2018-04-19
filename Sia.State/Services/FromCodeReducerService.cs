@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Sia.Shared.Validation;
+using Sia.Core.Validation;
 using Sia.State.Models;
 
 namespace Sia.State.Services

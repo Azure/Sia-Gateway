@@ -28,7 +28,7 @@ namespace Sia.State.Services
 
         }
 
-        private Action<CombinedReducers, string> TestRecursively => (CombinedReducers reducer, string testNamespace) =>
+        private Action<CombinedReducerConfiguration, string> TestRecursively => (CombinedReducerConfiguration reducer, string testNamespace) =>
         {
             var complexChildTests = reducer.ComplexChildren
                 .ToAsyncEnumerable()
