@@ -37,7 +37,8 @@ namespace Sia.Gateway.Requests
         {
             var EngagementRecord = await _context.Engagements
                 .Include(en => en.Participant)
-                .FirstOrDefaultAsync(ev => ev.IncidentId == request.IncidentId && ev.Id == request.Id, cancellationToken);
+                .FirstOrDefaultAsync(ev => ev.IncidentId == request.IncidentId && ev.Id == request.Id, cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false);
             if (EngagementRecord == null) throw new NotFoundException($"Found no engagement with IncidentId {request.IncidentId} and Id {request.Id}!");
 
             return Mapper.Map<Engagement>(EngagementRecord);

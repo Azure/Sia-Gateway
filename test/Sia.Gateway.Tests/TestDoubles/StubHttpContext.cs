@@ -17,7 +17,9 @@ namespace Sia.Gateway.Tests.Middleware
 
 
         private HttpResponse _response { get; set; }
-            
+
+        // Disabling warnings related to NotImplementedException in a stub class
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
 
         public override IFeatureCollection Features => throw new NotImplementedException();
 
@@ -36,12 +38,10 @@ namespace Sia.Gateway.Tests.Middleware
         public override string TraceIdentifier { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override ISession Session { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        [Obsolete]
+        [Obsolete("Will be removed in later version")]
         public override AuthenticationManager Authentication => throw new NotImplementedException();
 
-        public override void Abort()
-        {
-            throw new NotImplementedException();
-        }
+        public override void Abort() => throw new NotImplementedException();
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
     }
 }

@@ -17,7 +17,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task Handle_WhenEFReturnsSuccessful_ReturnCorrectEngagement()
+        public async Task HandleWhenEFReturnsSuccessfulReturnCorrectEngagement()
         {
             var expectedEngagement = new Engagement
             {
@@ -33,11 +33,17 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new GetEngagementHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEFReturnsSuccessful_ReturnCorrectEngagement)));
+            var serviceUnderTest = new GetEngagementHandler(
+                await MockFactory
+                    .IncidentContext(nameof(HandleWhenEFReturnsSuccessfulReturnCorrectEngagement))
+                    .ConfigureAwait(continueOnCapturedContext: false)
+            );
             var request = new GetEngagementRequest(1, 1, new DummyAuthenticatedUserContext());
 
 
-            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            var result = await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
 
             Assert.AreEqual(expectedEngagement.Id, result.Id);
@@ -51,11 +57,13 @@ namespace Sia.Gateway.Tests.Requests
         [ExpectedException(typeof(NotFoundException))]
         public async Task Handle_WhenRecordDoesNotExistInEF_ThrowKeyNotFoundException()
         {
-            var serviceUnderTest = new GetEngagementHandler(await MockFactory.IncidentContext("Get"));
+            var serviceUnderTest = new GetEngagementHandler(await MockFactory.IncidentContext("Get").ConfigureAwait(continueOnCapturedContext: false));
             var request = new GetEngagementRequest(100_000, 1, new DummyAuthenticatedUserContext());
 
 
-            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            var result = await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
 
             //Expect exception

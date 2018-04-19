@@ -23,14 +23,18 @@ namespace Sia.Gateway.Tests.Requests
         public async Task Handle_WhenIncidentNotExist_ReturnNewIncident()
         {
             var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(
-                await MockFactory.IncidentContext(nameof(Handle_WhenIncidentNotExist_ReturnNewIncident)),
+                await MockFactory
+                .IncidentContext(nameof(Handle_WhenIncidentNotExist_ReturnNewIncident))
+                .ConfigureAwait(continueOnCapturedContext: false),
                 new NoConnector(new NoClient(), new StubLoggerFactory())
             );
 
             var request = new GetIncidentsByTicketCreateIfNeededRequest("100", new DummyAuthenticatedUserContext());
 
 
-            var result = (await serviceUnderTest.Handle(request, new System.Threading.CancellationToken())).ToList();
+            var result = (await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false)).ToList();
 
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual( "100", result[0].PrimaryTicket.OriginId);
@@ -42,16 +46,19 @@ namespace Sia.Gateway.Tests.Requests
         {
 
             var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(
-                await MockFactory.IncidentContext(nameof(Handle_WhenIncidentExists_ReturnCorrectIncidents)),
+                await MockFactory
+                .IncidentContext(nameof(Handle_WhenIncidentExists_ReturnCorrectIncidents))
+                .ConfigureAwait(continueOnCapturedContext: false),
                 new NoConnector(new NoClient(), new StubLoggerFactory())
             );
             var request = new GetIncidentsByTicketCreateIfNeededRequest("44444444", new DummyAuthenticatedUserContext());
 
-            var result = (await serviceUnderTest.Handle(request, new System.Threading.CancellationToken())).ToList();
+            var result = (await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false)).ToList();
 
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(1, result[0].Id);
-
         }
     }
 }

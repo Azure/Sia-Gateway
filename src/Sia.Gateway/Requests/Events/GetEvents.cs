@@ -47,6 +47,7 @@ namespace Sia.Gateway.Requests.Events
                 .WithFilter(request.Filter)
                 .WithPagination(request.Pagination)
                 .ProjectTo<Event>()
-                .ToListAsync(cancellationToken);
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false);
     }
 }

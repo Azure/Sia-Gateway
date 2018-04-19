@@ -31,10 +31,10 @@ namespace Sia.Gateway.Tests.Filters
             var serviceUnderTest = new EventFilters()
             {
                 IncidentId = 1,
-                EventTypes = new long[] { 1 },
                 StartTime = new DateTime(1970, 1, 1),
                 EndTime = new DateTime(1980, 3, 2)
             };
+            serviceUnderTest.EventTypes.Add(1);
             var testInput = new List<Event>()
             {
                 new Event()
@@ -91,7 +91,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void WithFilter_WhenPassedQueryable_MatchesByDataKeyWhenEventsHaveEquivalentKeyInData()
+        public void WithFilter_WhenPassedQueryable_MatchesByDataKey_WhenEventsHaveEquivalentKeyInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -133,7 +133,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void WithFilter_WhenPassedQueryable_ReturnsEmptyQueryableWhenNoEventsHaveEquivalentKeyInData()
+        public void WithFilter_WhenPassedQueryable_ReturnsEmptyQueryable_WhenNoEventsHaveEquivalentKeyInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -174,7 +174,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void WithFilter_WhenPassedQueryable_MatchesByDataKeyAndValueWhenEventsHaveEquivalentKeyAndValueInData()
+        public void WithFilter_WhenPassedQueryable_MatchesByDataKeyAndValue_WhenEventsHaveEquivalentKeyAndValueInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -217,7 +217,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void WithFilter_WhenPassedQueryable_ReturnsEmptyQueryableWhenNoEventsHaveEquivalentKeyAndValueInData()
+        public void WithFilter_WhenPassedQueryable_ReturnsEmptyQueryable_WhenNoEventsHaveEquivalentKeyAndValueInData()
         {
             var serviceUnderTest = new EventFilters()
             {

@@ -53,7 +53,8 @@ namespace Sia.Gateway.Requests
                     .Tickets
                     .Any(inc => inc.OriginId == message.TicketId))
                 .ProjectTo<Incident>()
-                .ToListAsync(cancellationToken);
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false);
 
             if (incidents.Any())
             {
@@ -73,7 +74,8 @@ namespace Sia.Gateway.Requests
             var dataIncident = Mapper.Map<Data.Incidents.Models.Incident>(newIncident);
 
             var result = _context.Incidents.Add(dataIncident);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false);
 
             var incidentDto = Mapper.Map<Incident>(result.Entity);
             AttachTickets(incidentDto);

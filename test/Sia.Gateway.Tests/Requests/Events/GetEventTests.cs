@@ -26,11 +26,15 @@ namespace Sia.Gateway.Tests.Requests
                 EventTypeId = expectedEventTypeId,
                 IncidentId = expectedIncidentId
             };
-            var serviceUnderTest = new GetEventHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEventClientReturnsSuccessful_ReturnCorrectEvent)));
+            var serviceUnderTest = new GetEventHandler(await MockFactory
+                .IncidentContext(nameof(Handle_WhenEventClientReturnsSuccessful_ReturnCorrectEvent))
+                .ConfigureAwait(continueOnCapturedContext: false));
             var request = new GetEventRequest(expectedIncidentId, expectedEventId, new DummyAuthenticatedUserContext());
 
 
-            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            var result = await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
 
             Assert.AreEqual(expectedEventId, result.Id);

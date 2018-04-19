@@ -33,7 +33,8 @@ namespace Sia.Gateway.Requests
         {
             var incidentRecord = await _context.Incidents
                 .WithEagerLoading()
-                .SingleOrDefaultAsync(cr => cr.Id == getIncident.Id, cancellationToken);
+                .SingleOrDefaultAsync(cr => cr.Id == getIncident.Id, cancellationToken)
+                .ConfigureAwait(continueOnCapturedContext: false);
             if (incidentRecord == null) throw new NotFoundException($"Found no incident with id {getIncident.Id}.");
 
             var incident = Mapper.Map<Incident>(incidentRecord);

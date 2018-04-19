@@ -25,14 +25,16 @@ namespace Sia.Gateway.Tests.Requests
                 Title = expectedIncidentTitle
             };
             var serviceUnderTest = new GetIncidentHandler(
-                await MockFactory.IncidentContext("Get"),
+                await MockFactory.IncidentContext("Get").ConfigureAwait(continueOnCapturedContext: false),
                 new NoConnector(new NoClient(), new StubLoggerFactory()));
             var request = new GetIncidentRequest(
                 expectedIncidentId,
                 new DummyAuthenticatedUserContext());
 
 
-            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            var result = await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
 
             Assert.AreEqual(expectedIncidentId, result.Id);

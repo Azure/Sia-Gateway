@@ -28,7 +28,7 @@ namespace Sia.Gateway.Tests.Requests
             var context = await MockFactory.IncidentContext(
                 nameof(PutEngagementTests) 
                 + nameof(Handle_WhenContextUpdatesEngagement_EngagementRecordInDatabaseReflectsUpdate)
-            );
+            ).ConfigureAwait(continueOnCapturedContext: false);
 
             var incident = context.Incidents.FirstOrDefault();
             var engagement = incident.Engagements.FirstOrDefault();
@@ -36,7 +36,9 @@ namespace Sia.Gateway.Tests.Requests
             var request = new PutEngagementRequest(incident.Id, engagement.Id, inputEngagement, new DummyAuthenticatedUserContext());
 
 
-            await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
             var result = context.Engagements.First(e => e.Id == engagement.Id);
 
 
@@ -53,13 +55,17 @@ namespace Sia.Gateway.Tests.Requests
                 TimeDisengaged = new DateTime(1070, 10, 10)
             };
 
-            var context = await MockFactory.IncidentContext(nameof(PutEngagementTests) + nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException));
+            var context = await MockFactory
+                .IncidentContext(nameof(PutEngagementTests) + nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException))
+                .ConfigureAwait(continueOnCapturedContext: false);
 
             var serviceUnderTest = new PutEngagementHandler(context);
             var request = new PutEngagementRequest(100_000, 1, inputEngagement, new DummyAuthenticatedUserContext());
 
 
-            await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
             //Expect exception
         }

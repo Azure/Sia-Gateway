@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Sia.Gateway.Tests.Middleware
 {
+    #pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
     public class StubHttpResponse : HttpResponse
     {
         private HttpContext _context;
@@ -33,6 +34,7 @@ namespace Sia.Gateway.Tests.Middleware
         public override Stream Body { get => _body; set => _body = value; }
         public override long? ContentLength { get; set; }
         public override string ContentType { get; set; }
+
         public override IResponseCookies Cookies => throw new NotImplementedException();
 
         public override bool HasStarted => throw new NotImplementedException();
@@ -51,5 +53,6 @@ namespace Sia.Gateway.Tests.Middleware
         {
             throw new NotImplementedException();
         }
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
     }
 }

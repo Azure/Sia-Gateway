@@ -27,10 +27,14 @@ namespace Sia.Gateway.Tests.Requests.Events
                 IncidentId = 1
             };
             
-            var serviceUnderTest = new GetUncorrelatedEventsHandler(await MockFactory.IncidentContext(nameof(Handle_WhenEFReturnsSuccessful_ReturnCorrectEvents)));
+            var serviceUnderTest = new GetUncorrelatedEventsHandler(await MockFactory
+                .IncidentContext(nameof(Handle_WhenEFReturnsSuccessful_ReturnCorrectEvents))
+                .ConfigureAwait(continueOnCapturedContext: false));
             var request = new GetUncorrelatedEventsRequest(new PaginationMetadata(), filters, new DummyAuthenticatedUserContext());
 
-            var result = (await serviceUnderTest.Handle(request, new CancellationToken())).ToList();
+            var result = (await serviceUnderTest
+                .Handle(request, new CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false)).ToList();
 
 
             for (int i = 0; i < expectedEventTypeIds.Length; i++)

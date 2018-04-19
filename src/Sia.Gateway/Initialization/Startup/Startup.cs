@@ -9,6 +9,7 @@ using Sia.Data.Incidents;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Initialization.Configuration;
 using Sia.Core.Validation;
+using System.Globalization;
 
 namespace Sia.Gateway
 {
@@ -45,7 +46,10 @@ namespace Sia.Gateway
                 ThrowIf.NullOrWhiteSpace(_gatewayConfiguration.KeyVaultAccessor.GatewayRedisPasswordName,
                     nameof(_gatewayConfiguration.KeyVaultAccessor.GatewayRedisPasswordName));
 
-                var keyVaultUrl = String.Format("https://{0}.vault.azure.net/", _gatewayConfiguration.KeyVaultAccessor.VaultName);
+                var keyVaultUrl = String.Format(
+                    CultureInfo.InvariantCulture,
+                    "https://{0}.vault.azure.net/",
+                    _gatewayConfiguration.KeyVaultAccessor.VaultName);
                 builder.AddAzureKeyVault(keyVaultUrl, _gatewayConfiguration.ClientId, _gatewayConfiguration.ClientSecret);
                 _configuration = builder.Build();
 
@@ -58,7 +62,7 @@ namespace Sia.Gateway
                 ThrowIf.NullOrWhiteSpace(redisPassword, accessor.GatewayRedisPasswordName);
                 _gatewayConfiguration.Redis.Password = redisPassword;
             }
-            var appInsightsTask = env.InitializeApplicationInsights(_gatewayConfiguration);
+            var appInsightsTask = _gatewayConfiguration.InitializeApplicationInsights();
             appInsightsTask.Wait();
             _env = env;
         }

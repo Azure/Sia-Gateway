@@ -35,7 +35,7 @@ namespace Sia.Gateway.Tests.Requests
             var context = await MockFactory.IncidentContext(
                     nameof(PostEngagementTests)
                     + "one"
-                );
+                ).ConfigureAwait(continueOnCapturedContext: false);
             var incident = context.Incidents.FirstOrDefault();
             var serviceUnderTest = new PostEngagementHandler(
                context
@@ -43,7 +43,9 @@ namespace Sia.Gateway.Tests.Requests
 
             var request = new PostEngagementRequest(incident.Id, inputEngagement, new DummyAuthenticatedUserContext());
 
-            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            var result = await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
             Assert.AreEqual("test", result.Participant.Alias);
             Assert.AreEqual("alsoTest", result.Participant.Team);
@@ -69,10 +71,12 @@ namespace Sia.Gateway.Tests.Requests
                 }
             };
 
-            var serviceUnderTest = new PostEngagementHandler(await MockFactory.IncidentContext(nameof(PostEngagementTests) /*+ nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException)*/));
+            var serviceUnderTest = new PostEngagementHandler(await MockFactory.IncidentContext(nameof(PostEngagementTests) /*+ nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException)*/).ConfigureAwait(continueOnCapturedContext: false));
             var request = new PostEngagementRequest(100_000, inputEngagement, new DummyAuthenticatedUserContext());
 
-            var result = await serviceUnderTest.Handle(request, new System.Threading.CancellationToken());
+            var result = await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false);
 
             //Expect exception
         }

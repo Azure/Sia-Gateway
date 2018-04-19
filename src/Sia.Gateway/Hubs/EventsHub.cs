@@ -32,7 +32,7 @@ namespace Sia.Gateway.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            await base.OnConnectedAsync();
+            await base.OnConnectedAsync().ConfigureAwait(continueOnCapturedContext: false);
             _logger.LogInformation(
                 "User {0} connected to EventsHub on connectionId {1}",
                 new object[] { Context.User.Identity.Name, Context.ConnectionId }
@@ -60,7 +60,7 @@ namespace Sia.Gateway.Hubs
                 );
             }
 
-            await base.OnDisconnectedAsync(exception);
+            await base.OnDisconnectedAsync(exception).ConfigureAwait(continueOnCapturedContext: false);
         }
 
         public Task Send(Event ev)

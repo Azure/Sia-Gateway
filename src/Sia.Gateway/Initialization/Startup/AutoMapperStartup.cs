@@ -8,7 +8,7 @@ namespace Sia.Gateway.Initialization
 {
     public static class AutoMapperStartup
     {
-        public static bool isInitialized = false;
+        private static bool isInitialized = false;
         public static void InitializeAutomapper()
         {
             if (isInitialized) return;

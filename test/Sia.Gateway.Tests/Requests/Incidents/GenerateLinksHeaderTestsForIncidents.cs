@@ -32,10 +32,10 @@ namespace Sia.Gateway.Tests.Requests.Incidents
 
         }
 
-        string GetProperty(object values, string property) => values.GetType().GetProperty(property)?.GetValue(values).ToString() ?? "";
+        static string GetProperty(object values, string property) => values.GetType().GetProperty(property)?.GetValue(values).ToString() ?? "";
 
         [TestMethod]
-        public void CreateLinksGeneratesFourLinksWithCorrectIdsOrIncidentIds_WhenPassedAnIncidentId()
+        public void CreateLinks_GeneratesFourLinksWithCorrectIdsOrIncidentIds_WhenPassedAnIncidentId()
         {
             // Arrange
             var methods = new List<string>();
@@ -67,7 +67,7 @@ namespace Sia.Gateway.Tests.Requests.Incidents
         }
 
         [TestMethod]
-        public void GetHeaderValuesAssignsMetadataAndPaginationAsNull_WhenNoMetaDataPassedIn()
+        public void GetHeaderValues_AssignsMetadataAndPaginationAsNull_WhenNoMetaDataPassedIn()
         {
             //Arrange
             methods.Clear();

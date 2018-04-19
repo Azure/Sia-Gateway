@@ -7,6 +7,7 @@ using Sia.Core.Authentication;
 using Sia.Core.Controllers;
 using Sia.Core.Protocol;
 using System.Threading.Tasks;
+using System;
 
 namespace Sia.Gateway.Controllers
 {
@@ -52,12 +53,15 @@ namespace Sia.Gateway.Controllers
         [HttpGet("{id}", Name = GetSingleRouteName)]
         public async Task<IActionResult> Get(long id)
         {
-            var result = await _mediator.Send(new GetIncidentRequest(id, authContext));
+            var result = await _mediator
+                .Send(new GetIncidentRequest(id, authContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
+
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)} not found");
             }
-            Response.Headers.AddLinksHeader(CreateLinks(id.ToString(), null, GetSingleRouteName));
+            Response.Headers.AddLinksHeader(CreateLinks(id.ToPathTokenString(), null, GetSingleRouteName));
        
             return Ok(result);
         }
@@ -66,7 +70,10 @@ namespace Sia.Gateway.Controllers
         [HttpGet(Name = GetMultipleRouteName)]
         public async Task<IActionResult> Get([FromQuery] PaginationMetadata pagination)
         {
-            var result = await _mediator.Send(new GetIncidentsRequest(pagination, authContext));
+            var result = await _mediator
+                .Send(new GetIncidentsRequest(pagination, authContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
+
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)}s not found");
@@ -79,13 +86,16 @@ namespace Sia.Gateway.Controllers
         [HttpPost(Name = PostSingleRouteName)]
         public async Task<IActionResult> Post([FromBody]NewIncident incident)
         {
-            var result = await _mediator.Send(new PostIncidentRequest(incident, authContext));
+            var result = await _mediator
+                .Send(new PostIncidentRequest(incident, authContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
+
             if (result == null)
             {
                 return NotFound($"{nameof(Incident)} not found");
             }
-            var newUrl = _urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = result.Id });
-            Response.Headers.AddLinksHeader(CreateLinks(result.Id.ToString(), null, PostSingleRouteName));
+            var newUrl = new Uri(_urlHelper.Link(EventsController.GetMultipleRouteName, new { incidentId = result.Id }));
+            Response.Headers.AddLinksHeader(CreateLinks(result.Id.ToPathTokenString(), null, PostSingleRouteName));
             return Created(newUrl, result);
         }
 

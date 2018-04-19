@@ -37,13 +37,17 @@ namespace Sia.Gateway.Tests.Requests
                 };
             }
             var serviceUnderTest = new GetIncidentsHandler(
-                await MockFactory.IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents)),
+                await MockFactory
+                    .IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents))
+                    .ConfigureAwait(continueOnCapturedContext: false),
                 new NoConnector(new NoClient(), new StubLoggerFactory())
             );
             var request = new GetIncidentsRequest(new PaginationMetadata(), new DummyAuthenticatedUserContext());
 
 
-            var result = (await serviceUnderTest.Handle(request, new System.Threading.CancellationToken())).ToList();
+            var result = (await serviceUnderTest
+                .Handle(request, new System.Threading.CancellationToken())
+                .ConfigureAwait(continueOnCapturedContext: false)).ToList();
 
 
             for (int i = 0; i < expectedIncidents.Length; i++)

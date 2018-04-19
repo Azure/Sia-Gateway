@@ -10,7 +10,7 @@ namespace Sia.Gateway.Initialization
 {
     public static class ApplicationInsightsStartup
     {
-        public static async Task InitializeApplicationInsights(this IHostingEnvironment env, GatewayConfiguration configuration)
+        public static async Task InitializeApplicationInsights(this GatewayConfiguration configuration)
         {
             //Needs to be done in the initial Startup.Startup() method because Application Insights registers itself prior
             //to ConfigureServices being run

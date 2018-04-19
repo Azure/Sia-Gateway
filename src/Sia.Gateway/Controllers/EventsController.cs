@@ -68,7 +68,7 @@ namespace Sia.Gateway.Controllers
                 .Send(new GetEventsRequest(incidentId, pagination, filter, authContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
             
-            Response.Headers.AddLinksHeader(CreateLinks(null, incidentId.ToString(), filter, pagination, GetMultipleRouteName));
+            Response.Headers.AddLinksHeader(CreateLinks(null, incidentId.ToPathTokenString(), filter, pagination, GetMultipleRouteName));
 
             return Ok(result);
         }
@@ -81,7 +81,7 @@ namespace Sia.Gateway.Controllers
                 .Send(new GetEventRequest(incidentId, id, authContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
 
-            Response.Headers.AddLinksHeader(CreateLinks(id.ToString(), incidentId.ToString(), null, null, GetSingleRouteName));
+            Response.Headers.AddLinksHeader(CreateLinks(id.ToPathTokenString(), incidentId.ToPathTokenString(), null, null, GetSingleRouteName));
             if (result == null)
             {
                 return NotFound(notFoundMessage);
@@ -94,17 +94,20 @@ namespace Sia.Gateway.Controllers
         [HttpPost("incidents/{incidentId}/events", Name = PostSingleRouteName)]
         public async Task<IActionResult> Post([FromRoute]long incidentId, [FromBody]NewEvent newEvent)
         {
-            var result = await _mediator.Send(new PostEventRequest(incidentId, newEvent, authContext));
+            var result = await _mediator
+                .Send(new PostEventRequest(incidentId, newEvent, authContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
+
             if (result == null)
             {
                 return NotFound(notFoundMessage);
             }
 
-            await SendEventToSubscribers(result);
+            await SendEventToSubscribers(result).ConfigureAwait(continueOnCapturedContext: false);
 
-            var newUrl = _urlHelper.Link(GetSingleRouteName, new { id = result.Id });
+            var newUrl = new Uri(_urlHelper.Link(GetSingleRouteName, new { id = result.Id }));
 
-            Response.Headers.AddLinksHeader(CreateLinks(result.Id.ToString(), incidentId.ToString(),null, null, PostSingleRouteName));
+            Response.Headers.AddLinksHeader(CreateLinks(result.Id.ToPathTokenString(), incidentId.ToPathTokenString(), null, null, PostSingleRouteName));
             return Created(newUrl, result);
         }
 
@@ -113,7 +116,10 @@ namespace Sia.Gateway.Controllers
         public async Task<IActionResult> GetUncorrelatedEvents([FromQuery]PaginationMetadata pagination,
             [FromQuery]EventFilters filter)
         {
-            var result = await _mediator.Send(new GetUncorrelatedEventsRequest(pagination, filter, authContext));
+            var result = await _mediator
+                .Send(new GetUncorrelatedEventsRequest(pagination, filter, authContext))
+                .ConfigureAwait(continueOnCapturedContext: false);
+
             return Ok(result);
         }
 
@@ -127,9 +133,9 @@ namespace Sia.Gateway.Controllers
                     .WithAccessToken(() => token)
                     .WithUrl(url)
                     .Build();
-                await eventHubConnection.StartAsync();
-                await eventHubConnection.SendAsync("Send", result);
-                await eventHubConnection.DisposeAsync();
+                await eventHubConnection.StartAsync().ConfigureAwait(continueOnCapturedContext: false);
+                await eventHubConnection.SendAsync("Send", result).ConfigureAwait(continueOnCapturedContext: false);
+                await eventHubConnection.DisposeAsync().ConfigureAwait(continueOnCapturedContext: false);
             }
             catch (Exception ex)
             {
@@ -139,8 +145,5 @@ namespace Sia.Gateway.Controllers
 
         private string GetTokenFromHeaders()
             => HttpContext.Request.Headers["Authorization"].ToString().Split(' ')[1];
-        // Found by reading source code at
-        // https://github.com/aspnet/Security/blob/dev/src/Microsoft.AspNetCore.Authentication.JwtBearer/JwtBearerHandler.cs
-        private const string AccessTokenName = "access_token";
     }
 }
