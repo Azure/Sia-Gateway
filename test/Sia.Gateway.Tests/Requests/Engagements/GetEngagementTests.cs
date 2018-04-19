@@ -17,7 +17,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task HandleWhenEFReturnsSuccessfulReturnCorrectEngagement()
+        public async Task Handle_WhenEFReturnsSuccessful_ReturnCorrectEngagement()
         {
             var expectedEngagement = new Engagement
             {
@@ -35,7 +35,7 @@ namespace Sia.Gateway.Tests.Requests
 
             var serviceUnderTest = new GetEngagementHandler(
                 await MockFactory
-                    .IncidentContext(nameof(HandleWhenEFReturnsSuccessfulReturnCorrectEngagement))
+                    .IncidentContext(nameof(Handle_WhenEFReturnsSuccessful_ReturnCorrectEngagement))
                     .ConfigureAwait(continueOnCapturedContext: false)
             );
             var request = new GetEngagementRequest(1, 1, new DummyAuthenticatedUserContext());
@@ -55,7 +55,7 @@ namespace Sia.Gateway.Tests.Requests
 
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task HandleWhenRecordDoesNotExistInEFThrowKeyNotFoundException()
+        public async Task Handle_WhenRecordDoesNotExistInEF_ThrowKeyNotFoundException()
         {
             var serviceUnderTest = new GetEngagementHandler(await MockFactory.IncidentContext("Get").ConfigureAwait(continueOnCapturedContext: false));
             var request = new GetEngagementRequest(100_000, 1, new DummyAuthenticatedUserContext());

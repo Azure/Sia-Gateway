@@ -15,7 +15,7 @@ namespace Sia.Gateway.Tests.Requests
         public void ConfigureAutomapper()
             => AutoMapperStartup.InitializeAutomapper();
         [TestMethod]
-        public async Task HandleWhenIncidentClientReturnsSuccessfulReturnCorrectIncident()
+        public async Task Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncident()
         {
             long expectedIncidentId = 1;
             string expectedIncidentTitle = "Customers are unable to access [REDACTED] from [REDACTED]";
