@@ -9,7 +9,7 @@ namespace Sia.State.Models
     public class StateTransformConfiguration
     {
         public string TransformType { get; set; }
-        public object TransformMetadata { get; set; }
+        public object TransformData { get; set; }
 
         public static Dictionary<string, Type> ValidTransformTypes() 
             => new Dictionary<string, Type>

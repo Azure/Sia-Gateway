@@ -8,7 +8,7 @@ namespace Sia.State.Models.Configuration
     {
         public IList<EventShape> TriggeringEventShapes { get; set; }
             = new List<EventShape>();
-        public IList<StateTransform> StateTransformsToApply { get; set; }
-            = new List<StateTransform>();
+        public IList<StateTransformConfiguration> StateTransformsToApply { get; set; }
+            = new List<StateTransformConfiguration>();
     }
 }
