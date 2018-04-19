@@ -19,7 +19,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task HandleWhenIncidentClientReturnsSuccessfulReturnCorrectIncidents()
+        public async Task Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents()
         {
             long[] expectedIncidentIds = { 1, 2, 3 };
             string[] expectedIncidentTitles = {
@@ -38,7 +38,7 @@ namespace Sia.Gateway.Tests.Requests
             }
             var serviceUnderTest = new GetIncidentsHandler(
                 await MockFactory
-                    .IncidentContext(nameof(HandleWhenIncidentClientReturnsSuccessfulReturnCorrectIncidents))
+                    .IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents))
                     .ConfigureAwait(continueOnCapturedContext: false),
                 new NoConnector(new NoClient(), new StubLoggerFactory())
             );

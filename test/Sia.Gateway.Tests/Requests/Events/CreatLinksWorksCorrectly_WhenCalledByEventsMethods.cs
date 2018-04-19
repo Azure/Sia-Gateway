@@ -34,7 +34,7 @@ namespace Sia.Gateway.Tests.Requests.Events
         static string GetProperty(object values, string property) => values.GetType().GetProperty(property)?.GetValue(values).ToString() ?? "";
 
         [TestMethod]
-        public void CreateLinksGeneratesFourLinksWithCorrectIdsWhenPassedAnIncidentIdAndAnEventId()
+        public void CreateLinks_GeneratesFourLinksWithCorrectIds_WhenPassedAnIncidentIdAndAnEventId()
         {
             //Arrange
             methods.Clear();
@@ -56,7 +56,7 @@ namespace Sia.Gateway.Tests.Requests.Events
         }
 
         [TestMethod]
-        public void GetHeaderValuesAssignsMetadataAndPaginationAsNullWhenNoMetaDataPassedIn()
+        public void GetHeaderValues_AssignsMetadataAndPaginationAsNull_WhenNoMetaDataPassedIn()
         {
             //Arrange
             methods.Clear();
@@ -88,7 +88,6 @@ namespace Sia.Gateway.Tests.Requests.Events
 
             Assert.AreEqual(GetProperty(ids[0], "id"), "");
             Assert.AreEqual(GetProperty(ids[1], "id"), "");
-
         }
     }
 }

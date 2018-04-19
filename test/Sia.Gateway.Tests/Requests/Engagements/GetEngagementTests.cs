@@ -55,7 +55,7 @@ namespace Sia.Gateway.Tests.Requests
 
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task HandleWhenRecordDoesNotExistInEFThrowKeyNotFoundException()
+        public async Task Handle_WhenRecordDoesNotExistInEF_ThrowKeyNotFoundException()
         {
             var serviceUnderTest = new GetEngagementHandler(await MockFactory.IncidentContext("Get").ConfigureAwait(continueOnCapturedContext: false));
             var request = new GetEngagementRequest(100_000, 1, new DummyAuthenticatedUserContext());

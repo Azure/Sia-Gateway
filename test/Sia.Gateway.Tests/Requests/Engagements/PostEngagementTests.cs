@@ -19,7 +19,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task HandleWhenContextSavesEngagementReturnCorrectEngagementWithUpdateTime()
+        public async Task Handle_WhenContextSavesEngagement_ReturnCorrectEngagementWithUpdateTime()
         {
             var engagementTimeFloor = DateTime.UtcNow;
             var inputEngagement = new NewEngagement()
@@ -58,7 +58,7 @@ namespace Sia.Gateway.Tests.Requests
 
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task HandleWhenAssociatedIncidentDoesNotExistThrowKeyNotFoundException()
+        public async Task Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException()
         {
             var engagementTimeFloor = DateTime.UtcNow;
             var inputEngagement = new NewEngagement()

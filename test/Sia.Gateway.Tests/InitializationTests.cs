@@ -18,7 +18,7 @@ namespace Sia.Gateway.Tests
     public class InitializationTests
     {
         [TestMethod]
-        public void AddTicketingConnectorReturnsServiceWithNoTicketingSystemWhenConnectorConfigNull()
+        public void AddTicketingConnector_ReturnsServiceWithNoTicketingSystem_WhenConnectorConfigNull()
         {
             var mockServices = new SpyServiceCollection();
             var mockEnv = new Mock<IHostingEnvironment>();
@@ -34,7 +34,7 @@ namespace Sia.Gateway.Tests
         }
 
         [TestMethod]
-        public void AddTicketingConnectorReturnsServiceWithNoTicketingSystemWhenConnectorConfigPathIsWhiteSpace()
+        public void AddTicketingConnector_ReturnsServiceWithNoTicketingSystem_WhenConnectorConfigPathIsWhiteSpace()
         {
             var mockServices = new SpyServiceCollection();
             var mockEnv = new Mock<IHostingEnvironment>();

@@ -2,9 +2,7 @@
 
 namespace Sia.Gateway.Tests.Middleware
 {
-#pragma warning disable CA1032 // Implement standard exception constructors
     public class FakeGatewayException : BaseException
-#pragma warning restore CA1032 // Implement standard exception constructors
     {
         private int _expectedStatusCode;
 
