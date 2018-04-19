@@ -12,7 +12,7 @@ namespace Sia.Gateway.Tests.Middleware
         const string FakeGatewayExceptionMessage = "Test Gateway Exception";
         const int FakeGatewayStatusCode = 555;
         [TestMethod]
-        public async Task InvokeWhenGatewayExceptionThrownErrorWrittenToResponse()
+        public async Task Invoke_WhenGatewayExceptionThrown_ErrorWrittenToResponse()
         {
             var objectUnderTest = new ExceptionHandler(ThrowFakeGatewayException);
             var inputContext = new StubHttpContext();
@@ -26,7 +26,7 @@ namespace Sia.Gateway.Tests.Middleware
 
         [TestMethod]
         [ExpectedException(typeof(Exception))]
-        public async Task InvokeWhenNonGatewayExceptionThrownExceptionNotCaught()
+        public async Task Invoke_WhenNonGatewayExceptionThrown_ExceptionNotCaught()
         {
             var objectUnderTest = new ExceptionHandler(ThrowException);
             var inputContext = new StubHttpContext();
@@ -37,7 +37,7 @@ namespace Sia.Gateway.Tests.Middleware
         }
 
         [TestMethod]
-        public async Task InvokeWhenNoExceptionThrownMiddlewareTakesNoAction()
+        public async Task Invoke_WhenNoExceptionThrown_MiddlewareTakesNoAction()
         {
             var objectUnderTest = new ExceptionHandler(DoNothing);
             var inputContext = new StubHttpContext();
