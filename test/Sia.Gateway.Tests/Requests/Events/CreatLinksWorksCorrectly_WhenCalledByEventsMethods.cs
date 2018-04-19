@@ -35,7 +35,7 @@ namespace Sia.Gateway.Tests.Requests.Events
         static string GetProperty(object values, string property) => values.GetType().GetProperty(property)?.GetValue(values).ToString() ?? "";
 
         [TestMethod]
-        public void CreateLinksGeneratesFourLinksWithCorrectIdsWhenPassedAnIncidentId()
+        public void CreateLinks_GeneratesFourLinksWithCorrectIds_WhenPassedAnIncidentIdAndAnEventId()
         {
             //Arrange
             methods.Clear();

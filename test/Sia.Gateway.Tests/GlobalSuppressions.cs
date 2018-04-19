@@ -8,6 +8,11 @@
     "Design",
     "CA1032:Implement standard exception constructors",
     Justification = "Custom exception types with rigid usage requirements",
-    Scope = "namespace",
-    Target = "~T:Sia.Gateway.Tests.Middleware")]
+    Scope = "module")]
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "Naming",
+    "CA1707:Identifiers should not contain underscores",
+    Justification = "Test methods are more readable with underscores",
+    Scope = "module"
+)]

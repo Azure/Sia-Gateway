@@ -15,7 +15,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task HandleWhenEventClientReturnsSuccessfulReturnCorrectEvent()
+        public async Task Handle_WhenEventClientReturnsSuccessful_ReturnCorrectEvent()
         {
             long expectedEventId = 1;
             long expectedEventTypeId = 1;
@@ -27,7 +27,7 @@ namespace Sia.Gateway.Tests.Requests
                 IncidentId = expectedIncidentId
             };
             var serviceUnderTest = new GetEventHandler(await MockFactory
-                .IncidentContext(nameof(HandleWhenEventClientReturnsSuccessfulReturnCorrectEvent))
+                .IncidentContext(nameof(Handle_WhenEventClientReturnsSuccessful_ReturnCorrectEvent))
                 .ConfigureAwait(continueOnCapturedContext: false));
             var request = new GetEventRequest(expectedIncidentId, expectedEventId, new DummyAuthenticatedUserContext());
 

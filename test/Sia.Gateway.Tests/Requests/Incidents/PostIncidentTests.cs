@@ -18,7 +18,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task HandleWhenIncidentClientReturnsSuccessfulReturnCorrectIncidents()
+        public async Task Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents()
         {
             string expectedIncidentTitle = "The thing we were looking for";
             var expectedIncident = new NewIncident
@@ -32,7 +32,7 @@ namespace Sia.Gateway.Tests.Requests
 
             var serviceUnderTest = new PostIncidentHandler(
                 await MockFactory
-                .IncidentContext(nameof(HandleWhenIncidentClientReturnsSuccessfulReturnCorrectIncidents))
+                .IncidentContext(nameof(Handle_WhenIncidentClientReturnsSuccessful_ReturnCorrectIncidents))
                 .ConfigureAwait(continueOnCapturedContext: false));
             var request = new PostIncidentRequest(expectedIncident, new DummyAuthenticatedUserContext());
 

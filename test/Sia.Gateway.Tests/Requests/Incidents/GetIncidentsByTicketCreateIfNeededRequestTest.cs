@@ -20,11 +20,11 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task HandleWhenIncidentNotExistReturnNewIncident()
+        public async Task Handle_WhenIncidentNotExist_ReturnNewIncident()
         {
             var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(
                 await MockFactory
-                .IncidentContext(nameof(HandleWhenIncidentNotExistReturnNewIncident))
+                .IncidentContext(nameof(Handle_WhenIncidentNotExist_ReturnNewIncident))
                 .ConfigureAwait(continueOnCapturedContext: false),
                 new NoConnector(new NoClient(), new StubLoggerFactory())
             );
@@ -42,12 +42,12 @@ namespace Sia.Gateway.Tests.Requests
         }
 
         [TestMethod]
-        public async Task HandleWhenIncidentExistsReturnCorrectIncidents()
+        public async Task Handle_WhenIncidentExists_ReturnCorrectIncidents()
         {
 
             var serviceUnderTest = new GetIncidentsByTicketCreateIfNeededRequestHandler(
                 await MockFactory
-                .IncidentContext(nameof(HandleWhenIncidentExistsReturnCorrectIncidents))
+                .IncidentContext(nameof(Handle_WhenIncidentExists_ReturnCorrectIncidents))
                 .ConfigureAwait(continueOnCapturedContext: false),
                 new NoConnector(new NoClient(), new StubLoggerFactory())
             );

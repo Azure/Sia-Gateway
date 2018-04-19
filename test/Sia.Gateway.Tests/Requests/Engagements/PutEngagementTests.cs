@@ -18,7 +18,7 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task HandleWhenContextUpdatesEngagementEngagementRecordInDatabaseReflectsUpdate()
+        public async Task Handle_WhenContextUpdatesEngagement_EngagementRecordInDatabaseReflectsUpdate()
         {
             var inputEngagement = new UpdateEngagement()
             {
@@ -27,7 +27,7 @@ namespace Sia.Gateway.Tests.Requests
 
             var context = await MockFactory.IncidentContext(
                 nameof(PutEngagementTests) 
-                + nameof(HandleWhenContextUpdatesEngagementEngagementRecordInDatabaseReflectsUpdate)
+                + nameof(Handle_WhenContextUpdatesEngagement_EngagementRecordInDatabaseReflectsUpdate)
             ).ConfigureAwait(continueOnCapturedContext: false);
 
             var incident = context.Incidents.FirstOrDefault();
@@ -48,7 +48,7 @@ namespace Sia.Gateway.Tests.Requests
 
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task HandleWhenAssociatedIncidentDoesNotExistThrowKeyNotFoundException()
+        public async Task Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException()
         {
             var inputEngagement = new UpdateEngagement()
             {
@@ -56,7 +56,7 @@ namespace Sia.Gateway.Tests.Requests
             };
 
             var context = await MockFactory
-                .IncidentContext(nameof(PutEngagementTests) + nameof(HandleWhenAssociatedIncidentDoesNotExistThrowKeyNotFoundException))
+                .IncidentContext(nameof(PutEngagementTests) + nameof(Handle_WhenAssociatedIncidentDoesNotExist_ThrowKeyNotFoundException))
                 .ConfigureAwait(continueOnCapturedContext: false);
 
             var serviceUnderTest = new PutEngagementHandler(context);

@@ -19,14 +19,14 @@ namespace Sia.Gateway.Tests.Requests
             => AutoMapperStartup.InitializeAutomapper();
 
         [TestMethod]
-        public async Task HandleWhenEFReturnsSuccessfulReturnCorrectEvents()
+        public async Task Handle_WhenEFReturnsSuccessful_ReturnCorrectEvents()
         {
             long[] expectedEventIds = { 1, 2 };
             long[] expectedEventTypeIds = { 1, 111 };
 
             var filters = new EventFilters();
             var serviceUnderTest = new GetEventsHandler(await MockFactory
-                .IncidentContext(nameof(HandleWhenEFReturnsSuccessfulReturnCorrectEvents))
+                .IncidentContext(nameof(Handle_WhenEFReturnsSuccessful_ReturnCorrectEvents))
                 .ConfigureAwait(continueOnCapturedContext: false));
             var request = new GetEventsRequest(1, new PaginationMetadata(), filters, new DummyAuthenticatedUserContext());
 

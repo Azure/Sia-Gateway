@@ -5,13 +5,14 @@ using Sia.Gateway.Filters;
 using System;
 using System.Collections.Generic;
 
+
 namespace Sia.Gateway.Tests.Filters
 {
     [TestClass]
     public class EventFiltersTests
     {
         [TestMethod]
-        public void EventFilterIsMatchForWhenFilterIsEmptyMatchesAnyEvent()
+        public void EventFilterIsMatchFor_WhenFilterIsEmpty_MatchesAnyEvent()
         {
             var serviceUnderTest = new EventFilters();
             var testInput = new Event()
@@ -29,7 +30,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void EventFilterWhenProvidedOnlyIncidentIdIsMatchForEventWithSameIncidentId()
+        public void EventFilter_WhenProvidedOnlyIncidentId_IsMatchForEventWithSameIncidentId()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -46,7 +47,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void EventFilterWhenProvidedOnlyIncidentIdIsNotMatchForEventWithDifferentIncidentId()
+        public void EventFilter_WhenProvidedOnlyIncidentId_IsNotMatchForEventWithDifferentIncidentId()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -63,7 +64,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void FilterWhenProvidedOnlyEventTypesIsMatchForEventWithIncludedEventType()
+        public void Filter_WhenProvidedOnlyEventTypes_IsMatchForEventWithIncludedEventType()
         {
             var serviceUnderTest = new EventFilters();
             serviceUnderTest.EventTypes.Add(1);
@@ -79,7 +80,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void FilterWhenProvidedOnlyEventTypesIsNotMatchForEventWithNotIncludedEventType()
+        public void Filter_WhenProvidedOnlyEventTypes_IsNotMatchForEventWithNotIncludedEventType()
         {
             var serviceUnderTest = new EventFilters();
             serviceUnderTest.EventTypes.Add(1);
@@ -95,7 +96,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void EventFilterWhenProvidedOnlyStartTimeIsMatchForEventWithOccurredTimeAfterStartTime()
+        public void EventFilter_WhenProvidedOnlyStartTime_IsMatchForEventWithOccurredTimeAfterStartTime()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -112,7 +113,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void EventFilterWhenProvidedOnlyStartTimeIsNotMatchForEventWithOccurredTimeBeforeStartTime()
+        public void EventFilter_WhenProvidedOnlyStartTime_IsNotMatchForEventWithOccurredTimeBeforeStartTime()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -129,7 +130,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void EventFilterWhenProvidedOnlyEndTimeIsMatchForEventWithOccurredTimeBeforeEndTime()
+        public void EventFilter_WhenProvidedOnlyEndTime_IsMatchForEventWithOccurredTimeBeforeEndTime()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -146,7 +147,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void EventFilterWhenProvidedOnlyEndTimeIsNotMatchForEventWithOccurredTimeAfterEndTime()
+        public void EventFilter_WhenProvidedOnlyEndTime_IsNotMatchForEventWithOccurredTimeAfterEndTime()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -163,7 +164,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void EventFilterWhenProvidedOnlyDataKeyIsMatchForEventWithMatchingKeyInData()
+        public void EventFilter_WhenProvidedOnlyDataKey_IsMatchForEventWithMatchingKeyInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -185,7 +186,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void EventFilterWhenProvidedOnlyDataKeyIsNotMatchForEventWithoutMatchingKeyInData()
+        public void EventFilter_WhenProvidedOnlyDataKey_IsNotMatchForEventWithoutMatchingKeyInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -207,7 +208,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void EventFilterWhenProvidedDataKeyAndDataValueIsMatchForEventWithMatchingKeyAndValueInData()
+        public void EventFilter_WhenProvidedDataKeyAndDataValue_IsMatchForEventWithMatchingKeyAndValueInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -230,7 +231,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void EventFilterWhenProvidedDataKeyAndDataValueIsNotMatchForEventWithMatchingKeyAndNonMatchingValueInData()
+        public void EventFilter_WhenProvidedDataKeyAndDataValue_IsNotMatchForEventWithMatchingKeyAndNonMatchingValueInData()
         {
             var serviceUnderTest = new EventFilters()
             {

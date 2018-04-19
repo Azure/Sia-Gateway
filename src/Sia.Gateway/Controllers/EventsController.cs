@@ -86,7 +86,7 @@ namespace Sia.Gateway.Controllers
 
             var links = Links.CreatePaginatedLinks(EventRoutes.GetMultiple, pagination, filter);
 
-            return Ok(result);
+            return OkIfFound(result, links);
         }
 
         private string GetTokenFromHeaders()

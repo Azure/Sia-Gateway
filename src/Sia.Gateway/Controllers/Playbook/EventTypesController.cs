@@ -26,7 +26,6 @@ namespace Sia.Gateway.Controllers
                 .Send(new GetEventTypesRequest(AuthContext))
                 .ConfigureAwait(continueOnCapturedContext: false));
 
-
         [HttpGet("{id}", Name = nameof(Get) + nameof(EventType))]
         public async Task<IActionResult> Get(long id)
             => OkIfFound(await _mediator

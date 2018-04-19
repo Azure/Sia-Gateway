@@ -13,7 +13,7 @@ namespace Sia.Gateway.Tests.Filters
     public class FilterExtensionsTests
     {
         [TestMethod]
-        public void WithFilterWhenPassedEmptyQueryableReturnsEmptyQueryable()
+        public void WithFilter_WhenPassedEmptyQueryable_ReturnsEmptyQueryable()
         {
             var serviceUnderTest = new EventFilters();
             var testInput = new List<Event>().AsQueryable();
@@ -26,7 +26,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void WithFilterWhenPassedQueryableReturnsOnlyMatchingResultsAsQueryable()
+        public void WithFilter_WhenPassedQueryable_ReturnsOnlyMatchingResultsAsQueryable()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -91,7 +91,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void WithFilterWhenPassedQueryableMatchesByDataKeyWhenEventsHaveEquivalentKeyInData()
+        public void WithFilter_WhenPassedQueryable_MatchesByDataKey_WhenEventsHaveEquivalentKeyInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -133,7 +133,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void WithFilterWhenPassedQueryableReturnsEmptyQueryableWhenNoEventsHaveEquivalentKeyInData()
+        public void WithFilter_WhenPassedQueryable_ReturnsEmptyQueryable_WhenNoEventsHaveEquivalentKeyInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -174,7 +174,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void WithFilterWhenPassedQueryableMatchesByDataKeyAndValueWhenEventsHaveEquivalentKeyAndValueInData()
+        public void WithFilter_WhenPassedQueryable_MatchesByDataKeyAndValue_WhenEventsHaveEquivalentKeyAndValueInData()
         {
             var serviceUnderTest = new EventFilters()
             {
@@ -217,7 +217,7 @@ namespace Sia.Gateway.Tests.Filters
         }
 
         [TestMethod]
-        public void WithFilterWhenPassedQueryableReturnsEmptyQueryableWhenNoEventsHaveEquivalentKeyAndValueInData()
+        public void WithFilter_WhenPassedQueryable_ReturnsEmptyQueryable_WhenNoEventsHaveEquivalentKeyAndValueInData()
         {
             var serviceUnderTest = new EventFilters()
             {
