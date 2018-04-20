@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using Sia.Data.Incidents.Models;
-using Sia.State.Models;
-using Sia.State.Models.Configuration;
+using Sia.State;
+using Sia.State.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace Sia.State.Services
         public async Task<JObject> GenerateStateAsync(
             object currentState,
             IEnumerable<EventForAggregation> orderedEvents,
-            IEnumerable<ReducerCase> cases
+            IEnumerable<ReducerCaseConfiguration> cases
         )
         {
             orderedEvents
@@ -28,13 +28,13 @@ namespace Sia.State.Services
 
         private class ReducerCaseChecker
         {
-            public ReducerCaseChecker(ReducerCase rCase, EventForAggregation eMatch)
+            public ReducerCaseChecker(ReducerCaseConfiguration rCase, EventForAggregation eMatch)
             {
                 ReducerCase = rCase;
                 EventForMatch = eMatch;
             }
 
-            public ReducerCase ReducerCase { get; set; }
+            public ReducerCaseConfiguration ReducerCase { get; set; }
             public EventForAggregation EventForMatch { get; set; }
 
             public bool IsEventShapeMatch()
@@ -53,7 +53,7 @@ namespace Sia.State.Services
         Task<object> GenerateStateAsync(
             object currentState,
             IEnumerable<EventForAggregation> orderedEvents,
-            IEnumerable<ReducerCase> cases
+            IEnumerable<ReducerCaseConfiguration> cases
         );
     }
 }

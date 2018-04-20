@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Sia.State.Generation.Transform
 {
-    public interface IStateTransform<T>
+    public interface IStateTransform<TState>
     {
-        bool Apply(T currentState);
+        bool Apply(ref TState currentState);
     }
 }

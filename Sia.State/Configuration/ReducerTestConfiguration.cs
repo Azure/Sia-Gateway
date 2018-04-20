@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sia.State.Models.Configuration.Validation
+namespace Sia.State.Configuration
 {
-    public class ReducerTest
+    public class ReducerTestConfiguration
     {
         public string TestName { get; set; }
         public object InitialState { get; set; }

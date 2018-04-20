@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sia.State.Models
+namespace Sia.State
 {
     public class StateSnapshot
     {

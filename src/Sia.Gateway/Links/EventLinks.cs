@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Sia.Core.Protocol;
 using Sia.Core.Validation;
-using Sia.Gateway.Filters;
+using Sia.State.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;

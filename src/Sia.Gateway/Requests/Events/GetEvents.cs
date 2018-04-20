@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Sia.Core.Requests;
 using Sia.Core.Data;
 using System.Threading;
-using Sia.Gateway.Filters;
+using Sia.State.Filters;
 
 namespace Sia.Gateway.Requests.Events
 {

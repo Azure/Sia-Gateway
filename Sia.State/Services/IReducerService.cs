@@ -1,5 +1,5 @@
-﻿using Sia.State.Models;
-using Sia.State.Models.Configuration;
+﻿using Sia.State;
+using Sia.State.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;

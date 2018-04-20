@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace Sia.Gateway.Filters
+namespace Sia.State.Filters
 {
 
     public class EventFilters 
@@ -13,10 +13,12 @@ namespace Sia.Gateway.Filters
         IFilters<Domain.Event>
     {
         public long? IncidentId { get; set; }
-        public List<long> EventTypes { get; }
+        public List<long> EventTypes { get; set; }
             = new List<long>();
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+        public IList<string> RequiredDataKeys { get; set; }
+            = new List<string>();
         public string DataKey { get; set; }
         public string DataValue { get; set; }
         public string DataSearch { get; set; }
@@ -41,6 +43,11 @@ namespace Sia.Gateway.Filters
                 {
                     if (!toCompare.Data.Contains(String.Format(CultureInfo.InvariantCulture, KeyValueComparison, new string[] { DataKey, DataValue }))) { return false; }
                 }
+            }
+
+            foreach (var key in RequiredDataKeys)
+            {
+                if (!toCompare.Data.Contains(String.Format(CultureInfo.InvariantCulture, KeyComparison, DataKey))) { return false; }
             }
 
             if (!string.IsNullOrEmpty(DataSearch) && (toCompare.Data == null || !toCompare.Data.Contains(DataSearch))) { return false; }

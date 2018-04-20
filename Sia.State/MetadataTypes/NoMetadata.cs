@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sia.State.Models.MetadataTypes.Transform
+namespace Sia.State.MetadataTypes
 {
-    public class SourceMetadata
+    public class NoMetadata
     {
     }
 }

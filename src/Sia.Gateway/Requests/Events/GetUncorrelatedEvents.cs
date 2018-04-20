@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sia.Data.Incidents;
 using Sia.Domain;
-using Sia.Gateway.Filters;
+using Sia.State.Filters;
 using Sia.Core.Authentication;
 using Sia.Core.Protocol;
 using Sia.Core.Requests;

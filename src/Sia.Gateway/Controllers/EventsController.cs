@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using Sia.Domain.ApiModels;
-using Sia.Gateway.Filters;
+using Sia.State.Filters;
 using Sia.Gateway.Hubs;
 using Sia.Gateway.Requests;
 using Sia.Gateway.Requests.Events;

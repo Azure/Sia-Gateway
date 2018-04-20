@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Sia.Data.Incidents.Models;
-using Sia.Gateway.Filters;
+using Sia.State.Filters;
 using System;
 using System.Collections.Generic;
 

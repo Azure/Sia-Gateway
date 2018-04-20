@@ -1,5 +1,5 @@
 ﻿using Sia.Shared.Validation;
-using Sia.State.Models;
+using Sia.State;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

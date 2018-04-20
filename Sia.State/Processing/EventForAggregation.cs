@@ -1,9 +1,7 @@
-﻿
-namespace Sia.State.Models
+﻿namespace Sia.State.Processing
 {
-    using System;
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using System;
 
     public class EventForAggregation
     {
@@ -19,10 +17,8 @@ namespace Sia.State.Models
 
 namespace AutoMapper
 {
-    using Newtonsoft.Json.Linq;
     using Sia.Data.Incidents.Models;
-    using Sia.State.Models;
-    using System;
+    using Sia.State.Processing;
 
     public static class EventForMatchAutomapperExtensions
     {

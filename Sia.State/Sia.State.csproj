@@ -9,4 +9,8 @@
     <ProjectReference Include="..\src\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Processing\Reducers\" />
+  </ItemGroup>
+
 </Project>

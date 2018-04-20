@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Sia.Core.Validation;
-using Sia.State.Models;
+using Sia.State;
 
 namespace Sia.State.Services
 {

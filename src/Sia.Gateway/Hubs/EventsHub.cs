@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Sia.Domain;
-using Sia.Gateway.Filters;
+using Sia.State.Filters;
 using Sia.Core.Data;
 using System;
 using System.Collections.Concurrent;

@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sia.Gateway.Filters;
+using Sia.State.Filters;
 using Sia.Gateway.Initialization;
 using Sia.Gateway.Requests.Events;
 using Sia.Gateway.Tests.TestDoubles;
