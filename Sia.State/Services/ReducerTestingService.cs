@@ -1,5 +1,7 @@
-﻿using Sia.Shared.Validation;
+﻿using Sia.Core.Validation;
 using Sia.State;
+using Sia.State.Configuration;
+using Sia.State.Configuration.Validation;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,26 +25,29 @@ namespace Sia.State.Services
         public async Task<List<ReducerTestResult>> RunTestsAsync()
         {
             var reducers = await _reducerService.GetReducersAsync();
-            var testResults = new ConcurrentBag<ReducerTestResult>();
 
 
+            // TODO: Implement
+            return null;
         }
 
         private Action<CombinedReducerConfiguration, string> TestRecursively => (CombinedReducerConfiguration reducer, string testNamespace) =>
         {
-            var complexChildTests = reducer.ComplexChildren
+            var complexChildTests = reducer.CompositeChildren
                 .ToAsyncEnumerable()
                 .Select(kvp => (child: kvp.Value, testNamespace: testNamespace + kvp.Key))
                 .ForEachAsync(result => TestRecursively(result.child, result.testNamespace));
 
-            var simpleChildTests = reducer.SimpleChildren
+            /*var simpleChildTests = reducer.SimpleChildren
                 .ToAsyncEnumerable()
                 .Select(kvp => (child: kvp.Value, testNamespace: testNamespace + kvp.Key))
-                .ForEachAsync(result => 
+                .ForEachAsync(result =>
                     result.child.SelfTests
                        .ToAsyncEnumerable()
                        .ForEachAsync(
-                )
+                );*/
+
+            // TODO: Implement
         };
     }
 }

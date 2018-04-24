@@ -4,19 +4,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Sia.Core.Validation;
 using Sia.State;
+using Sia.State.Processing.Reducers;
 
 namespace Sia.State.Services
 {
     public class FromCodeReducerService
         : IReducerService
     {
-        private readonly CombinedReducers _reducers;
+        private readonly CombinedReducer _reducers;
 
-        public FromCodeReducerService(CombinedReducers reducers)
+        public FromCodeReducerService(CombinedReducer reducers)
         {
             _reducers = ThrowIf.Null(reducers, nameof(reducers));
         }
-        public Task<CombinedReducers> GetReducersAsync()
+        public Task<CombinedReducer> GetReducersAsync()
             => Task.FromResult(_reducers);
     }
 }

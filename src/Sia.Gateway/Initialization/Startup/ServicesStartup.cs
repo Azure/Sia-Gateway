@@ -31,6 +31,7 @@ using System.Runtime.Loader;
 using System.Threading.Tasks;
 using System.Globalization;
 using Sia.Gateway.Links;
+using Sia.State.Services.Demo;
 
 namespace Sia.Gateway.Initialization
 {
@@ -48,7 +49,8 @@ namespace Sia.Gateway.Initialization
                 .AddDatabase(env, config)
                 .AddTicketingConnector(env, rawConfig, config?.Connector?.Ticket)
                 .AddMicroserviceProxies(config)
-                .AddRouteHelpers();
+                .AddRouteHelpers()
+                .AddReducersFromCode<DemoReducerService>();
 
         public static IServiceCollection AddAuth(this IServiceCollection services, GatewayConfiguration config)
         {

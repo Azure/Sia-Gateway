@@ -1,5 +1,5 @@
 ﻿using Sia.Data.Incidents;
-using Sia.Shared.Validation;
+using Sia.Core.Validation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,14 +21,16 @@ namespace Sia.State.Services
             _reducerService = ThrowIf.Null(reducerService, nameof(reducerService));
         }
 
-        public async Task<object> GenerateAsync(long incidentId)
+        public Task<object> GenerateAsync(long incidentId)
         {
-
+            // TODO: Implement
+            return null;
         }
 
-        public async Task<object> ReconcileAsync(long incidentId, object partialState, DateTime asOf)
+        public Task<object> ReconcileAsync(long incidentId, object partialState, DateTime asOf)
         {
-
+            // TODO: Implement
+            return null;
         }
     }
 }

@@ -1,6 +1,9 @@
-﻿using Sia.State.Generation.Transform;
+﻿using Newtonsoft.Json.Linq;
+using Sia.Data.Incidents.Models;
+using Sia.State.Generation.Transform;
 using Sia.State.MetadataTypes.Transform;
 using Sia.State.Processing.StateSliceTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,10 +34,21 @@ namespace Sia.State.Processing.StateTransformTypes
         }
     }
 
-    public class RemoveFromMapRule : IStateTransformRule<PartitionMetadata, RemoveFromMap>
+    public class RemoveFromMapRule : StateTransformRule<PartitionMetadata, Map>
     {
-        public PartitionMetadata Metadata { get; set; }
+        public override IStateTransform<Map> GetTransform(Event ev)
+        {
+            var jData = JObject.Parse(ev.Data);
+            var orderedValues = Metadata.PartitionBySourceKeys
+                .Select(key => jData
+                    .GetValue(key, StringComparison.InvariantCultureIgnoreCase)
+                    .ToObject<string>() ?? "Other")
+                .ToList();
 
-        public RemoveFromMap GetTransform(EventForAggregation ev) => throw new System.NotImplementedException();
+            return new RemoveFromMap()
+            {
+                OrderedValues = orderedValues
+            };
+        }
     }
 }

@@ -1,4 +1,7 @@
-﻿using Sia.State.Generation.Transform;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Sia.Data.Incidents.Models;
+using Sia.State.Generation.Transform;
 using Sia.State.MetadataTypes.Transform;
 using System;
 using System.Collections.Generic;
@@ -18,11 +21,12 @@ namespace Sia.State.Processing.StateTransformTypes
         }
     }
 
-    public class CopyFromSourceRule : IStateTransformRule<PathMetadata, CopyFromSource>
+    public class CopyFromSourceRule : StateTransformRule<PathMetadata, string>
     {
-        public PathMetadata Metadata { get; set; }
-
-        public CopyFromSource GetTransform(EventForAggregation ev)
-            => new CopyFromSource() { NewValue = ev.Data.SelectToken(Metadata.Key).ToString() };
+        public override IStateTransform<string> GetTransform(Event ev)
+            => new CopyFromSource()
+            {
+                NewValue = JObject.Parse(ev.Data).SelectToken(Metadata.Key).ToString()
+            };
     }
 }

@@ -32,6 +32,7 @@
     <ProjectReference Include="..\..\domain\Domain\Sia.Core\Sia.Core.csproj" />
     <ProjectReference Include="..\..\domain\Domain\Sia.Domain.ApiModels\Sia.Domain.ApiModels.csproj" />
     <ProjectReference Include="..\..\domain\Domain\Sia.Domain\Sia.Domain.csproj" />
+    <ProjectReference Include="..\..\Sia.State\Sia.State.csproj" />
     <ProjectReference Include="..\Sia.Connectors.Tickets\Sia.Connectors.Tickets.csproj" />
     <ProjectReference Include="..\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
   </ItemGroup>

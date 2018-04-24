@@ -12,8 +12,8 @@ namespace Sia.State
         public string TransformType { get; set; }
         public object TransformData { get; set; }
 
-        public static Dictionary<string, (Type metaDataType, Type TransformRuleType)> ValidTransformTypes
-            = new Dictionary<string, (Type metaDataType, Type TransformRuleType)>
+        public static Dictionary<string, (Type MetaDataType, Type TransformRuleType)> ValidTransformTypes
+            = new Dictionary<string, (Type MetaDataType, Type TransformRuleType)>
             {
                 { "Copy", (typeof(PathMetadata),  typeof(CopyFromSourceRule))},
                 { "AddToMap", (typeof(PartitionMetadata), typeof(AddToMapRule))},

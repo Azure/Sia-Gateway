@@ -1,10 +1,11 @@
-﻿using Sia.Data.Incidents;
-using Sia.Shared.Validation;
+﻿using Sia.Core.Validation;
+using Sia.Data.Incidents;
 using Sia.State;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Sia.State.Services
 {
@@ -22,9 +23,14 @@ namespace Sia.State.Services
             _reconciliationService = ThrowIf.Null(reconciliationService, nameof(reconciliationService));
         }
 
-        public object GetState(long incidentId)
+        public async Task<object> GetState(long incidentId)
         {
-            var existingSnapshot
+            if (_backingCollection.TryGetValue(incidentId, out StateSnapshot toReturn))
+            {
+                return toReturn.State;
+            }
+
+            return null;
         }
 
     }

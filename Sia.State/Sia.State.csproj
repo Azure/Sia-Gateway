@@ -5,12 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\domain\Domain\Sia.Core\Sia.Core.csproj" />
     <ProjectReference Include="..\domain\Domain\Sia.Domain\Sia.Domain.csproj" />
     <ProjectReference Include="..\src\Sia.Data.Incident\Sia.Data.Incidents.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Processing\Reducers\" />
   </ItemGroup>
 
 </Project>
