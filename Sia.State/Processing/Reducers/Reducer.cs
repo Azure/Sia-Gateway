@@ -1,6 +1,8 @@
 ﻿using Sia.Core.Validation;
 using Sia.Data.Incidents.Models;
 using Sia.State.Filters;
+using Sia.State.Processing.StateModels;
+using Sia.State.Processing.Transforms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +18,7 @@ namespace Sia.State.Processing.Reducers
         object UpdateSnapshot(IEnumerable<Event> candidateEvents, object currentState);
     }
     public class Reducer<TState> : IReducer
-        where TState : class
+        where TState : class, IDeepCopyable<TState>
     {
         public string Name { get; set; }
         public TState InitialState { get; set; }
@@ -26,7 +28,7 @@ namespace Sia.State.Processing.Reducers
         public object GetRawInitialState() => InitialState;
         public object UpdateSnapshot(IEnumerable<Event> candidateEvents, object currentState)
             => currentState == null
-                ? UpdateSnapshot(candidateEvents, InitialState)
+                ? UpdateSnapshot(candidateEvents, InitialState.GetDeepCopy())
                 : UpdateSnapshot(candidateEvents, (TState)currentState);
 
         public TState UpdateSnapshot(IEnumerable<Event> candidateEvents, TState currentState)
@@ -42,7 +44,7 @@ namespace Sia.State.Processing.Reducers
             return workingState;
         }
 
-        private void ApplyTransforms(ref TState currentState, IEnumerable<(Generation.Transform.IStateTransform<TState> transform, Event ev)> transforms)
+        private void ApplyTransforms(ref TState currentState, IEnumerable<(IStateTransform<TState> transform, Event ev)> transforms)
         {
             long currentEventId = 0;
             try

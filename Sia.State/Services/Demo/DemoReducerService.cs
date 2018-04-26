@@ -4,8 +4,8 @@ using System.Text;
 using Sia.State.Filters;
 using Sia.State.MetadataTypes.Transform;
 using Sia.State.Processing.Reducers;
-using Sia.State.Processing.StateSliceTypes;
-using Sia.State.Processing.StateTransformTypes;
+using Sia.State.Processing.StateModels;
+using Sia.State.Processing.Transforms;
 
 namespace Sia.State.Services.Demo
 {
@@ -38,17 +38,17 @@ namespace Sia.State.Services.Demo
                         {
                             {
                                 "Joined",
-                                new Reducer<Map>()
+                                new Reducer<Tree>()
                                 {
                                     Name = "Root.Participants.Joined",
-                                    InitialState = new Map(),
+                                    InitialState = new Tree(),
                                     ApplicableEvents = new EventFilters()
                                     {
                                         EventTypes = new List<long>() {1}
                                     },
-                                    Cases = new List<ReducerCase<Map>>
+                                    Cases = new List<ReducerCase<Tree>>
                                     {
-                                        new ReducerCase<Map>()
+                                        new ReducerCase<Tree>()
                                         {
                                             MatchTriggeringEvents = new EventFilters()
                                             {
@@ -69,7 +69,7 @@ namespace Sia.State.Services.Demo
                                                 }
                                             }
                                         },
-                                        new ReducerCase<Map>()
+                                        new ReducerCase<Tree>()
                                         {
                                             MatchTriggeringEvents = new EventFilters()
                                             {
@@ -95,17 +95,17 @@ namespace Sia.State.Services.Demo
                             },
                             {
                                 "Left",
-                                new Reducer<Map>()
+                                new Reducer<Tree>()
                                 {
                                     Name = "Root.Participants.Left",
-                                    InitialState = new Map(),
+                                    InitialState = new Tree(),
                                     ApplicableEvents = new EventFilters()
                                     {
                                         EventTypes = new List<long>() {1}
                                     },
-                                    Cases = new List<ReducerCase<Map>>
+                                    Cases = new List<ReducerCase<Tree>>
                                     {
-                                        new ReducerCase<Map>()
+                                        new ReducerCase<Tree>()
                                         {
                                             MatchTriggeringEvents = new EventFilters()
                                             {
@@ -126,7 +126,7 @@ namespace Sia.State.Services.Demo
                                                 }
                                             }
                                         },
-                                        new ReducerCase<Map>()
+                                        new ReducerCase<Tree>()
                                         {
                                             MatchTriggeringEvents = new EventFilters()
                                             {
@@ -162,11 +162,11 @@ namespace Sia.State.Services.Demo
                     {
                         {
                             "Joined",
-                            new Map()
+                            new Tree()
                         },
                         {
                             "Left",
-                            new Map()
+                            new Tree()
                         }
                     }
                 }

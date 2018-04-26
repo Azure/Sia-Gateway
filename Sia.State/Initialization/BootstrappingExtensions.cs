@@ -1,6 +1,7 @@
-﻿using Sia.State.Configuration;
+﻿using Sia.State.Configuration.Models;
 using Sia.State.Processing.Reducers;
-using Sia.State.Processing.StateTransformTypes;
+using Sia.State.Processing.StateModels;
+using Sia.State.Processing.Transforms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +68,7 @@ namespace Sia.State.Initialization
         }
 
         public static Reducer<TState> TypedResolveConfiguration<TState>(this ReducerConfiguration config, string reducerName)
-            where TState : class
+            where TState : class, IDeepCopyable<TState>
         {
             var reducerCases = config.Cases
                 .Select(rCase => rCase.ResolveConfiguration<TState>(reducerName))

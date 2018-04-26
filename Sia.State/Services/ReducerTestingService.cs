@@ -1,7 +1,7 @@
 ﻿using Sia.Core.Validation;
 using Sia.State;
-using Sia.State.Configuration;
-using Sia.State.Configuration.Validation;
+using Sia.State.Configuration.Models;
+using Sia.State.Configuration.Models.Validation;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

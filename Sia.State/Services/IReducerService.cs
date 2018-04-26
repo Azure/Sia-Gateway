@@ -1,5 +1,5 @@
 ﻿using Sia.State;
-using Sia.State.Configuration;
+using Sia.State.Configuration.Models;
 using Sia.State.Processing.Reducers;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 ﻿using Sia.State.MetadataTypes;
 using Sia.State.MetadataTypes.Transform;
-using Sia.State.Processing.StateTransformTypes;
+using Sia.State.Processing.Transforms;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +12,7 @@ namespace Sia.State
         public string TransformType { get; set; }
         public object TransformData { get; set; }
 
-        public static Dictionary<string, (Type MetaDataType, Type TransformRuleType)> ValidTransformTypes
+        public static Dictionary<string, (Type MetaDataType, Type TransformRuleType)> ValidTransformTypes { get; }
             = new Dictionary<string, (Type MetaDataType, Type TransformRuleType)>
             {
                 { "Copy", (typeof(PathMetadata),  typeof(CopyFromSourceRule))},

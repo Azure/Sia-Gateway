@@ -1,13 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using Sia.Data.Incidents.Models;
-using Sia.State.Generation.Transform;
 using Sia.State.MetadataTypes.Transform;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Sia.State.Processing.StateTransformTypes
+namespace Sia.State.Processing.Transforms
 {
     public class CopyFromSource
         : IStateTransform<string>

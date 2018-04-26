@@ -1,9 +1,5 @@
 ﻿using Sia.State.Filters;
-using Sia.State.Generation.Transform;
-using Sia.State.Processing.StateTransformTypes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Sia.State.Processing.Transforms;
 
 namespace Sia.State.Processing.Reducers
 {

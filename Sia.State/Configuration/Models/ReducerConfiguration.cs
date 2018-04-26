@@ -1,9 +1,9 @@
-﻿using Sia.State.Configuration.Validation;
-using Sia.State.Processing.StateSliceTypes;
+﻿using Sia.State.Configuration.Models.Validation;
+using Sia.State.Processing.StateModels;
 using System;
 using System.Collections.Generic;
 
-namespace Sia.State.Configuration
+namespace Sia.State.Configuration.Models
 {
     public class ReducerConfiguration
     {
@@ -17,7 +17,7 @@ namespace Sia.State.Configuration
         public static Dictionary<string, Type> ValidStateTypes
             = new Dictionary<string, Type>()
             {
-                { nameof(Map), typeof(Map) }
+                { nameof(Tree), typeof(Tree) }
             };
     }
 }

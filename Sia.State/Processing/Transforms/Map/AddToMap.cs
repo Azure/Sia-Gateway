@@ -1,20 +1,20 @@
 ﻿using Newtonsoft.Json.Linq;
 using Sia.Data.Incidents.Models;
-using Sia.State.Generation.Transform;
 using Sia.State.MetadataTypes.Transform;
-using Sia.State.Processing.StateSliceTypes;
+using Sia.State.Processing.StateModels;
+using Sia.State.Processing.Transforms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Sia.State.Processing.StateTransformTypes
+namespace Sia.State.Processing.Transforms
 {
-    public class AddToMap : IStateTransform<Map>
+    public class AddToMap : IStateTransform<Tree>
     {
         public List<string> OrderedValues { get; set; }
 
         /// <returns>True if value added, false otherwise</returns>
-        public bool Apply(ref Map currentState)
+        public bool Apply(ref Tree currentState)
         {
             if(OrderedValues.Count < 1)
             {
@@ -24,10 +24,10 @@ namespace Sia.State.Processing.StateTransformTypes
             var subMapInScope = currentState;
             foreach (var key in OrderedValues.Take(OrderedValues.Count - 1))
             {
-                if(!subMapInScope.Children.TryGetValue(key, out var nextSubmap))
+                if(!subMapInScope.Branches.TryGetValue(key, out var nextSubmap))
                 {
-                    var newChild = new Map();
-                    subMapInScope.Children.Add(key, newChild);
+                    var newChild = new Tree();
+                    subMapInScope.Branches.Add(key, newChild);
                     subMapInScope = newChild;
                 }
                 else
@@ -38,16 +38,16 @@ namespace Sia.State.Processing.StateTransformTypes
 
             var toAdd = OrderedValues[OrderedValues.Count - 1];
 
-            return subMapInScope.Values.Contains(toAdd)
-                || subMapInScope.Values.Add(toAdd);
+            return subMapInScope.Leaves.Contains(toAdd)
+                || subMapInScope.Leaves.Add(toAdd);
         }
     }
 
-    public class AddToMapRule : IStateTransformRule<Map>
+    public class AddToMapRule : IStateTransformRule<Tree>
     {
         public PartitionMetadata Metadata { get; set; }
 
-        public IStateTransform<Map> GetTransform(Event ev)
+        public IStateTransform<Tree> GetTransform(Event ev)
         {
             var jData = JObject.Parse(ev.Data);
             var orderedValues = Metadata.PartitionBySourceKeys

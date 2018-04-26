@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sia.State.Configuration.Validation
+namespace Sia.State.Configuration.Models.Validation
 {
     public class ReducerTestResult
     {

@@ -1,10 +1,6 @@
 ﻿using Sia.Data.Incidents.Models;
-using Sia.State.Generation.Transform;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Sia.State.Processing.StateTransformTypes
+namespace Sia.State.Processing.Transforms
 {
     public interface IStateTransformRule<TState>
     {

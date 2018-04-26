@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sia.State.Generation.Transform
+namespace Sia.State.Processing.Transforms
 {
     public interface IStateTransform<TState>
     {

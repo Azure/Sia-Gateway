@@ -11,6 +11,5 @@ namespace Sia.State.Services.Demo
         public string Action { get; set; }
         public string Service { get; set; }
         public string Team { get; set; }
-
     }
 }

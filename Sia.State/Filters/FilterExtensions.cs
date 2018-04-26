@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Sia.State.Configuration
+namespace Sia.State.Configuration.Models
 {
     public static class FilterExtensions
     {
