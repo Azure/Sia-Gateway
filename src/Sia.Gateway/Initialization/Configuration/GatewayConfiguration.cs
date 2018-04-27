@@ -2,6 +2,7 @@
 using Sia.Core.Configuration;
 using Sia.Core.Configuration.ApplicationInsights;
 using Sia.Core.Configuration.Protocol;
+using Sia.Core.Configuration.Sources.Git;
 using Sia.Core.Configuration.Sources.GitHub;
 
 namespace Sia.Gateway.Initialization.Configuration
@@ -78,7 +79,10 @@ namespace Sia.Gateway.Initialization.Configuration
         /// <see cref="GitHubConfiguration"/>
         /// </summary>
         public GitHubConfiguration GitHub { get; set; }
-
+        /// <summary>
+        /// <see cref="GitConfiguration"/>
+        /// </summary>
+        public GitConfiguration Git { get; set; }
         public IServiceCollection RegisterMe(IServiceCollection services)
             => services
                 .AddSingleton(this)

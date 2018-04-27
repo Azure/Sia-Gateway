@@ -43,11 +43,10 @@ namespace Sia.State.Processing.Transforms
         }
     }
 
-    public class AddToMapRule : IStateTransformRule<Tree>
+    public class AddToMapRule 
+        : StateTransformRule<PartitionMetadata, Tree>
     {
-        public PartitionMetadata Metadata { get; set; }
-
-        public IStateTransform<Tree> GetTransform(Event ev)
+        public override IStateTransform<Tree> GetTransform(Event ev)
         {
             var jData = JObject.Parse(ev.Data);
             var orderedValues = Metadata.PartitionBySourceKeys

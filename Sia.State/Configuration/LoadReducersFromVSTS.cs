@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sia.State.Configuration
 {
-    class LoadConfigurationFromVSTS
+    class LoadReducersFromVSTS
     {
     }
 }

@@ -22,11 +22,7 @@ namespace Sia.Gateway.Initialization
                 case ProxyConfig.VaultCertificateAuthType:
                     connectionInfo = new ProxyConnectionInfo(
                         config.Endpoint,
-                        new KeyVaultConfiguration(
-                            config.VaultCertificate.ClientId,
-                            config.VaultCertificate.ClientSecret,
-                            config.VaultCertificate.VaultName
-                        ), 
+                        config.VaultCertificate, 
                         config.VaultCertificate.CertName
                     );
                     break;

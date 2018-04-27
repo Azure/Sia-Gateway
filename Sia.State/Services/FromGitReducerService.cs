@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sia.Core.Configuration.Sources.GitHub;
+using Sia.Core.Configuration.Sources.Git;
 using Sia.Core.Validation;
 using Sia.State.Configuration;
 using Sia.State.Processing.Reducers;
@@ -10,23 +10,23 @@ using System.Threading.Tasks;
 
 namespace Sia.State.Services
 {
-    public class FromGitHubReducerService
+    public class FromGitReducerService
         : IReducerService
     {
-        public FromGitHubReducerService(
-            GitHubConfiguration config,
+        public FromGitReducerService(
+            GitConfiguration config,
             ILoggerFactory loggerFactory
         )
         {
-            GitHubConfig = ThrowIf.Null(config, nameof(config));
+            GitConfig = ThrowIf.Null(config, nameof(config));
             Logger = ThrowIf.Null(loggerFactory, nameof(loggerFactory))
                 .CreateLogger<FromGitHubReducerService>();
         }
 
-        public GitHubConfiguration GitHubConfig { get; }
+        public GitConfiguration GitConfig { get; }
         private ILogger Logger { get; }
         private CombinedReducer Reducer { get; set; }
-        private object _reducerLock = new object();
+
         public async Task<CombinedReducer> GetReducersAsync()
         {
             if (Reducer is null)
@@ -39,13 +39,13 @@ namespace Sia.State.Services
 
         private async Task BootstrapReducer()
         {
-            var reducerConfig = await GitHubConfig
+            var reducerConfig = await GitConfig
                 .GetRootReducerConfig(Logger)
                 .ConfigureAwait(continueOnCapturedContext: false);
 
             var evaluatedReducers = reducerConfig.ResolveConfiguration();
 
-            lock (_reducerLock)
+            lock (Reducer)
             {
                 if (Reducer is null)
                 {

@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LibGit2Sharp" Version="0.25.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\domain\Domain\Sia.Core\Sia.Core.csproj" />
     <ProjectReference Include="..\domain\Domain\Sia.Domain\Sia.Domain.csproj" />
     <ProjectReference Include="..\src\Sia.Data.Incident\Sia.Data.Incidents.csproj" />

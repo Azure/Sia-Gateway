@@ -22,11 +22,12 @@ namespace Sia.Gateway.Initialization
             }
 
             var secrets = new AzureSecretVault(
-                new KeyVaultConfiguration(
-                    configuration.ClientId,
-                    configuration.ClientSecret,
-                    configuration.KeyVault.VaultName
-                )
+                new KeyVaultConfiguration()
+                {
+                    ClientId = configuration.ClientId,
+                    ClientSecret = configuration.ClientSecret,
+                    VaultName = configuration.KeyVault.VaultName
+                }
             );
 
             configuration.ApplicationInsights.InstrumentationKey = await secrets.Get(instrumentationKeyName).ConfigureAwait(continueOnCapturedContext: false);

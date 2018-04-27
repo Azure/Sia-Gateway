@@ -24,7 +24,7 @@ namespace Sia.State.Services
 
         public async Task<List<ReducerTestResult>> RunTestsAsync()
         {
-            var reducers = await _reducerService.GetReducersAsync();
+            var reducers = await _reducerService.GetReducersAsync().ConfigureAwait(continueOnCapturedContext: false);
 
 
             // TODO: Implement

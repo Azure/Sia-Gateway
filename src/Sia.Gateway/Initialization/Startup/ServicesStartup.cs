@@ -50,7 +50,7 @@ namespace Sia.Gateway.Initialization
                 .AddTicketingConnector(env, rawConfig, config?.Connector?.Ticket)
                 .AddMicroserviceProxies(config)
                 .AddRouteHelpers()
-                .AddReducersFromCode<DemoReducerService>();
+                .AddReducers(config);
 
         public static IServiceCollection AddAuth(this IServiceCollection services, GatewayConfiguration config)
         {
@@ -170,5 +170,11 @@ namespace Sia.Gateway.Initialization
                 .AddScoped<IncidentLinksProvider>()
                 .AddScoped<EventLinksProvider>();
 
+        public static IServiceCollection AddReducers(this IServiceCollection services, GatewayConfiguration config)
+            => config.GitHub is null
+                ? config.Git is null
+                    ? services.AddReducersFromCode<DemoReducerService>() // TODO: Remove when demo goes out of scope
+                    : services.AddReducersFromGit(config.Git)
+                : services.AddReducersFromGithub(config.GitHub);
     }
 }

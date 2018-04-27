@@ -14,7 +14,7 @@ namespace Sia.State.Configuration.Models
         public IList<ReducerTestConfiguration> SelfTests { get; set; }
             = new List<ReducerTestConfiguration>();
 
-        public static Dictionary<string, Type> ValidStateTypes
+        public static Dictionary<string, Type> ValidStateTypes { get; }
             = new Dictionary<string, Type>()
             {
                 { nameof(Tree), typeof(Tree) }

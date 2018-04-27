@@ -7,9 +7,7 @@ namespace Sia.State.Configuration.Models
     public class EventShape
     {
         public long EventTypeId { get; set; }
-        public IList<string> RequiredDataKeys { get; set; }
-            = new List<string>();
-        public IList<EventDataTransform> Transforms { get; set; }
-            = new List<EventDataTransform>();
+        public string RequiredDataKey { get; set; }
+        public string RequiredDataValue { get; set; }
     }
 }

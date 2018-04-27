@@ -35,9 +35,9 @@ namespace Sia.State.Configuration.Models
                         .Where(time => time.HasValue)
                         .Max(time => time.Value))
                     : null,
-                RequiredDataKeys = filters
-                    .SelectMany(filter => filter.RequiredDataKeys)
-                    .ToHashSet(StringComparer.InvariantCultureIgnoreCase) // Unique
+                MatchesAny = filters
+                    .SelectMany(filter => filter.MatchesAny)
+                    .ToHashSet(new FilterKeyValuePairComparer()) // Unique
                     .ToList()
             };
 
@@ -45,7 +45,14 @@ namespace Sia.State.Configuration.Models
             => new EventFilters()
             {
                 EventTypes = new List<long>() { shape.EventTypeId },
-                RequiredDataKeys = shape.RequiredDataKeys
+                MatchesAny = new List<FilterKeyValuePair>()
+                {
+                    new FilterKeyValuePair()
+                    {
+                        Key = shape.RequiredDataKey,
+                        Value = shape.RequiredDataValue
+                    }
+                }  
             };
     }
 }

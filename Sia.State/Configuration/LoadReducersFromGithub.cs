@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace Sia.State.Configuration
 {
-    public static class LoadReducerConfigurationFromGithub
+    public static class LoadReducersFromGithub
     {
         private const string ApplicationName = "Sia-State";
-
+        private const string JsonFilePattern = "*.json";
+        private const string JsonFileExtension = ".json";
         public static async Task<CombinedReducerConfiguration> GetRootReducerConfig(
             this GitHubConfiguration config,
             ILogger logger
@@ -23,10 +24,16 @@ namespace Sia.State.Configuration
             var client = config.Source.GetClient(ApplicationName);
 
             var reducersByDepth = (await client
-                .GetSeedDataFromGitHub<ReducerConfiguration>(logger, config.Source.Repository, string.Empty)
+                .GetSeedDataFromGitHub<ReducerConfiguration>(logger, config.Source.Repository, JsonFilePattern)
                 .ConfigureAwait(continueOnCapturedContext: false))
-                .Select(pathToConfig => (pathTokens: pathToConfig.filePath.Split('/'), reducerConfig: pathToConfig.resultObject))
-                .GroupBy(tokensToReducer => tokensToReducer.pathTokens.Count())
+                .Select(pathToConfig =>
+                    (
+                        pathTokens: pathToConfig.filePath
+                            .Remove(pathToConfig.filePath.IndexOf(JsonFileExtension, StringComparison.InvariantCultureIgnoreCase), JsonFileExtension.Length)
+                            .Split('/'),
+                        reducerConfig: pathToConfig.resultObject
+                    )
+                ).GroupBy(tokensToReducer => tokensToReducer.pathTokens.Count())
                 .ToList();
 
             return reducersByDepth.ToCombinedReducerConfiguration();
@@ -49,7 +56,8 @@ namespace Sia.State.Configuration
                         .ToCombinedReducerConfiguration(targetLayer + 1)))
                 .ToDictionary(),
             SimpleChildren = layers
-                .First(group => group.Key == targetLayer)
+                .Where(group => group.Key == targetLayer)
+                .SelectMany(groupRecords => groupRecords)
                 .Select(tokensToReducer => new KeyValuePair<string, ReducerConfiguration>(
                     tokensToReducer.pathTokens[targetLayer - 1],
                     tokensToReducer.reducerConfig))

@@ -17,8 +17,8 @@ namespace Sia.State.Filters
             = new List<long>();
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public IList<string> RequiredDataKeys { get; set; }
-            = new List<string>();
+        public IList<FilterKeyValuePair> MatchesAny { get; set; }
+            = new List<FilterKeyValuePair>();
         public string DataKey { get; set; }
         public string DataValue { get; set; }
         public string DataSearch { get; set; }
@@ -33,22 +33,9 @@ namespace Sia.State.Filters
             if (StartTime.HasValue && toCompare.Occurred.CompareTo(StartTime) <= 0) { return false; }
             if (EndTime.HasValue && toCompare.Occurred.CompareTo(EndTime) > 0) { return false; }
 
-            if (!String.IsNullOrEmpty(DataKey))
-            {
-                if (String.IsNullOrEmpty(DataValue))
-                {
-                    if (!toCompare.Data.Contains(String.Format(CultureInfo.InvariantCulture, KeyComparison, DataKey))) { return false; }
-                }
-                else
-                {
-                    if (!toCompare.Data.Contains(String.Format(CultureInfo.InvariantCulture, KeyValueComparison, new string[] { DataKey, DataValue }))) { return false; }
-                }
-            }
+            if (!MatchesKeyValuePair(toCompare, DataKey, DataValue)) { return false; }
 
-            foreach (var key in RequiredDataKeys)
-            {
-                if (!toCompare.Data.Contains(String.Format(CultureInfo.InvariantCulture, KeyComparison, DataKey))) { return false; }
-            }
+            if (!MatchesAny.Any(pair => MatchesKeyValuePair(toCompare, pair.Key, pair.Value))) { return false; }
 
             if (!string.IsNullOrEmpty(DataSearch) && (toCompare.Data == null || !toCompare.Data.Contains(DataSearch))) { return false; }
 
@@ -73,6 +60,22 @@ namespace Sia.State.Filters
 
             if (!string.IsNullOrWhiteSpace(DataKey)) { yield return new KeyValuePair<string, string>(nameof(DataKey), DataKey); }
             if (!string.IsNullOrWhiteSpace(DataValue)) { yield return new KeyValuePair<string, string>(nameof(DataValue), DataValue); }
+        }
+
+        private static bool MatchesKeyValuePair(Data.Incidents.Models.Event toCompare, string key, string value)
+        {
+            if (!String.IsNullOrEmpty(key))
+            {
+                if (String.IsNullOrEmpty(value))
+                {
+                    if (!toCompare.Data.Contains(String.Format(CultureInfo.InvariantCulture, KeyComparison, key))) { return false; }
+                }
+                else
+                {
+                    if (!toCompare.Data.Contains(String.Format(CultureInfo.InvariantCulture, KeyValueComparison, new string[] { key, value }))) { return false; }
+                }
+            }
+            return true;
         }
     }
 }

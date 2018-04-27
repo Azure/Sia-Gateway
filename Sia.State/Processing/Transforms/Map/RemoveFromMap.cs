@@ -37,7 +37,8 @@ namespace Sia.State.Processing.Transforms
         }
     }
 
-    public class RemoveFromMapRule : StateTransformRule<PartitionMetadata, Tree>
+    public class RemoveFromMapRule 
+        : StateTransformRule<PartitionMetadata, Tree>
     {
         public override IStateTransform<Tree> GetTransform(Event ev)
         {

@@ -23,14 +23,14 @@ namespace Sia.State.Services
             _reconciliationService = ThrowIf.Null(reconciliationService, nameof(reconciliationService));
         }
 
-        public async Task<object> GetState(long incidentId)
+        public Task<object> GetState(long incidentId)
         {
             if (_backingCollection.TryGetValue(incidentId, out StateSnapshot toReturn))
             {
-                return toReturn.State;
+                return Task.FromResult(toReturn.State);
             }
 
-            return null;
+            return Task.FromResult((object)null);
         }
 
     }

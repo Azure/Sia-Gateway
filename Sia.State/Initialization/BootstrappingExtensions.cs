@@ -1,4 +1,5 @@
-﻿using Sia.State.Configuration.Models;
+﻿using Newtonsoft.Json.Linq;
+using Sia.State.Configuration.Models;
 using Sia.State.Initialization;
 using Sia.State.Processing.Reducers;
 using Sia.State.Processing.StateModels;
@@ -78,7 +79,7 @@ namespace Sia.State.Configuration
             var reducer = new Reducer<TState>()
             {
                 Name = reducerName,
-                InitialState = (TState)config.InitialState,
+                InitialState = ((JObject)config.InitialState).ToObject<TState>(),
                 ApplicableEvents = reducerCases
                     .Select(rCase => rCase.MatchTriggeringEvents)
                     .ToUnionFilter(),
@@ -99,7 +100,7 @@ namespace Sia.State.Configuration
 
             // TODO: Validate Generic Type Restrictions for ResolveConfiguration
             var stronglyTypedResolveConfiguration = typeof(BootstrappingExtensions)
-                .GetMethod(nameof(TypedResolveConfiguration), new Type[] { typeof(ReducerConfiguration), typeof(string) })
+                .GetMethod(nameof(ResolveConfiguration), new Type[] { typeof(ReducerCaseConfiguration) })
                 .MakeGenericMethod(typeof(TState), transform.MetaDataType, transform.TransformRuleType);
 
             return (ReducerCase<TState>)stronglyTypedResolveConfiguration.Invoke(null, new object[] { config });
@@ -113,7 +114,7 @@ namespace Sia.State.Configuration
                 MatchTriggeringEvents = config.TriggeringEventShape.ToFilter(),
                 StateTransformToApply = new TRule
                 {
-                    Metadata = (TMetadata)config.StateTransformToApply.TransformData
+                    Metadata = ((JObject)config.StateTransformToApply.TransformData).ToObject<TMetadata>()
                 }
             };
 
