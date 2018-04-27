@@ -2,6 +2,7 @@
 using Sia.Core.Configuration;
 using Sia.Core.Configuration.ApplicationInsights;
 using Sia.Core.Configuration.Protocol;
+using Sia.Core.Configuration.Sources.GitHub;
 
 namespace Sia.Gateway.Initialization.Configuration
 {
@@ -73,6 +74,10 @@ namespace Sia.Gateway.Initialization.Configuration
         /// Should be set in either environement variables or from secret value in Azure KeyVault
         /// </summary>
         public string GatewayDatabaseConnectionString { get; set; }
+        /// <summary>
+        /// <see cref="GitHubConfiguration"/>
+        /// </summary>
+        public GitHubConfiguration GitHub { get; set; }
 
         public IServiceCollection RegisterMe(IServiceCollection services)
             => services

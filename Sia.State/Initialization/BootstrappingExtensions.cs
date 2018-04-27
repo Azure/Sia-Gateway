@@ -1,4 +1,5 @@
 ﻿using Sia.State.Configuration.Models;
+using Sia.State.Initialization;
 using Sia.State.Processing.Reducers;
 using Sia.State.Processing.StateModels;
 using Sia.State.Processing.Transforms;
@@ -7,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Sia.State.Initialization
+namespace Sia.State.Configuration
 {
     public static class BootstrappingExtensions
     {

@@ -10,6 +10,7 @@ using Sia.Gateway.Initialization;
 using Sia.Gateway.Initialization.Configuration;
 using Sia.Core.Validation;
 using System.Globalization;
+using Sia.State.Services;
 
 namespace Sia.Gateway
 {
@@ -86,7 +87,8 @@ namespace Sia.Gateway
             IHostingEnvironment env, 
             ILoggerFactory loggerFactory,
             IServiceProvider serviceProvider,
-            IncidentContext incidentContext)
+            IncidentContext incidentContext,
+            IReducerService reducerService)
         {
             LoggingStartup.AddLogging(env, loggerFactory, serviceProvider, _configuration);
 
@@ -100,6 +102,9 @@ namespace Sia.Gateway
 
                 SeedData.Add(incidentContext, seedType);
             }
+
+            // Warm up Reducer Service by loading, converting, and validating config
+            reducerService.GetReducersAsync().Wait();
         }
     }
 }

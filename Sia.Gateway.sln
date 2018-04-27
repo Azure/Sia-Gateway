@@ -32,9 +32,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{9845797A-7
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sia.State", "Sia.State\Sia.State.csproj", "{3DE12E9E-0E77-44A3-A1A3-C0CBE124A926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sia.State", "Sia.State\Sia.State.csproj", "{3DE12E9E-0E77-44A3-A1A3-C0CBE124A926}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sia.Core", "domain\Domain\Sia.Core\Sia.Core.csproj", "{F2BC52B7-C366-4D73-B354-2BD4D2254187}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sia.State.Tests", "Sia.State.Tests\Sia.State.Tests.csproj", "{85BE56B8-AC47-4BF9-B12B-27DDF250F59E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,6 +80,10 @@ Global
 		{F2BC52B7-C366-4D73-B354-2BD4D2254187}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2BC52B7-C366-4D73-B354-2BD4D2254187}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2BC52B7-C366-4D73-B354-2BD4D2254187}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85BE56B8-AC47-4BF9-B12B-27DDF250F59E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85BE56B8-AC47-4BF9-B12B-27DDF250F59E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85BE56B8-AC47-4BF9-B12B-27DDF250F59E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85BE56B8-AC47-4BF9-B12B-27DDF250F59E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +98,7 @@ Global
 		{26C3DFC8-1AF2-4AD8-B54C-A4535285440C} = {AAE5FA7E-B788-4E88-8E65-D27B7D1B0E0B}
 		{3DE12E9E-0E77-44A3-A1A3-C0CBE124A926} = {09E441A6-06F8-457A-981A-394473FB8CD5}
 		{F2BC52B7-C366-4D73-B354-2BD4D2254187} = {AAE5FA7E-B788-4E88-8E65-D27B7D1B0E0B}
+		{85BE56B8-AC47-4BF9-B12B-27DDF250F59E} = {931F26AB-58CD-4667-A281-EEC186F2FB59}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05069EBB-9F94-4DAA-A619-C2F496B37BA4}
