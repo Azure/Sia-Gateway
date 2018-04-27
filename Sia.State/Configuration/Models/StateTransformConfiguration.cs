@@ -12,6 +12,7 @@ namespace Sia.State
         public string TransformType { get; set; }
         public object TransformData { get; set; }
 
+        // TODO validate types implement correct generics. See ReducerConfiguration.cs
         public static Dictionary<string, (Type MetaDataType, Type TransformRuleType)> ValidTransformTypes { get; }
             = new Dictionary<string, (Type MetaDataType, Type TransformRuleType)>
             {

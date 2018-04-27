@@ -18,7 +18,7 @@ namespace Sia.State.Processing.Reducers
 
         public object GetRawInitialState() => InitialState;
         public object UpdateSnapshot(IEnumerable<Event> candidateEvents, object currentState)
-            => currentState == null
+            => currentState is null
                 ? UpdateSnapshot(candidateEvents, InitialState.AsEnumerable().ToDictionary()) // Copy of InitialState
                 : UpdateSnapshot(candidateEvents, (IDictionary<string, object>)currentState);
 

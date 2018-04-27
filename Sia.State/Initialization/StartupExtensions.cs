@@ -14,12 +14,14 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services
         ) where TReducerService : class, IReducerService
             => services.AddSingleton<IReducerService, TReducerService>();
+
         public static IServiceCollection AddReducersFromGit(
             this IServiceCollection services,
             GitConfiguration config
         ) => services
                 .AddSingleton(config)
                 .AddSingleton<IReducerService, FromGitReducerService>();
+
         public static IServiceCollection AddReducersFromGithub(
             this IServiceCollection services,
             GitHubConfiguration config

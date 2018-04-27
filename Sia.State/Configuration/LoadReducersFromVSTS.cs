@@ -6,5 +6,7 @@ namespace Sia.State.Configuration
 {
     class LoadReducersFromVSTS
     {
+        // TODO: Implement
+        // May be doable with just LoadReducersFromGit
     }
 }
