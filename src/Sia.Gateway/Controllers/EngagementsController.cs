@@ -23,20 +23,16 @@ namespace Sia.Gateway.Controllers
         public async Task<IActionResult> Get([FromRoute]long incidentId, [FromRoute]long id)
         {
             var result = await _mediator
-                .Send(new GetEngagementRequest(incidentId, id, authContext))
+                .Send(new GetEngagementRequest(incidentId, id, AuthContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
-            if (result == null)
-            {
-                return NotFound(notFoundMessage);
-            }
-            return Ok(result);
+            return OkIfFound(result);
         }
 
         [HttpPost()]
         public async Task<IActionResult> Post([FromRoute]long incidentId, [FromBody]NewEngagement newEngagement)
         {
             var result = await _mediator
-                .Send(new PostEngagementRequest(incidentId, newEngagement, authContext))
+                .Send(new PostEngagementRequest(incidentId, newEngagement, AuthContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
             if (result == null)
             {
@@ -49,7 +45,7 @@ namespace Sia.Gateway.Controllers
         public async Task<IActionResult> Put([FromRoute]long incidentId, [FromRoute]long engagementId, [FromBody]UpdateEngagement updatedEngagement)
         {
             await _mediator
-                .Send(new PutEngagementRequest(incidentId, engagementId, updatedEngagement, authContext))
+                .Send(new PutEngagementRequest(incidentId, engagementId, updatedEngagement, AuthContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
             return Ok();
         }

@@ -23,7 +23,7 @@ namespace Sia.Gateway.Controllers
         [HttpGet(Name = nameof(GetAll) + "Global" + nameof(Domain.Playbook.Action))]
         public async Task<IActionResult> GetAll()
             => OkIfFound(await _mediator
-                .Send(new GetGlobalActionsRequest(authContext))
+                .Send(new GetGlobalActionsRequest(AuthContext))
                 .ConfigureAwait(continueOnCapturedContext: false));
     }
 }

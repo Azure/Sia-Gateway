@@ -22,7 +22,7 @@ namespace Sia.Gateway.Controllers
         public async Task<IActionResult> Get(string id)
         {
             var result = await _mediator
-                .Send(new GetIncidentsByTicketCreateIfNeededRequest(id, authContext))
+                .Send(new GetIncidentsByTicketCreateIfNeededRequest(id, AuthContext))
                 .ConfigureAwait(continueOnCapturedContext: false);
             return Ok(result);
         }
